@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vaistu_priminimo_sistema/screens/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
+import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({super.key});
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,21 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(), //RootScreen()
+      home: StreamBuilder(
+        stream: _authService.firebaseAuth.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); //CIA GAL DET SPLASH ANIMACIJA?
+          }
+          if (snapshot.hasData) {
+            // Naudotojas prisijungęs
+            return RootScreen();
+          } else {
+            // Nerastas naudotojas
+            return LoginScreen();
+          }
+        },
+      ),
     );
   }
 }
