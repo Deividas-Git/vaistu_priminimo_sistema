@@ -37,10 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
       email: _emailController.text,
       password: _passwordController.text,
     );
-    if (authMessage != null) authMessage = "$authMessage!";
+    //if (authMessage != null) authMessage = "$authMessage!";
     debugPrint("KLAIDA: $authMessage");
 
     setState(() => _loading = false);
+  }
+
+  Future<void> _onContinueAsGuestPressed() async {
+    authMessage = await authService.loginAnonymously();
   }
 
   String? _emailValidator(String? value) {
@@ -50,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (!emailRegex.hasMatch(value)) {
       return "Neteisingas el. pašto formatas";
     }
-    //if (!value.contains('@')) return "Neteisingo formato el. paštas";
     return null;
   }
 
@@ -171,11 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const Divider(height: 20, thickness: 2),
                   TextButton(
-                    onPressed: _loading
-                        ? null
-                        : () {
-                            //PRILOGINA ANONIMISKAI
-                          },
+                    onPressed: _loading ? null : _onContinueAsGuestPressed,
                     child: const Text("Išbandyti kaip svečiui"),
                   ),
                 ],

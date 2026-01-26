@@ -32,8 +32,8 @@ class AuthService {
     return authErrors[e.code] ?? "Nenumatyta klaida";
   }
 
-  String? getCurrentUserId() {
-    return firebaseAuth.currentUser?.uid;
+  User? getCurrentUserCredentials() {
+    return firebaseAuth.currentUser;
   }
 
   Future<String?> loginWithEmailAndPassword({
@@ -51,8 +51,31 @@ class AuthService {
     }
   }
 
-  Future<void> logout() async {
+  Future<String?> loginAnonymously() async {
     try {
+      await firebaseAuth.signInAnonymously();
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return _returnedAuthMessage(e);
+    }
+  }
+
+  Future<void> deleteUserAccount({required User? userCredentials}) async {
+    //PIRMA REIKIA ISTRINTI VISUS DUOMENIS, TADA PASKYRA
+    try {
+      await userCredentials?.delete();
+    } on FirebaseAuthException catch (e) {
+      debugPrint("KLAIDA TRINANT USER: $e");
+    }
+  }
+
+  Future<void> logout() async {
+    final User? userCredentials = firebaseAuth.currentUser;
+    if (userCredentials == null) return;
+    try {
+      if (firebaseAuth.currentUser!.isAnonymous) {
+        await deleteUserAccount(userCredentials: userCredentials);
+      }
       await firebaseAuth.signOut();
     } catch (e) {
       debugPrint(e.toString());
