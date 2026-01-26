@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -8,9 +9,20 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final AuthService _authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            _authService.logout();
+          },
+          child: Text("Atsijungti"),
+        ),
+      ),
+    );
   }
 }
 

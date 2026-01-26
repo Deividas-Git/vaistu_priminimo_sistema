@@ -29,7 +29,7 @@ class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   String? _returnedAuthMessage(FirebaseAuthException e) {
-    return authErrors[e.code];
+    return authErrors[e.code] ?? "Nenumatyta klaida";
   }
 
   String? getCurrentUserId() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/screens/home_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/profile_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -14,7 +15,7 @@ class _RootScreenState extends State<RootScreen> {
     HomeScreen(),
     MedicationScreen(),
     HomeScreen(),
-    HomeScreen(),
+    ProfileScreen(),
   ];
   int _selectedScreenIndex = 0;
 

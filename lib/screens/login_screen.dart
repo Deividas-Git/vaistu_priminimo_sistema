@@ -15,9 +15,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  final AuthService authService = AuthService();
   bool hidePassword = true;
   bool _loading = false;
+  String? authMessage;
 
   @override
   void dispose() {
@@ -27,42 +28,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _onLoginPressed() async {
+    authMessage = null;
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
-    final AuthService authService = AuthService();
-    final String? message = await authService.loginWithEmailAndPassword(
+    authMessage = await authService.loginWithEmailAndPassword(
       email: _emailController.text,
       password: _passwordController.text,
     );
-
-    debugPrint(message);
-
-    // final message = await authService.loginWithEmailAndPassword(
-    //   email: _emailController.text.trim(),
-    //   password: _passwordController.text.trim(),
-    // );
-
-    // if (message != null) {
-    //   _formKey.currentState!.validate();
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text(message.error)),
-    //   );
-    // }
+    if (authMessage != null) authMessage = "$authMessage!";
+    debugPrint("KLAIDA: $authMessage");
 
     setState(() => _loading = false);
   }
 
   String? _emailValidator(String? value) {
-    if (value == null || value.isEmpty) return "Privalomas laukas";
-    if (!value.contains('@')) return "Neteisingo formato el. paštas";
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$');
+    if (value == null || value.isEmpty) {
+      return "Privalomas laukas";
+    } else if (!emailRegex.hasMatch(value)) {
+      return "Neteisingas el. pašto formatas";
+    }
+    //if (!value.contains('@')) return "Neteisingo formato el. paštas";
     return null;
   }
 
   String? _passwordValidator(String? value) {
-    if (value == null || value.isEmpty) return "Privalomas laukas";
-    //if (value.length < 6) return "Slaptažodis privalo būti bent iš 6 simbolių";
+    if (value == null || value.isEmpty) {
+      return "Privalomas laukas";
+    }
+    if (value.length < 6) return "Slaptažodis privalo būti bent iš 6 simbolių";
     return null;
   }
 
@@ -123,7 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: _passwordValidator,
                   ),
-                  const SizedBox(height: 30, width: double.infinity),
+                  const SizedBox(height: 10, width: double.infinity),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      authMessage ?? "",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                  const SizedBox(height: 10, width: double.infinity),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -164,7 +169,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                     child: const Text("Susikurti paskyrą"),
                   ),
-
                   const Divider(height: 20, thickness: 2),
                   TextButton(
                     onPressed: _loading
