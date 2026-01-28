@@ -154,27 +154,3 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
     );
   }
 }
-
-// AnimatedContainer(
-//       duration: Duration(seconds: 2),
-//       child: OutlinedButton(
-//         onPressed: () => widget.onOptionSelected(widget.optionToAddMedication),
-//         style: OutlinedButton.styleFrom(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(5.0),
-//           ),
-//           side: BorderSide(color: ColorScheme.of(context).primary),
-//           minimumSize: Size(300, 50),
-//           backgroundColor:
-//               _selectedOptionToAddMedication == widget.optionToAddMedication
-//               ? ColorScheme.of(context).secondary
-//               : ColorScheme.of(context).surface,
-//         ),
-//         child: Text(
-//           widget.optionToAddMedication.getLabel,
-//           style: _selectedOptionToAddMedication == widget.optionToAddMedication
-//               ? TextStyle(color: ColorScheme.of(context).surface)
-//               : TextStyle(color: ColorScheme.of(context).secondary),
-//         ),
-//       ),
-//     );
