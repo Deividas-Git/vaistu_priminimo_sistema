@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/screens/home_screen.dart';
-import 'package:vaistu_priminimo_sistema/screens/medication_screen.dart';
-import 'package:vaistu_priminimo_sistema/screens/profile_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/home/home_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/medication_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/profile/profile_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});

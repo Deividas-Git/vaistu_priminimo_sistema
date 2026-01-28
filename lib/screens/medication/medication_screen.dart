@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
 
 class MedicationScreen extends StatefulWidget {
   const MedicationScreen({super.key});
@@ -9,6 +10,13 @@ class MedicationScreen extends StatefulWidget {
 
 class _MedicationScreenState extends State<MedicationScreen> {
   final TextEditingController _textEditingController = TextEditingController();
+
+  void _onAddMedication() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddTypeSelectionScreen()),
+    );
+  }
 
   @override
   void dispose() {
@@ -21,6 +29,14 @@ class _MedicationScreenState extends State<MedicationScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(padding: const EdgeInsets.all(12.0), child: Column()),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: FloatingActionButton(
+          onPressed: _onAddMedication,
+          backgroundColor: const Color.fromARGB(255, 9, 175, 14),
+          child: Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }

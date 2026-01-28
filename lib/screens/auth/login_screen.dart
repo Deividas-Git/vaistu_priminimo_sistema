@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/screens/register_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/auth/register_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_text_widget.dart';
 
