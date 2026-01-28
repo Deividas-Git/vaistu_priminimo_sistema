@@ -10,7 +10,7 @@ class AddMedicationAppBar extends StatelessWidget
     return AppBar(
       iconTheme: IconThemeData(color: Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white)),
-      backgroundColor: ColorScheme.of(context).primary,
+      backgroundColor: ColorScheme.of(context).primary.withValues(alpha: 0.7),
     );
   }
 

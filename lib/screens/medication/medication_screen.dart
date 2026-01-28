@@ -24,6 +24,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
     super.dispose();
   }
 
+  //TODO reikia pakrauti pridetus naudotojo vaistus
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +32,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
         child: Padding(padding: const EdgeInsets.all(12.0), child: Column()),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton(
           onPressed: _onAddMedication,
           backgroundColor: const Color.fromARGB(255, 9, 175, 14),
