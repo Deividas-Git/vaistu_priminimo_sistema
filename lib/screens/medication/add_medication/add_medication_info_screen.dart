@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
+import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
 class AddMedicationInfoScreen extends StatefulWidget {
-  const AddMedicationInfoScreen({super.key});
+  const AddMedicationInfoScreen({super.key, this.prefilledMedication});
+  final UserMedication? prefilledMedication;
 
   @override
   State<AddMedicationInfoScreen> createState() =>
@@ -18,30 +21,61 @@ class AddMedicationInfoScreen extends StatefulWidget {
 class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   final TextEditingController _medicationNameController =
       TextEditingController();
-  final UserMedication _medication = UserMedication();
   final List<DropdownMenuEntry<MedicationType>> _medicationTypes =
       MedicationType.values
           .map((type) => DropdownMenuEntry(value: type, label: type.getLabel))
           .toList();
+  final List<DropdownMenuEntry<MedicationMealTiming>> _medicationMealtTimings =
+      MedicationMealTiming.values
+          .map(
+            (mealTiming) => DropdownMenuEntry(
+              value: mealTiming,
+              label: mealTiming.getLabel,
+            ),
+          )
+          .toList();
   DateTime? _expirationDate;
-  MedicationType _medicationType = MedicationType.other;
-  MedicationMealTiming _medicationMealTiming = MedicationMealTiming.unspecified;
+  MedicationType? _medicationType;
+  MedicationMealTiming? _medicationMealTiming;
 
   void _onExpirationDatePicked(DateTime? date) {
     _expirationDate = date;
   }
 
-  void _onMedicationTypeSelected(dynamic medicationType) {
+  void _onMedicationTypeSelected(MedicationType? medicationType) {
     _medicationType = medicationType;
   }
 
+  void _onMedicationMealTimingSelected(MedicationMealTiming? mealTiming) {
+    _medicationMealTiming = mealTiming;
+  }
+
   void _onContinuePressed() {
-    //jei viskas jau pachekinta ir ok
-    _medication.name = _medicationNameController.text.trim();
-    _medication.expirationDate = _expirationDate;
-    _medication.medicationType = _medicationType;
-    _medication.medicationMealTiming = _medicationMealTiming;
-    debugPrint(_medication.toString());
+    final UserMedication medication =
+        (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
+          name: _medicationNameController.text.trim(),
+          expirationDate: _expirationDate,
+          medicationMealTiming: _medicationMealTiming,
+          medicationType: _medicationType,
+        );
+
+    debugPrint("APIE VAISTA: ${medication.toString()}");
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (contex) => AddTypeSelectionScreen()),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _medicationType =
+        widget.prefilledMedication?.medicationType ?? MedicationType.other;
+    _medicationMealTiming =
+        widget.prefilledMedication?.medicationMealTiming ??
+        MedicationMealTiming.unspecified;
+    _medicationNameController.text = widget.prefilledMedication?.name ?? "";
   }
 
   @override
@@ -77,11 +111,22 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                     onDatePicked: _onExpirationDatePicked,
                   ),
                   const SizedBox(height: 10),
-                  DropdownMenuWidget(
-                    initialSelection: MedicationType.other,
+                  SectionTextWidget(
+                    label: "Pasirinkite kada bus vartojamas vaistas",
+                  ),
+                  DropdownMenuWidget<MedicationMealTiming?>(
+                    initialSelection: _medicationMealTiming,
+                    entries: _medicationMealtTimings,
+                    onEntrySelected: _onMedicationMealTimingSelected,
+                  ),
+                  const SizedBox(height: 10),
+                  SectionTextWidget(label: "Pasirinkite vaisto tipą"),
+                  DropdownMenuWidget<MedicationType?>(
+                    initialSelection: _medicationType,
                     entries: _medicationTypes,
                     onEntrySelected: _onMedicationTypeSelected,
                   ),
+                  //Checkbox(value: _medication.currentQuantity == null ? false : true, onChanged: onChanged)
                 ],
               ),
             ),

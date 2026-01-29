@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_medication_info_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
+import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
 enum SelectedOptionToAddMedication {
   manual,
@@ -70,15 +71,11 @@ class _AddTypeSelectionScreenState extends State<AddTypeSelectionScreen> {
       appBar: AddMedicationAppBar(title: "Vaisto pridėjimas"),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 12, top: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: Center(
             child: Column(
               children: [
-                Text(
-                  "Kaip norėtumėte pridėti vaistą?",
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(height: 10),
+                SectionTextWidget(label: "Kaip norėtumėte pridėti vaistą?"),
                 MedicationAddOptionButton(
                   optionToAddMedication: SelectedOptionToAddMedication.manual,
                   onOptionSelected: _onOptionSelected,
@@ -129,27 +126,32 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
     return InkWell(
       borderRadius: BorderRadius.circular(5),
       onTap: () => widget.onOptionSelected(widget.optionToAddMedication),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        height: 50,
-        width: 300,
-        decoration: BoxDecoration(
-          color: _selectedOptionToAddMedication == widget.optionToAddMedication
-              ? colorScheme.primary
-              : Colors.white,
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: colorScheme.secondary),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          widget.optionToAddMedication.getLabel,
-          style: TextStyle(
-            fontSize: 16,
+      child: SizedBox(
+        height: 55,
+        width: double.infinity,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          //height: 50,
+          //width: 300,
+          decoration: BoxDecoration(
             color:
                 _selectedOptionToAddMedication == widget.optionToAddMedication
-                ? Colors.white
-                : colorScheme.secondary,
+                ? colorScheme.primary
+                : Colors.white,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: colorScheme.secondary),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            widget.optionToAddMedication.getLabel,
+            style: TextStyle(
+              fontSize: 16,
+              color:
+                  _selectedOptionToAddMedication == widget.optionToAddMedication
+                  ? Colors.white
+                  : colorScheme.secondary,
+            ),
           ),
         ),
       ),

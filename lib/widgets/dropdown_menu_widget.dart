@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DropdownMenuWidget extends StatefulWidget {
+class DropdownMenuWidget<T> extends StatefulWidget {
   const DropdownMenuWidget({
     super.key,
     required this.initialSelection,
@@ -8,20 +8,20 @@ class DropdownMenuWidget extends StatefulWidget {
     required this.onEntrySelected,
   });
 
-  final dynamic initialSelection;
-  final List<DropdownMenuEntry<dynamic>> entries;
-  final ValueChanged<dynamic> onEntrySelected;
+  final T? initialSelection;
+  final List<DropdownMenuEntry<T>> entries;
+  final ValueChanged<T?> onEntrySelected;
 
   @override
-  State<DropdownMenuWidget> createState() => _DropDownMenuWidgetState();
+  State<DropdownMenuWidget<T>> createState() => _DropDownMenuWidgetState<T>();
 }
 
-class _DropDownMenuWidgetState extends State<DropdownMenuWidget> {
+class _DropDownMenuWidgetState<T> extends State<DropdownMenuWidget<T>> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
 
-    return DropdownMenu<dynamic>(
+    return DropdownMenu<T>(
       initialSelection: widget.initialSelection,
       leadingIcon: const Icon(Icons.menu),
       expandedInsets: EdgeInsets.all(
@@ -29,7 +29,7 @@ class _DropDownMenuWidgetState extends State<DropdownMenuWidget> {
       ), //sutvarko kad butu tokio pat ilgio kaip kiti widgetai screene
       dropdownMenuEntries: widget.entries,
       onSelected: widget.onEntrySelected,
-      trailingIcon: Icon(Icons.expand_more, color: Colors.white),
+      trailingIcon: const Icon(Icons.expand_more, color: Colors.white),
       selectedTrailingIcon: Icon(Icons.expand_less, color: Colors.white),
       textStyle: TextStyle(color: Colors.white, fontSize: 16),
       inputDecorationTheme: InputDecorationTheme(
@@ -40,7 +40,7 @@ class _DropDownMenuWidgetState extends State<DropdownMenuWidget> {
       ),
       menuStyle: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(colorScheme.inversePrimary),
-        elevation: WidgetStatePropertyAll(4.0),
+        elevation: const WidgetStatePropertyAll(4.0),
       ),
     );
   }

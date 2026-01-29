@@ -13,7 +13,7 @@ enum MedicationMealTiming {
       case MedicationMealTiming.afterMeal:
         return "Po valgio";
       default:
-        return "Nenurodyti";
+        return "Nenurodyta";
     }
   }
 }

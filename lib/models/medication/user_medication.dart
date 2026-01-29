@@ -1,15 +1,67 @@
+import 'package:flutter/foundation.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 
 class UserMedication {
-  String? name;
-  double? currentQuantity;
-  MedicationType medicationType = MedicationType.other;
-  MedicationMealTiming medicationMealTiming = MedicationMealTiming.unspecified;
-  DateTime? expirationDate;
-  DateTime? lastTimeTaken;
-  List<MedicationSchedule>? medicationSchedules = [];
+  final String? name;
+  final double? currentQuantity;
+  final MedicationType? medicationType; // = MedicationType.other;
+  final MedicationMealTiming?
+  medicationMealTiming; // = MedicationMealTiming.unspecified;
+  final DateTime? expirationDate;
+  final DateTime? lastTimeTaken;
+  final List<MedicationSchedule>? medicationSchedules;
+
+  UserMedication({
+    this.name,
+    this.currentQuantity,
+    this.medicationType,
+    this.medicationMealTiming,
+    this.expirationDate,
+    this.lastTimeTaken,
+    this.medicationSchedules,
+  });
+
+  factory UserMedication.empty() {
+    return UserMedication();
+  }
+
+  UserMedication copyWith({
+    String? name,
+    double? currentQuantity,
+    MedicationType? medicationType,
+    MedicationMealTiming? medicationMealTiming,
+    DateTime? expirationDate,
+    DateTime? lastTimeTaken,
+    List<MedicationSchedule>? medicationSchedules,
+  }) {
+    return UserMedication(
+      name: name ?? this.name,
+      currentQuantity: currentQuantity ?? this.currentQuantity,
+      medicationType: medicationType ?? this.medicationType,
+      medicationMealTiming: medicationMealTiming ?? this.medicationMealTiming,
+      expirationDate: expirationDate ?? this.expirationDate,
+      lastTimeTaken: lastTimeTaken ?? this.lastTimeTaken,
+      medicationSchedules: medicationSchedules ?? this.medicationSchedules,
+    );
+  }
+
+  UserMedication merge({UserMedication? medicationFromWhichUpdating}) {
+    if (medicationFromWhichUpdating == null) {
+      return this;
+    }
+
+    return copyWith(
+      name: medicationFromWhichUpdating.name,
+      currentQuantity: medicationFromWhichUpdating.currentQuantity,
+      medicationType: medicationFromWhichUpdating.medicationType,
+      medicationMealTiming: medicationFromWhichUpdating.medicationMealTiming,
+      expirationDate: medicationFromWhichUpdating.expirationDate,
+      lastTimeTaken: medicationFromWhichUpdating.lastTimeTaken,
+      medicationSchedules: medicationFromWhichUpdating.medicationSchedules,
+    );
+  }
 
   @override
   String toString() {
