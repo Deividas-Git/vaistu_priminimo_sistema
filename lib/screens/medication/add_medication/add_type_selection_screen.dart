@@ -124,6 +124,8 @@ class MedicationAddOptionButton extends StatefulWidget {
 class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.of(context);
+
     return InkWell(
       borderRadius: BorderRadius.circular(5),
       onTap: () => widget.onOptionSelected(widget.optionToAddMedication),
@@ -134,10 +136,10 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
         width: 300,
         decoration: BoxDecoration(
           color: _selectedOptionToAddMedication == widget.optionToAddMedication
-              ? ColorScheme.of(context).secondary
-              : ColorScheme.of(context).surface,
+              ? colorScheme.primary
+              : Colors.white,
           borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: ColorScheme.of(context).primary),
+          border: Border.all(color: colorScheme.secondary),
         ),
         alignment: Alignment.center,
         child: Text(
@@ -146,8 +148,8 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
             fontSize: 16,
             color:
                 _selectedOptionToAddMedication == widget.optionToAddMedication
-                ? ColorScheme.of(context).surface
-                : ColorScheme.of(context).secondary,
+                ? Colors.white
+                : colorScheme.secondary,
           ),
         ),
       ),
