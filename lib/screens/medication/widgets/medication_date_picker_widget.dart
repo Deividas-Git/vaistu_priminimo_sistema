@@ -42,33 +42,35 @@ class _MedicationDatePickerWidgetState
             ),
           ),
 
-          OutlinedButton(
-            onPressed: () async {
-              _expirationDate = await showDatePicker(
-                context: context,
-                firstDate: DateTime(DateTime.now().year),
-                lastDate: DateTime(DateTime.now().year + 30),
-              );
-              setState(() {
-                widget.onDatePicked(_expirationDate);
-              });
-            },
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: ColorScheme.of(context).primary),
-              minimumSize: const Size(170, 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(5.0),
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () async {
+                _expirationDate = await showDatePicker(
+                  context: context,
+                  firstDate: DateTime(DateTime.now().year),
+                  lastDate: DateTime(DateTime.now().year + 30),
+                );
+                setState(() {
+                  widget.onDatePicked(_expirationDate);
+                });
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: ColorScheme.of(context).primary),
+                minimumSize: const Size(170, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(5.0),
+                ),
+                backgroundColor: ColorScheme.of(context).primary,
               ),
-              backgroundColor: ColorScheme.of(context).primary,
-            ),
-            child: Text(
-              _expirationDate == null
-                  ? "Nepasirinkta"
-                  : _expirationDate.toString().split(" ")[0],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                //fontWeight: FontWeight.bold,
+              child: Text(
+                _expirationDate == null
+                    ? "Nepasirinkta"
+                    : _expirationDate.toString().split(" ")[0],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  //fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

@@ -3,7 +3,6 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timin
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_medication_schedules_screen.dart';
-import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
@@ -112,7 +111,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Center(
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 TextField(
@@ -127,17 +126,8 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                 ),
                 const SizedBox(height: 10),
                 MedicationDatePickerWidget(
-                  label: "Vaistas galioja iki:",
+                  label: "Galioja iki:",
                   onDatePicked: _onExpirationDatePicked,
-                ),
-                const SizedBox(height: 10),
-                SectionTextWidget(
-                  label: "Pasirinkite kada bus vartojamas vaistas",
-                ),
-                DropdownMenuWidget<MedicationMealTiming?>(
-                  initialSelection: _medicationMealTiming,
-                  entries: _medicationMealtTimings,
-                  onEntrySelected: _onMedicationMealTimingSelected,
                 ),
                 const SizedBox(height: 10),
                 SectionTextWidget(label: "Pasirinkite vaisto tipą"),
@@ -146,6 +136,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                   entries: _medicationTypes,
                   onEntrySelected: _onMedicationTypeSelected,
                 ),
+                const SizedBox(height: 5),
                 SizedBox(
                   width: double.infinity,
                   child: Align(
@@ -169,6 +160,15 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                     medicationType: _medicationType!,
                     onQuantityChanged: _onCurrentQuantityChanged,
                   ),
+                Divider(thickness: 2),
+                SectionTextWidget(
+                  label: "Pasirinkite kada bus vartojamas vaistas",
+                ),
+                DropdownMenuWidget<MedicationMealTiming?>(
+                  initialSelection: _medicationMealTiming,
+                  entries: _medicationMealtTimings,
+                  onEntrySelected: _onMedicationMealTimingSelected,
+                ),
               ],
             ),
           ),
