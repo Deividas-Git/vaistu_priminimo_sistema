@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';

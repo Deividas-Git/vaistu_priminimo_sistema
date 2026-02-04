@@ -56,4 +56,15 @@ enum MedicationType {
         return "";
     }
   }
+
+  bool get consumedAmoutIsInteger {
+    switch (this) {
+      case MedicationType.pills:
+        return true;
+      case MedicationType.capsules:
+        return true;
+      default:
+        return false;
+    }
+  }
 }

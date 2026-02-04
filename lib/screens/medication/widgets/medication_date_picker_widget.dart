@@ -24,17 +24,24 @@ class _MedicationDatePickerWidgetState
   Widget build(BuildContext context) {
     return ThemedContainerWidget(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(Icons.calendar_today),
-          const SizedBox(width: 10),
-          Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 16,
-              color: ColorScheme.of(context).scrim,
+          Expanded(
+            child: Row(
+              children: [
+                const Icon(Icons.calendar_today),
+                const SizedBox(width: 10),
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorScheme.of(context).scrim,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 50),
+
           OutlinedButton(
             onPressed: () async {
               _expirationDate = await showDatePicker(

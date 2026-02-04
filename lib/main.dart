@@ -30,10 +30,8 @@ class MainApp extends StatelessWidget {
             return CircularProgressIndicator(); //CIA GAL DET SPLASH ANIMACIJA?
           }
           if (snapshot.hasData) {
-            // Naudotojas prisijungęs
             return RootScreen();
           } else {
-            // Nerastas naudotojas
             return LoginScreen();
           }
         },

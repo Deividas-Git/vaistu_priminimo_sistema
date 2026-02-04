@@ -6,6 +6,7 @@ import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_t
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_quantity_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
@@ -37,17 +38,32 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   DateTime? _expirationDate;
   MedicationType? _medicationType;
   MedicationMealTiming? _medicationMealTiming;
+  double? _currentQuantity;
 
   void _onExpirationDatePicked(DateTime? date) {
     _expirationDate = date;
   }
 
   void _onMedicationTypeSelected(MedicationType? medicationType) {
-    _medicationType = medicationType;
+    setState(() {
+      _medicationType = medicationType;
+      if (_currentQuantity != null) _currentQuantity = 0;
+    });
   }
 
   void _onMedicationMealTimingSelected(MedicationMealTiming? mealTiming) {
     _medicationMealTiming = mealTiming;
+  }
+
+  void _onQuantityCheckboxChecked(bool? isChecked) {
+    if (isChecked == null) return;
+    setState(() {
+      _currentQuantity = isChecked ? _currentQuantity = 0 : null;
+    });
+  }
+
+  void _onCurrentQuantityChanged(double? quantity) {
+    _currentQuantity = quantity;
   }
 
   void _onContinuePressed() {
@@ -57,6 +73,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           expirationDate: _expirationDate,
           medicationMealTiming: _medicationMealTiming,
           medicationType: _medicationType,
+          currentQuantity: _currentQuantity,
         );
 
     debugPrint("APIE VAISTA: ${medication.toString()}");
@@ -126,7 +143,29 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                     entries: _medicationTypes,
                     onEntrySelected: _onMedicationTypeSelected,
                   ),
-                  //Checkbox(value: _medication.currentQuantity == null ? false : true, onChanged: onChanged)
+                  SizedBox(
+                    width: double.infinity,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _currentQuantity == null ? false : true,
+                            onChanged: _onQuantityCheckboxChecked,
+                          ),
+                          const Text(
+                            "Pridėti vaisto likutį",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (_currentQuantity != null)
+                    MedicationQuantityWidget(
+                      medicationType: _medicationType!,
+                      onQuantityChanged: _onCurrentQuantityChanged,
+                    ),
                 ],
               ),
             ),
