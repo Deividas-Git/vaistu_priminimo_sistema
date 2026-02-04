@@ -47,6 +47,13 @@ class _LoginScreenState extends State<LoginScreen> {
     authMessage = await authService.loginAnonymously();
   }
 
+  void _onRegisterPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+    );
+  }
+
   String? _emailValidator(String? value) {
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$');
     if (value == null || value.isEmpty) {
@@ -160,16 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10, width: double.infinity),
                   TextButton(
-                    onPressed: _loading
-                        ? null
-                        : () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ),
-                            );
-                          },
+                    onPressed: _loading ? null : _onRegisterPressed,
                     child: const Text("Susikurti paskyrą"),
                   ),
                   const Divider(height: 20, thickness: 2),

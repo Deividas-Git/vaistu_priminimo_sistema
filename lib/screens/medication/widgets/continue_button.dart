@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key, required this.onContinuePressed});
+  const ContinueButton({
+    super.key,
+    required this.label,
+    required this.onContinuePressed,
+  });
+  final String label;
   final VoidCallback onContinuePressed;
 
   @override
@@ -14,7 +19,7 @@ class ContinueButton extends StatelessWidget {
           onPressed: onContinuePressed,
           backgroundColor: ColorScheme.of(context).primary,
           child: Text(
-            "Toliau",
+            label,
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),

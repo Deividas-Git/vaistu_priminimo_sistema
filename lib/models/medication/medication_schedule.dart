@@ -2,12 +2,11 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_
 import 'package:vaistu_priminimo_sistema/models/weekdays.dart';
 
 class MedicationSchedule {
-  DateTime startDate = DateTime.now();
-  DateTime? endDate;
-  MedicationFrequencyType medicationFrequencyType =
-      MedicationFrequencyType.constantIntervals;
-  int? intervalsDays;
-  List<Weekdays>? weekdays = [];
+  final DateTime startDate;
+  final DateTime? endDate;
+  final MedicationFrequencyType medicationFrequencyType;
+  final int? intervalsDays;
+  final List<Weekdays>? weekdays;
 
   MedicationSchedule({
     required this.startDate,

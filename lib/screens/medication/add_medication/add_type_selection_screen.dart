@@ -96,6 +96,7 @@ class _AddTypeSelectionScreenState extends State<AddTypeSelectionScreen> {
         ),
       ),
       floatingActionButton: ContinueButton(
+        label: "Toliau",
         onContinuePressed: _onContinuePressed,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -123,17 +124,14 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(5),
-      onTap: () => widget.onOptionSelected(widget.optionToAddMedication),
-      child: SizedBox(
-        height: 55,
-        width: double.infinity,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          //height: 50,
-          //width: 300,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(5),
+        onTap: () => widget.onOptionSelected(widget.optionToAddMedication),
+        child: Ink(
+          height: 55,
+          width: double.infinity,
           decoration: BoxDecoration(
             color:
                 _selectedOptionToAddMedication == widget.optionToAddMedication
@@ -142,15 +140,17 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: colorScheme.secondary),
           ),
-          alignment: Alignment.center,
-          child: Text(
-            widget.optionToAddMedication.getLabel,
-            style: TextStyle(
-              fontSize: 16,
-              color:
-                  _selectedOptionToAddMedication == widget.optionToAddMedication
-                  ? Colors.white
-                  : colorScheme.secondary,
+          child: Center(
+            child: Text(
+              widget.optionToAddMedication.getLabel,
+              style: TextStyle(
+                fontSize: 16,
+                color:
+                    _selectedOptionToAddMedication ==
+                        widget.optionToAddMedication
+                    ? Colors.white
+                    : colorScheme.secondary,
+              ),
             ),
           ),
         ),

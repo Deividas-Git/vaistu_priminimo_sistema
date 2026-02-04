@@ -21,6 +21,10 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        splashColor: ColorScheme.of(context).surface.withValues(alpha: 0.25),
+        highlightColor: ColorScheme.of(
+          context,
+        ).secondary.withValues(alpha: 0.25),
       ),
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
