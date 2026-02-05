@@ -3,44 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
-class MedicationQuantityWidget extends StatefulWidget {
+class MedicationQuantityWidget extends StatelessWidget {
   const MedicationQuantityWidget({
     super.key,
     required this.medicationType,
-    required this.onQuantityChanged,
+    required this.controller,
   });
 
   final MedicationType medicationType;
-  final ValueChanged<double?> onQuantityChanged;
-
-  @override
-  State<MedicationQuantityWidget> createState() =>
-      _MedicationQuantityWidgetState();
-}
-
-class _MedicationQuantityWidgetState extends State<MedicationQuantityWidget> {
-  final TextEditingController _medicationInput = TextEditingController();
-
-  void _onQuantityInputChanged(String text) {
-    final quantity = double.tryParse(text.replaceAll(",", "'."));
-    widget.onQuantityChanged(quantity);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _medicationInput.dispose();
-    super.dispose();
-  }
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    _medicationInput.text = "0";
-
     return ThemedContainerWidget(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,14 +39,13 @@ class _MedicationQuantityWidgetState extends State<MedicationQuantityWidget> {
             height: 36,
             width: 90,
             child: TextField(
-              onChanged: _onQuantityInputChanged,
-              controller: _medicationInput,
+              controller: controller,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
                 signed: false,
               ),
               inputFormatters: [
-                QuantityInputFormatter(medicationType: widget.medicationType),
+                QuantityInputFormatter(medicationType: medicationType),
               ],
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, color: Colors.white),
@@ -95,7 +68,7 @@ class _MedicationQuantityWidgetState extends State<MedicationQuantityWidget> {
           ),
           const SizedBox(width: 10),
           Text(
-            widget.medicationType.getUnit,
+            medicationType.getUnit,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 10),

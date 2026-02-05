@@ -45,8 +45,10 @@ class _AddMedicationSchedulesScreenState
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => RootScreen()),
-      (route) => route.isFirst,
+      MaterialPageRoute(
+        builder: (context) => RootScreen(initialScreenIndex: 1),
+      ),
+      (route) => false,
     );
   }
 

@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
-class MedicationDatePickerWidget extends StatefulWidget {
+class MedicationDatePickerWidget extends StatelessWidget {
   const MedicationDatePickerWidget({
     super.key,
     required this.label,
+    required this.selectedDate,
     required this.onDatePicked,
   });
 
   final String label;
+  final DateTime? selectedDate;
   final ValueChanged<DateTime?> onDatePicked;
+  //DateTime? _selectedDate;
 
-  @override
-  State<MedicationDatePickerWidget> createState() =>
-      _MedicationDatePickerWidgetState();
-}
-
-class _MedicationDatePickerWidgetState
-    extends State<MedicationDatePickerWidget> {
-  DateTime? _expirationDate;
-
+  // final String label;
   @override
   Widget build(BuildContext context) {
     return ThemedContainerWidget(
@@ -32,7 +27,7 @@ class _MedicationDatePickerWidgetState
                 const Icon(Icons.calendar_today),
                 const SizedBox(width: 10),
                 Text(
-                  widget.label,
+                  label,
                   style: TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).scrim,
@@ -45,14 +40,12 @@ class _MedicationDatePickerWidgetState
           Expanded(
             child: OutlinedButton(
               onPressed: () async {
-                _expirationDate = await showDatePicker(
+                final DateTime? date = await showDatePicker(
                   context: context,
                   firstDate: DateTime(DateTime.now().year),
                   lastDate: DateTime(DateTime.now().year + 30),
                 );
-                setState(() {
-                  widget.onDatePicked(_expirationDate);
-                });
+                onDatePicked(date);
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: ColorScheme.of(context).primary),
@@ -63,9 +56,9 @@ class _MedicationDatePickerWidgetState
                 backgroundColor: ColorScheme.of(context).primary,
               ),
               child: Text(
-                _expirationDate == null
+                selectedDate == null
                     ? "Nepasirinkta"
-                    : _expirationDate.toString().split(" ")[0],
+                    : selectedDate.toString().split(" ")[0],
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,

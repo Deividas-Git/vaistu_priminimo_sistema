@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DropdownMenuWidget<T> extends StatefulWidget {
+class DropdownMenuWidget<T> extends StatelessWidget {
   const DropdownMenuWidget({
     super.key,
     required this.initialSelection,
@@ -13,22 +13,17 @@ class DropdownMenuWidget<T> extends StatefulWidget {
   final ValueChanged<T?> onEntrySelected;
 
   @override
-  State<DropdownMenuWidget<T>> createState() => _DropDownMenuWidgetState<T>();
-}
-
-class _DropDownMenuWidgetState<T> extends State<DropdownMenuWidget<T>> {
-  @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
 
     return DropdownMenu<T>(
-      initialSelection: widget.initialSelection,
+      initialSelection: initialSelection,
       leadingIcon: const Icon(Icons.menu),
       expandedInsets: EdgeInsets.all(
         0.0,
       ), //sutvarko kad butu tokio pat ilgio kaip kiti widgetai screene
-      dropdownMenuEntries: widget.entries,
-      onSelected: widget.onEntrySelected,
+      dropdownMenuEntries: entries,
+      onSelected: onEntrySelected,
       trailingIcon: const Icon(Icons.expand_more, color: Colors.white),
       selectedTrailingIcon: Icon(Icons.expand_less, color: Colors.white),
       textStyle: TextStyle(color: Colors.white, fontSize: 16),
