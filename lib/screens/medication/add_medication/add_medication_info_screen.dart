@@ -53,9 +53,11 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   void _onMedicationTypeSelected(MedicationType? medicationType) {
     setState(() {
       _medicationType = medicationType;
-      List<String> quantity = _medicationQuantityInputController.text.split(
+      final String temp = _medicationQuantityInputController.text.replaceAll(
+        ",",
         ".",
       );
+      List<String> quantity = temp.split(".");
       if (_medicationType!.consumedAmoutIsInteger && quantity.length == 2) {
         _medicationQuantityInputController.text = quantity[0];
       }
@@ -92,7 +94,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           medicationMealTiming: _medicationMealTiming,
           medicationType: _medicationType,
           currentQuantity: double.tryParse(
-            _medicationQuantityInputController.text,
+            _medicationQuantityInputController.text.replaceAll(",", "."),
           ),
         );
 

@@ -42,14 +42,7 @@ class _AddMedicationSchedulesScreenState
       medicationSchedules: _medicationSchedules,
     );
     //TODO medication service ir irasom duomenis i db
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RootScreen(initialScreenIndex: 1),
-      ),
-      (route) => false,
-    );
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   @override

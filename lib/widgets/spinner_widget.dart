@@ -27,10 +27,10 @@ class _SpinnerWidgetState extends State<SpinnerWidget> {
   Widget build(BuildContext context) {
     return ListWheelScrollView.useDelegate(
       onSelectedItemChanged: _onItemSelected,
-      perspective: 0.005,
+      perspective: 0.0035,
       itemExtent: 40,
       diameterRatio: 1.5,
-      physics: FixedExtentScrollPhysics(),
+      physics: const FixedExtentScrollPhysics(parent: ClampingScrollPhysics()),
       childDelegate: ListWheelChildBuilderDelegate(
         childCount: widget.items.length,
         builder: (context, index) {
@@ -57,6 +57,14 @@ class _SpinnerTileWidget extends StatelessWidget {
       style: TextStyle(
         fontSize: 30,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.w100,
+        color: ColorScheme.of(context).primary.withValues(alpha: 1),
+        shadows: [
+          Shadow(
+            offset: const Offset(0, 0.5),
+            blurRadius: 1,
+            color: Colors.black.withValues(alpha: 0.75),
+          ),
+        ],
       ),
     );
   }

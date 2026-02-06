@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     //if (authMessage != null) authMessage = "$authMessage!";
     debugPrint("KLAIDA: $authMessage");
 
-    setState(() => _loading = false);
+    if (mounted) setState(() => _loading = false);
   }
 
   Future<void> _onContinueAsGuestPressed() async {
@@ -75,14 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
           child: SingleChildScrollView(
-            // padding: EdgeInsets.only(
-            //   bottom: MediaQuery.of(context).viewInsets.bottom,
-            // ),
             child: Form(
               key: _formKey,
               child: Column(

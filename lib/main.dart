@@ -31,11 +31,16 @@ class MainApp extends StatelessWidget {
         stream: _authService.firebaseAuth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); //CIA GAL DET SPLASH ANIMACIJA?
+            debugPrint("KRAUNA");
+            return Center(
+              child: CircularProgressIndicator(),
+            ); //CIA GAL DET SPLASH ANIMACIJA?
           }
           if (snapshot.hasData) {
+            debugPrint("DUOMENYS: ${snapshot.hasData}");
             return RootScreen();
           } else {
+            debugPrint("ATJUNGE");
             return LoginScreen();
           }
         },

@@ -58,8 +58,14 @@ class _AddConsumptionFrequencyScreenState
   }
 
   void _onEndDatePicked(DateTime? date) {
+    if (date == null) return;
     setState(() {
-      _endDate = date;
+      if (_endDate!.isBefore(_startDate!)) {
+        _endDate = _startDate;
+        //TODO snackbar pranesimas kad pabaigos data negali but anksciau uz pradzia
+      } else {
+        _endDate = date;
+      }
     });
   }
 
@@ -139,7 +145,7 @@ class _AddConsumptionFrequencyScreenState
                   isChecked: _hasEndDate,
                   onChanged: _onEndDateCheckboxChecked,
                 ),
-                if (_endDate != null)
+                if (_hasEndDate)
                   MedicationDatePickerWidget(
                     label: "Pabaigos data",
                     selectedDate: _endDate,
