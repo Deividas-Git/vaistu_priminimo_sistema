@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/checkbox_with_label_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/widgets/selection_tile_button_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/spinner_widget.dart';
@@ -15,8 +17,10 @@ class AddConsumptionFrequencyScreen extends StatefulWidget {
   const AddConsumptionFrequencyScreen({
     super.key,
     this.prefilledMedicationSchedule,
+    required this.onScheduleAdded,
   });
   final MedicationSchedule? prefilledMedicationSchedule;
+  final Function(MedicationSchedule) onScheduleAdded;
 
   @override
   State<AddConsumptionFrequencyScreen> createState() =>
@@ -38,18 +42,21 @@ class _AddConsumptionFrequencyScreenState
     "Kas šeštą dieną",
     "Kas savaitę",
   ];
+  final List<Weekday> _weekdays = Weekday.values.toList();
   DateTime? _startDate;
   DateTime? _endDate;
   MedicationFrequencyType? _medicationFrequencyType;
   int? _intervalDays;
-  List<Weekday>? _weekdays;
+  List<Weekday>? _selectedWeekdays;
   bool _hasEndDate = false;
 
   void _onStartDatePicked(DateTime? date) {
+    if (date == null) return;
     setState(() {
       _startDate = date;
       if (_hasEndDate && _startDate!.isAfter(_endDate!)) {
-        _endDate = _startDate?.add(Duration(days: 7));
+        _endDate =
+            _startDate; //nebent galima prideti papildomus pasirinkimus +7 days, +1 month
       }
       debugPrint(
         "PRADZIA: ${_startDate.toString()} PABAIGA: ${_endDate.toString()}",
@@ -58,9 +65,9 @@ class _AddConsumptionFrequencyScreenState
   }
 
   void _onEndDatePicked(DateTime? date) {
-    if (date == null) return;
+    if (date == null || _startDate == null) return;
     setState(() {
-      if (_endDate!.isBefore(_startDate!)) {
+      if (date.isBefore(_startDate!)) {
         _endDate = _startDate;
         //TODO snackbar pranesimas kad pabaigos data negali but anksciau uz pradzia
       } else {
@@ -73,7 +80,7 @@ class _AddConsumptionFrequencyScreenState
     if (isChecked == null) return;
     setState(() {
       _hasEndDate = !_hasEndDate;
-      _endDate = _hasEndDate ? _startDate?.add(Duration(days: 7)) : null;
+      _endDate = _hasEndDate ? _startDate : null;
     });
   }
 
@@ -82,6 +89,9 @@ class _AddConsumptionFrequencyScreenState
   ) {
     setState(() {
       _medicationFrequencyType = selectedMedicationType;
+      _medicationFrequencyType == MedicationFrequencyType.constantIntervals
+          ? _selectedWeekdays = [Weekday.monday]
+          : _intervalDays = null;
     });
   }
 
@@ -90,7 +100,18 @@ class _AddConsumptionFrequencyScreenState
     _intervalDays = selectedIntervalDays;
   }
 
-  void _onContinuePressed() {}
+  void _onWeekdayTileSelected(Weekday weekday) {
+    if (_selectedWeekdays == null) return;
+    setState(() {
+      !_selectedWeekdays!.contains(weekday)
+          ? _selectedWeekdays!.add(weekday)
+          : _selectedWeekdays!.remove(weekday);
+    });
+  }
+
+  void _onContinuePressed() {
+    //MedicationSchedule medicationSchedule = MedicationSchedule(startDate: _startDate!, medicationFrequencyType: medicationFrequencyType)
+  }
 
   @override
   void initState() {
@@ -102,9 +123,9 @@ class _AddConsumptionFrequencyScreenState
         widget.prefilledMedicationSchedule?.medicationFrequencyType ??
         MedicationFrequencyType.constantIntervals;
     _intervalDays = widget.prefilledMedicationSchedule?.intervalsDays;
-    _weekdays = widget
-        .prefilledMedicationSchedule
-        ?.weekdays; //cia tik read only, jei reiks editint - klonuok
+    _selectedWeekdays = widget.prefilledMedicationSchedule?.weekdays != null
+        ? List.from(widget.prefilledMedicationSchedule!.weekdays!)
+        : [Weekday.monday];
   }
 
   @override
@@ -131,6 +152,33 @@ class _AddConsumptionFrequencyScreenState
                     child: SpinnerWidget(
                       items: _intervalDaysLabels,
                       onSelectedItemChanged: _onConstantIntervalSelected,
+                    ),
+                  ),
+                if (_medicationFrequencyType ==
+                    MedicationFrequencyType.selectedDays)
+                  ThemedContainerWidget(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        _weekdays.length,
+                        (index) => Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 2,
+                            ),
+                            child: SelectionTileButtonWidget<Weekday>(
+                              isSelected: _selectedWeekdays!.contains(
+                                _weekdays[index],
+                              ),
+                              label: _weekdays[index].getLabel,
+                              value: _weekdays[index],
+                              onTap: () =>
+                                  _onWeekdayTileSelected(_weekdays[index]),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 Divider(thickness: 2),

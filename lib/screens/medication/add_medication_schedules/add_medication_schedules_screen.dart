@@ -5,7 +5,6 @@ import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_sched
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
-import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
 class AddMedicationSchedulesScreen extends StatefulWidget {
@@ -27,7 +26,10 @@ class _AddMedicationSchedulesScreenState
   void _onStartAddingSchedule() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddConsumptionFrequencyScreen()),
+      MaterialPageRoute(
+        builder: (context) =>
+            AddConsumptionFrequencyScreen(onScheduleAdded: _onScheduleAdded),
+      ),
     );
   }
 
