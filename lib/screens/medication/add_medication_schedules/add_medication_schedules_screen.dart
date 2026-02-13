@@ -27,8 +27,10 @@ class _AddMedicationSchedulesScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            AddConsumptionFrequencyScreen(onScheduleAdded: _onScheduleAdded),
+        builder: (context) => AddConsumptionFrequencyScreen(
+          medicationType: widget.prefilledMedication.medicationType!,
+          onScheduleAdded: _onScheduleAdded,
+        ),
       ),
     );
   }

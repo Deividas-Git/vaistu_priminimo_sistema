@@ -1,3 +1,4 @@
+import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 
@@ -7,6 +8,7 @@ class MedicationSchedule {
   final MedicationFrequencyType medicationFrequencyType;
   final int? intervalsDays;
   final List<Weekday>? weekdays;
+  final List<MedicationConsumptionTimeWithAmount>? consumptionTimesWithAmount;
 
   MedicationSchedule({
     required this.startDate,
@@ -14,5 +16,6 @@ class MedicationSchedule {
     required this.medicationFrequencyType,
     this.intervalsDays,
     this.weekdays,
+    this.consumptionTimesWithAmount,
   });
 }

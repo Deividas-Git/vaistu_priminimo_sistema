@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_times_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/checkbox_with_label_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
@@ -17,9 +18,11 @@ class AddConsumptionFrequencyScreen extends StatefulWidget {
   const AddConsumptionFrequencyScreen({
     super.key,
     this.prefilledMedicationSchedule,
+    required this.medicationType,
     required this.onScheduleAdded,
   });
   final MedicationSchedule? prefilledMedicationSchedule;
+  final MedicationType medicationType;
   final Function(MedicationSchedule) onScheduleAdded;
 
   @override
@@ -110,7 +113,25 @@ class _AddConsumptionFrequencyScreenState
   }
 
   void _onContinuePressed() {
-    //MedicationSchedule medicationSchedule = MedicationSchedule(startDate: _startDate!, medicationFrequencyType: medicationFrequencyType)
+    //TODO patikrinti ar jei pasirinktomis dienomis daznumas kad ar parinkta bent viena diena
+
+    MedicationSchedule medicationSchedule = MedicationSchedule(
+      startDate: _startDate!,
+      endDate: _endDate,
+      medicationFrequencyType: _medicationFrequencyType!,
+      intervalsDays: _intervalDays,
+      weekdays: _selectedWeekdays,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddConsumptionTimesWithAmount(
+          medicationType: widget.medicationType,
+          prefilledMedicationSchedule: medicationSchedule,
+        ),
+      ),
+    );
   }
 
   @override

@@ -28,7 +28,7 @@ enum MedicationType {
       case MedicationType.pills:
         return "Tablečių skaičius: ";
       case MedicationType.capsules:
-        return "Tablečių skaičius: ";
+        return "Kapsulių skaičius: ";
       case MedicationType.drops:
         return "Lašų skaičius: ";
       case MedicationType.spray:

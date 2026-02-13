@@ -7,7 +7,7 @@ class ContinueButton extends StatelessWidget {
     required this.onContinuePressed,
   });
   final String label;
-  final VoidCallback onContinuePressed;
+  final VoidCallback? onContinuePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,9 @@ class ContinueButton extends StatelessWidget {
         width: 250,
         child: FloatingActionButton(
           onPressed: onContinuePressed,
-          backgroundColor: ColorScheme.of(context).primary,
+          backgroundColor: onContinuePressed == null
+              ? const Color.fromARGB(194, 158, 158, 158)
+              : ColorScheme.of(context).primary,
           child: Text(
             label,
             style: TextStyle(fontSize: 20, color: Colors.white),

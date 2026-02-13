@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class SpinnerWidget extends StatefulWidget {
   const SpinnerWidget({
     super.key,
+    this.initialIndex,
     required this.items,
     required this.onSelectedItemChanged,
   });
+  final int? initialIndex;
   final List<String> items;
   final Function(int) onSelectedItemChanged;
 
@@ -14,29 +16,53 @@ class SpinnerWidget extends StatefulWidget {
 }
 
 class _SpinnerWidgetState extends State<SpinnerWidget> {
-  int _selectedIndex = 0;
+  late FixedExtentScrollController _spinnerController;
+  late int _selectedIndex;
 
   void _onItemSelected(int index) {
-    widget.onSelectedItemChanged(index);
+    final normalizedIndex = index % widget.items.length;
+
+    widget.onSelectedItemChanged(normalizedIndex);
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = normalizedIndex;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final itemCount = widget.items.length;
+    final cycleStart = 10000 - (10000 % itemCount);
+
+    _selectedIndex = widget.initialIndex ?? 0;
+    _spinnerController = FixedExtentScrollController(
+      initialItem: cycleStart + _selectedIndex,
+    );
+  }
+
+  @override
+  void dispose() {
+    _spinnerController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListWheelScrollView.useDelegate(
+      controller: _spinnerController,
       onSelectedItemChanged: _onItemSelected,
       perspective: 0.0035,
       itemExtent: 40,
       diameterRatio: 1.5,
       physics: const FixedExtentScrollPhysics(parent: ClampingScrollPhysics()),
       childDelegate: ListWheelChildBuilderDelegate(
-        childCount: widget.items.length,
         builder: (context, index) {
+          final int normalizedIndex = index % widget.items.length;
+
           return _SpinnerTileWidget(
-            text: widget.items[index],
-            isSelected: index == _selectedIndex,
+            text: widget.items[normalizedIndex],
+            isSelected: normalizedIndex == _selectedIndex,
           );
         },
       ),
