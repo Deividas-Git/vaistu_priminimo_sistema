@@ -21,9 +21,9 @@ class AddMedicationSchedulesScreen extends StatefulWidget {
 
 class _AddMedicationSchedulesScreenState
     extends State<AddMedicationSchedulesScreen> {
-  final List<MedicationSchedule> _medicationSchedules = [];
+  late List<MedicationSchedule> _medicationSchedules;
 
-  void _onStartAddingSchedule() {
+  void _onAddEditSchedule() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,6 +50,12 @@ class _AddMedicationSchedulesScreenState
   }
 
   @override
+  void initState() {
+    super.initState();
+    _medicationSchedules = widget.prefilledMedication.medicationSchedules ?? [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AddMedicationAppBar(title: "Vartojimo tvarkaraščiai"),
@@ -65,7 +71,7 @@ class _AddMedicationSchedulesScreenState
                   ),
                   AddInformationWidget(
                     label: "Pridėti tvarkaraštį",
-                    onStartAddingInfo: _onStartAddingSchedule,
+                    onStartAddingInfo: _onAddEditSchedule,
                   ),
                 ],
               ),

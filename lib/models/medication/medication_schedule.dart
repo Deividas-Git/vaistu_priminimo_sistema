@@ -9,6 +9,7 @@ class MedicationSchedule {
   final int? intervalsDays;
   final List<Weekday>? weekdays;
   final List<MedicationConsumptionTimeWithAmount>? consumptionTimesWithAmount;
+  final String? name;
 
   MedicationSchedule({
     required this.startDate,
@@ -17,5 +18,28 @@ class MedicationSchedule {
     this.intervalsDays,
     this.weekdays,
     this.consumptionTimesWithAmount,
+    required this.name,
   });
+
+  MedicationSchedule copyWith({
+    DateTime? startDate,
+    DateTime? endDate,
+    MedicationFrequencyType? medicationFrequencyType,
+    int? intervalsDays,
+    List<Weekday>? weekdays,
+    List<MedicationConsumptionTimeWithAmount>? consumptionTimesWithAmount,
+    String? name,
+  }) {
+    return MedicationSchedule(
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      medicationFrequencyType:
+          medicationFrequencyType ?? this.medicationFrequencyType,
+      intervalsDays: intervalsDays ?? this.intervalsDays,
+      weekdays: weekdays ?? this.weekdays,
+      consumptionTimesWithAmount:
+          consumptionTimesWithAmount ?? this.consumptionTimesWithAmount,
+      name: name ?? this.name,
+    );
+  }
 }

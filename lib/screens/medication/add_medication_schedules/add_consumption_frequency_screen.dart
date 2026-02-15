@@ -36,6 +36,7 @@ class _AddConsumptionFrequencyScreenState
   _medicationFrequencyTypes = MedicationFrequencyType.values
       .map((type) => DropdownMenuEntry(value: type, label: type.getLabel))
       .toList();
+  final TextEditingController _scheduleNameController = TextEditingController();
   final List<String> _intervalDaysLabels = [
     "Kiekvieną dieną",
     "Kas antrą dieną",
@@ -121,6 +122,9 @@ class _AddConsumptionFrequencyScreenState
       medicationFrequencyType: _medicationFrequencyType!,
       intervalsDays: _intervalDays,
       weekdays: _selectedWeekdays,
+      name: _scheduleNameController.text.isEmpty
+          ? "Tvarkarašis 1"
+          : _scheduleNameController.text,
     );
 
     Navigator.push(
@@ -129,6 +133,7 @@ class _AddConsumptionFrequencyScreenState
         builder: (context) => AddConsumptionTimesWithAmount(
           medicationType: widget.medicationType,
           prefilledMedicationSchedule: medicationSchedule,
+          onScheduleAdded: widget.onScheduleAdded,
         ),
       ),
     );
@@ -159,6 +164,17 @@ class _AddConsumptionFrequencyScreenState
           child: SingleChildScrollView(
             child: Column(
               children: [
+                TextField(
+                  controller: _scheduleNameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    labelText: "Tvarkaraščio pavadinimas",
+                    hintText: "Įveskite tvarkaraščio pavadinimą",
+                  ),
+                ),
+                const SizedBox(height: 10),
                 SectionTextWidget(label: "Pasirinkite vartojimo dažnumą"),
                 DropdownMenuWidget<MedicationFrequencyType>(
                   initialSelection: _medicationFrequencyType,
