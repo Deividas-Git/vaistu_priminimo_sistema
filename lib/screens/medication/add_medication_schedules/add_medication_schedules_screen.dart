@@ -6,6 +6,7 @@ import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_informat
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
+import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class AddMedicationSchedulesScreen extends StatefulWidget {
   const AddMedicationSchedulesScreen({
@@ -22,12 +23,20 @@ class AddMedicationSchedulesScreen extends StatefulWidget {
 class _AddMedicationSchedulesScreenState
     extends State<AddMedicationSchedulesScreen> {
   late List<MedicationSchedule> _medicationSchedules;
+  int? indexOfEditedSchedule;
 
-  void _onAddEditSchedule() {
+  void _onAddEditSchedule([MedicationSchedule? scheduleToEdit]) {
+    if (scheduleToEdit != null) {
+      indexOfEditedSchedule = _medicationSchedules.indexOf(scheduleToEdit);
+    } else {
+      indexOfEditedSchedule = null;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddConsumptionFrequencyScreen(
+          prefilledMedicationSchedule: scheduleToEdit,
           medicationType: widget.prefilledMedication.medicationType!,
           onScheduleAdded: _onScheduleAdded,
         ),
@@ -35,9 +44,27 @@ class _AddMedicationSchedulesScreenState
     );
   }
 
+  void _onDeleteSchedule(MedicationSchedule medicationSchedule) {
+    setState(() {
+      _medicationSchedules.remove(medicationSchedule);
+    });
+  }
+
   void _onScheduleAdded(MedicationSchedule medicationSchedule) {
     setState(() {
-      _medicationSchedules.add(medicationSchedule);
+      //TODO SU TUO PACIU PAVADINIMU TRINAM, pirma alert dialogas
+
+      // for (final MedicationSchedule schedule in _medicationSchedules) {
+      //   if(schedule.name == medicationSchedule.name){
+      //   }
+      // }
+
+      if (indexOfEditedSchedule == null) {
+        _medicationSchedules.add(medicationSchedule);
+      } else {
+        _medicationSchedules[indexOfEditedSchedule!] = medicationSchedule;
+        indexOfEditedSchedule = null;
+      }
     });
   }
 
@@ -69,6 +96,13 @@ class _AddMedicationSchedulesScreenState
                   SectionTextWidget(
                     label: "Sukurkite vaistų vartojimo tvarkaraščius",
                   ),
+                  ..._medicationSchedules.map(
+                    (schedule) => _ScheduleTileWidget(
+                      schedule: schedule,
+                      onEditPressed: _onAddEditSchedule,
+                      onDeletePressed: _onDeleteSchedule,
+                    ),
+                  ),
                   AddInformationWidget(
                     label: "Pridėti tvarkaraštį",
                     onStartAddingInfo: _onAddEditSchedule,
@@ -84,6 +118,60 @@ class _AddMedicationSchedulesScreenState
         onContinuePressed: _onContinuePressed,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+class _ScheduleTileWidget extends StatelessWidget {
+  const _ScheduleTileWidget({
+    required this.schedule,
+    required this.onEditPressed,
+    required this.onDeletePressed,
+  });
+
+  final MedicationSchedule schedule;
+  final Function(MedicationSchedule) onEditPressed;
+  final Function(MedicationSchedule) onDeletePressed;
+
+  void _onEditSchedule() {
+    onEditPressed(schedule);
+  }
+
+  void _onDeleteSchedule() {
+    onDeletePressed(schedule);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ThemedContainerWidget(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              IconButton(onPressed: _onEditSchedule, icon: Icon(Icons.edit)),
+
+              Text(
+                schedule.name!,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorScheme.of(context).secondary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                onPressed: _onDeleteSchedule,
+                icon: Icon(
+                  Icons.delete,
+                  color: const Color.fromARGB(255, 196, 49, 38),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Divider(thickness: 2),
+      ],
     );
   }
 }

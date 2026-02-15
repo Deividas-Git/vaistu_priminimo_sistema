@@ -12,9 +12,9 @@ enum SelectedOptionToAddMedication {
   String get getLabel {
     switch (this) {
       case manual:
-        return "Įvesti pačiam";
+        return "Pridėti pačiam";
       case scan:
-        return "Skenuoti vaistą";
+        return "Skenuoti vaisto kodą";
       case import:
         return "Įtraukti iš e. sveikatos";
     }

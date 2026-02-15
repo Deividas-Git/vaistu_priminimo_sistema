@@ -134,6 +134,7 @@ class _ConsumptionTimeWithAmountDialogState
           onPressed: _onDialogCanceled,
           child: const Text("Atšaukti"),
         ),
+        SizedBox(width: 10),
         ElevatedButton(
           onPressed: _onDialogConfirmed,
           style: ElevatedButton.styleFrom(

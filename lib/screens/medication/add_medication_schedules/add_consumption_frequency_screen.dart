@@ -3,7 +3,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
-import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_times_with_amount.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_times_with_amount_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/checkbox_with_label_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
@@ -116,21 +116,25 @@ class _AddConsumptionFrequencyScreenState
   void _onContinuePressed() {
     //TODO patikrinti ar jei pasirinktomis dienomis daznumas kad ar parinkta bent viena diena
 
-    MedicationSchedule medicationSchedule = MedicationSchedule(
-      startDate: _startDate!,
-      endDate: _endDate,
-      medicationFrequencyType: _medicationFrequencyType!,
-      intervalsDays: _intervalDays,
-      weekdays: _selectedWeekdays,
-      name: _scheduleNameController.text.isEmpty
-          ? "Tvarkarašis 1"
-          : _scheduleNameController.text,
-    );
+    MedicationSchedule medicationSchedule =
+        MedicationSchedule(
+          startDate: _startDate!,
+          endDate: _endDate,
+          medicationFrequencyType: _medicationFrequencyType!,
+          intervalsDays: _intervalDays,
+          weekdays: _selectedWeekdays,
+          name: _scheduleNameController.text.isEmpty
+              ? "Tvarkarašis 1"
+              : _scheduleNameController.text,
+        ).copyWith(
+          consumptionTimesWithAmount:
+              widget.prefilledMedicationSchedule?.consumptionTimesWithAmount,
+        );
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddConsumptionTimesWithAmount(
+        builder: (context) => AddConsumptionTimesWithAmountScreen(
           medicationType: widget.medicationType,
           prefilledMedicationSchedule: medicationSchedule,
           onScheduleAdded: widget.onScheduleAdded,
@@ -152,6 +156,18 @@ class _AddConsumptionFrequencyScreenState
     _selectedWeekdays = widget.prefilledMedicationSchedule?.weekdays != null
         ? List.from(widget.prefilledMedicationSchedule!.weekdays!)
         : [Weekday.monday];
+    _scheduleNameController.text =
+        widget.prefilledMedicationSchedule?.name?.trim() ?? "";
+    // debugPrint(
+    //   "TVARKARASTIS: ${widget.prefilledMedicationSchedule.toString()}",
+    // );
+    _hasEndDate = _endDate == null ? false : true;
+  }
+
+  @override
+  void dispose() {
+    _scheduleNameController.dispose();
+    super.dispose();
   }
 
   @override

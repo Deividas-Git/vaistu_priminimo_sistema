@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
-import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/consumption_time_with_amount_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/consumption_time_with_amount_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
-class AddConsumptionTimesWithAmount extends StatefulWidget {
-  const AddConsumptionTimesWithAmount({
+class AddConsumptionTimesWithAmountScreen extends StatefulWidget {
+  const AddConsumptionTimesWithAmountScreen({
     super.key,
     required this.medicationType,
     required this.prefilledMedicationSchedule,
@@ -21,20 +21,19 @@ class AddConsumptionTimesWithAmount extends StatefulWidget {
   final Function(MedicationSchedule) onScheduleAdded;
 
   @override
-  State<AddConsumptionTimesWithAmount> createState() =>
+  State<AddConsumptionTimesWithAmountScreen> createState() =>
       _AddConsumptionTimesWithAmountState();
 }
 
 class _AddConsumptionTimesWithAmountState
-    extends State<AddConsumptionTimesWithAmount> {
-  final List<MedicationConsumptionTimeWithAmount> _consumptionTimesWithAmount =
-      [];
+    extends State<AddConsumptionTimesWithAmountScreen> {
+  late List<MedicationConsumptionTimeWithAmount> _consumptionTimesWithAmount;
 
   void _onDialogConfirmed(
     MedicationConsumptionTimeWithAmount newConsumptionTimeWithAmount,
     MedicationConsumptionTimeWithAmount? oldConsumptionTimeWithAmount,
   ) {
-    //TODO tikrinti ar nera jau sukurta tam paciam laikui
+    //TODO tikrinti ar nera jau sukurta tam paciam laikui, jei yra iskviesti dialogo langa paklausti ar pakeisti ir istrinti sena
     setState(() {
       if (oldConsumptionTimeWithAmount == null) {
         _consumptionTimesWithAmount.add(newConsumptionTimeWithAmount);
@@ -72,12 +71,27 @@ class _AddConsumptionTimesWithAmountState
   }
 
   void _onCompletePressed() {
+    //debugPrint("LAIKAI ${_consumptionTimesWithAmount.length}");
     final MedicationSchedule medicationSchedule = widget
         .prefilledMedicationSchedule
         .copyWith(consumptionTimesWithAmount: _consumptionTimesWithAmount);
     widget.onScheduleAdded(medicationSchedule);
+    //debugPrint("TVARKARASTIS ${medicationSchedule.toString()}");
     Navigator.pop(context);
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _consumptionTimesWithAmount =
+        widget.prefilledMedicationSchedule.consumptionTimesWithAmount == null
+        ? []
+        : List.from(
+            widget.prefilledMedicationSchedule.consumptionTimesWithAmount!,
+          );
+    //debugPrint("LAIKAI IR KIEKIA: ${_consumptionTimesWithAmount.toString()}");
   }
 
   @override
@@ -109,7 +123,7 @@ class _AddConsumptionTimesWithAmountState
         ),
       ),
       floatingActionButton: ContinueButton(
-        label: "Pridėti",
+        label: "Patvirtinti",
         onContinuePressed: _consumptionTimesWithAmount.isNotEmpty
             ? _onCompletePressed
             : null,
