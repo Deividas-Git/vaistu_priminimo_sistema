@@ -181,6 +181,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                   entries: _medicationMealtTimings,
                   onEntrySelected: _onMedicationMealTimingSelected,
                 ),
+                SizedBox(height: 100),
               ],
             ),
           ),

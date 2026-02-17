@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
 class ThemedContainerWidget extends StatelessWidget {
-  const ThemedContainerWidget({super.key, this.height, required this.child});
+  const ThemedContainerWidget({
+    super.key,
+    this.height,
+    this.doesHeightExpand,
+    required this.child,
+  });
   final double? height;
   final Widget child;
+  final bool? doesHeightExpand;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: height ?? 55, //55 default dydis atitinkantis textField
+      height: doesHeightExpand == true
+          ? null
+          : height ?? 55, //55 default dydis atitinkantis textField
       child: Container(
         decoration: BoxDecoration(
           color: ColorScheme.of(context).inversePrimary.withValues(alpha: 0.8),

@@ -15,12 +15,18 @@ class MainApp extends StatelessWidget {
   MainApp({super.key});
 
   final AuthService _authService = AuthService();
+  final Color themeColor = Colors.indigo;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: Colors.transparent,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: themeColor,
+          //surface: ColorScheme.fromSeed(seedColor: themeColor).surfaceContainer,
+          //brightness: Brightness.dark,
+        ),
         splashColor: ColorScheme.of(context).surface.withValues(alpha: 0.25),
         highlightColor: ColorScheme.of(
           context,

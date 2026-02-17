@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/consumption_time_with_amount_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_frequency_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
@@ -98,6 +103,8 @@ class _AddMedicationSchedulesScreenState
                   ),
                   ..._medicationSchedules.map(
                     (schedule) => _ScheduleTileWidget(
+                      medicationType:
+                          widget.prefilledMedication.medicationType!,
                       schedule: schedule,
                       onEditPressed: _onAddEditSchedule,
                       onDeletePressed: _onDeleteSchedule,
@@ -107,6 +114,7 @@ class _AddMedicationSchedulesScreenState
                     label: "Pridėti tvarkaraštį",
                     onStartAddingInfo: _onAddEditSchedule,
                   ),
+                  SizedBox(height: 100),
                 ],
               ),
             ),
@@ -124,11 +132,13 @@ class _AddMedicationSchedulesScreenState
 
 class _ScheduleTileWidget extends StatelessWidget {
   const _ScheduleTileWidget({
+    required this.medicationType,
     required this.schedule,
     required this.onEditPressed,
     required this.onDeletePressed,
   });
 
+  final MedicationType medicationType;
   final MedicationSchedule schedule;
   final Function(MedicationSchedule) onEditPressed;
   final Function(MedicationSchedule) onDeletePressed;
@@ -141,31 +151,132 @@ class _ScheduleTileWidget extends StatelessWidget {
     onDeletePressed(schedule);
   }
 
+  String _durationText() {
+    String text;
+    final String startDate =
+        "${schedule.startDate.year}-${schedule.startDate.month.toString().padLeft(2, '0')}-${schedule.startDate.day.toString().padLeft(2, '0')}";
+    text = "Vartojama nuo $startDate iki";
+    if (schedule.endDate == null) {
+      text = "$text neribotai";
+    } else {
+      final String endDate =
+          "${schedule.endDate!.year}-${schedule.endDate!.month.toString().padLeft(2, '0')}-${schedule.endDate!.day.toString().padLeft(2, '0')}";
+      text = "$text $endDate";
+    }
+
+    return text;
+  }
+
+  String _consumptionFrequencyText() {
+    String text =
+        "Dažnumas - ${schedule.medicationFrequencyType.getLabel.toLowerCase()}:";
+    if (schedule.medicationFrequencyType ==
+        MedicationFrequencyType.constantIntervals) {
+      debugPrint("INTERVALAI: ${schedule.intervalsDays}");
+      text =
+          "$text ${MedicationFrequencyType.intervalDaysLabels[schedule.intervalsDays! - 1].toLowerCase()}";
+    } else {
+      for (Weekday day in schedule.weekdays!) {
+        text = "$text ${day.getLabel.toLowerCase()},";
+      }
+      text = text.substring(0, text.length - 1);
+    }
+    return text;
+  }
+
+  String _consumptionTimeAndAmountText(MedicationConsumptionTimeWithAmount e) {
+    final String hour = e.time.hour.toString().padLeft(2, "0");
+    final String min = e.time.minute.toString().padLeft(2, "0");
+    final String text =
+        "Laikas: $hour:$min, ${medicationType.getDoseLabel.toLowerCase()} ${e.consumptionAmount}";
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ThemedContainerWidget(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          //height: 150,
+          doesHeightExpand: true,
+          child: Column(
             children: [
-              IconButton(onPressed: _onEditSchedule, icon: Icon(Icons.edit)),
-
-              Text(
-                schedule.name!,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorScheme.of(context).secondary,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: _onEditSchedule,
+                    icon: Icon(Icons.edit),
+                  ),
+                  Text(
+                    schedule.name!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: ColorScheme.of(context).secondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onDeleteSchedule,
+                    icon: Icon(
+                      Icons.delete,
+                      color: const Color.fromARGB(255, 196, 49, 38),
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: _onDeleteSchedule,
-                icon: Icon(
-                  Icons.delete,
-                  color: const Color.fromARGB(255, 196, 49, 38),
-                ),
+              Divider(thickness: 1, color: ColorScheme.of(context).secondary),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      _durationText(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      _consumptionFrequencyText(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Divider(thickness: 1, color: ColorScheme.of(context).secondary),
+              Column(
+                children: [
+                  Text(
+                    "Vartojimo laikai ir kiekiai",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: ColorScheme.of(context).secondary,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  ...schedule.consumptionTimesWithAmount!.map(
+                    (e) => SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        _consumptionTimeAndAmountText(e),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: ColorScheme.of(context).secondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

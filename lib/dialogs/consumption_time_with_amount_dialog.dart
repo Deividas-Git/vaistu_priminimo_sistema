@@ -97,9 +97,14 @@ class _ConsumptionTimeWithAmountDialogState
             ThemedContainerWidget(
               child: Row(
                 children: [
-                  Text(
-                    "${widget.medicationType.getDoseLabel} $_amount",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  Expanded(
+                    child: Text(
+                      "${widget.medicationType.getDoseLabel} $_amount",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                   SizedBox(width: 10),
                   _AmountButtonWidget(
@@ -134,7 +139,7 @@ class _ConsumptionTimeWithAmountDialogState
           onPressed: _onDialogCanceled,
           child: const Text("Atšaukti"),
         ),
-        SizedBox(width: 10),
+        //SizedBox(width: 10),
         ElevatedButton(
           onPressed: _onDialogConfirmed,
           style: ElevatedButton.styleFrom(
@@ -173,7 +178,7 @@ class _AmountButtonWidget extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: ColorScheme.of(context).primary.withValues(alpha: 0.55),
+            color: ColorScheme.of(context).primary.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(5.0),
           ),
           child: icon,

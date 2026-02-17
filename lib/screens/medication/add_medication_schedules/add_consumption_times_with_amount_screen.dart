@@ -159,14 +159,15 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
     return Column(
       children: [
         ThemedContainerWidget(
+          doesHeightExpand: true,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(onPressed: _onEditPressed, icon: Icon(Icons.edit)),
               SizedBox(
                 height: 50,
-                width: 70,
+                width: 60,
                 child: Container(
                   decoration: BoxDecoration(
                     color: ColorScheme.of(
@@ -186,12 +187,15 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                "${medicationType.getDoseLabel} ${medicationConsumptionTimeWithAmount.consumptionAmount}",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorScheme.of(context).secondary,
-                  fontWeight: FontWeight.bold,
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "${medicationType.getDoseLabel} ${medicationConsumptionTimeWithAmount.consumptionAmount}",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorScheme.of(context).secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               IconButton(

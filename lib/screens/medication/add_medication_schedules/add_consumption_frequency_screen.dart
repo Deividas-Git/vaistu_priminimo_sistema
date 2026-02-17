@@ -37,16 +37,7 @@ class _AddConsumptionFrequencyScreenState
       .map((type) => DropdownMenuEntry(value: type, label: type.getLabel))
       .toList();
   final TextEditingController _scheduleNameController = TextEditingController();
-  final List<String> _intervalDaysLabels = [
-    "Kiekvieną dieną",
-    "Kas antrą dieną",
-    "Kas trečią dieną",
-    "Kas ketvirtą dieną",
-    "Kas penktą dieną",
-    "Kas šeštą dieną",
-    "Kas savaitę",
-  ];
-  final List<Weekday> _weekdays = Weekday.values.toList();
+
   DateTime? _startDate;
   DateTime? _endDate;
   MedicationFrequencyType? _medicationFrequencyType;
@@ -93,9 +84,14 @@ class _AddConsumptionFrequencyScreenState
   ) {
     setState(() {
       _medicationFrequencyType = selectedMedicationType;
-      _medicationFrequencyType == MedicationFrequencyType.constantIntervals
-          ? _selectedWeekdays = [Weekday.monday]
-          : _intervalDays = null;
+      if (_medicationFrequencyType ==
+          MedicationFrequencyType.constantIntervals) {
+        _intervalDays = 1;
+        _selectedWeekdays = null;
+      } else {
+        _selectedWeekdays = [Weekday.monday];
+        _intervalDays = null;
+      }
     });
   }
 
@@ -124,13 +120,13 @@ class _AddConsumptionFrequencyScreenState
           intervalsDays: _intervalDays,
           weekdays: _selectedWeekdays,
           name: _scheduleNameController.text.isEmpty
-              ? "Tvarkarašis 1"
+              ? "Naujas tvarkarašis"
               : _scheduleNameController.text,
         ).copyWith(
           consumptionTimesWithAmount:
               widget.prefilledMedicationSchedule?.consumptionTimesWithAmount,
         );
-
+    debugPrint("TVARKARASTIS: ${medicationSchedule.toString()}");
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -152,10 +148,10 @@ class _AddConsumptionFrequencyScreenState
     _medicationFrequencyType =
         widget.prefilledMedicationSchedule?.medicationFrequencyType ??
         MedicationFrequencyType.constantIntervals;
-    _intervalDays = widget.prefilledMedicationSchedule?.intervalsDays;
+    _intervalDays = widget.prefilledMedicationSchedule?.intervalsDays ?? 1;
     _selectedWeekdays = widget.prefilledMedicationSchedule?.weekdays != null
         ? List.from(widget.prefilledMedicationSchedule!.weekdays!)
-        : [Weekday.monday];
+        : null;
     _scheduleNameController.text =
         widget.prefilledMedicationSchedule?.name?.trim() ?? "";
     // debugPrint(
@@ -203,7 +199,7 @@ class _AddConsumptionFrequencyScreenState
                   ThemedContainerWidget(
                     height: 120,
                     child: SpinnerWidget(
-                      items: _intervalDaysLabels,
+                      items: MedicationFrequencyType.intervalDaysLabels,
                       onSelectedItemChanged: _onConstantIntervalSelected,
                     ),
                   ),
@@ -213,7 +209,7 @@ class _AddConsumptionFrequencyScreenState
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
-                        _weekdays.length,
+                        MedicationFrequencyType.weekdays.length,
                         (index) => Expanded(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -222,12 +218,15 @@ class _AddConsumptionFrequencyScreenState
                             ),
                             child: SelectionTileButtonWidget<Weekday>(
                               isSelected: _selectedWeekdays!.contains(
-                                _weekdays[index],
+                                MedicationFrequencyType.weekdays[index],
                               ),
-                              label: _weekdays[index].getLabel,
-                              value: _weekdays[index],
-                              onTap: () =>
-                                  _onWeekdayTileSelected(_weekdays[index]),
+                              label: MedicationFrequencyType
+                                  .weekdays[index]
+                                  .getLabel,
+                              value: MedicationFrequencyType.weekdays[index],
+                              onTap: () => _onWeekdayTileSelected(
+                                MedicationFrequencyType.weekdays[index],
+                              ),
                             ),
                           ),
                         ),
