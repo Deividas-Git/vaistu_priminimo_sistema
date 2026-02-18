@@ -166,7 +166,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
             children: [
               IconButton(onPressed: _onEditPressed, icon: Icon(Icons.edit)),
               SizedBox(
-                height: 50,
+                height: 45,
                 width: 60,
                 child: Container(
                   decoration: BoxDecoration(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/models/app_user.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
@@ -8,7 +11,9 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MainApp());
+  runApp(
+    ChangeNotifierProvider(create: (_) => UserProvider(), child: MainApp()),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -44,6 +49,16 @@ class MainApp extends StatelessWidget {
           }
           if (snapshot.hasData) {
             debugPrint("DUOMENYS: ${snapshot.hasData}");
+
+            //laikinas, tures but is db istraukiama, jei nera irasyti nauja
+            final AppUser user = AppUser(
+              userCredentials: snapshot.data,
+              hasLoadedFirstTimeData: false,
+              allowsReminders: false,
+              userMedications: [],
+            );
+            context.read<UserProvider>().setUser(user);
+
             return RootScreen();
           } else {
             debugPrint("ATJUNGE");

@@ -3,6 +3,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.d
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 
 class UserMedication {
+  final String? id;
   final String? name;
   final double? currentQuantity;
   final MedicationType? medicationType; // = MedicationType.other;
@@ -13,6 +14,7 @@ class UserMedication {
   final List<MedicationSchedule>? medicationSchedules;
 
   UserMedication({
+    this.id,
     this.name,
     this.currentQuantity,
     this.medicationType,
@@ -27,6 +29,7 @@ class UserMedication {
   }
 
   UserMedication copyWith({
+    String? id,
     String? name,
     double? currentQuantity,
     MedicationType? medicationType,
@@ -36,6 +39,7 @@ class UserMedication {
     List<MedicationSchedule>? medicationSchedules,
   }) {
     return UserMedication(
+      id: id ?? this.id,
       name: name ?? this.name,
       currentQuantity: currentQuantity ?? this.currentQuantity,
       medicationType: medicationType ?? this.medicationType,
@@ -52,6 +56,7 @@ class UserMedication {
     }
 
     return copyWith(
+      id: medicationFromWhichUpdating.id,
       name: medicationFromWhichUpdating.name,
       currentQuantity: medicationFromWhichUpdating.currentQuantity,
       medicationType: medicationFromWhichUpdating.medicationType,

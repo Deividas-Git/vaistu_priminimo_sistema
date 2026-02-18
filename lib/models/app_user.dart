@@ -3,7 +3,14 @@ import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart'
 
 class AppUser {
   User? userCredentials;
-  bool hasLoadedFirstTimeData = false;
-  bool allowsReminders = false;
-  List<UserMedication> userMedications = [];
+  bool hasLoadedFirstTimeData; //false
+  bool allowsReminders; //false
+  List<UserMedication> userMedications;
+
+  AppUser({
+    required this.userCredentials,
+    required this.hasLoadedFirstTimeData,
+    required this.allowsReminders,
+    required this.userMedications,
+  });
 }

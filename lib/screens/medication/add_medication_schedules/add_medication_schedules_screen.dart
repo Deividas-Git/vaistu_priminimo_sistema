@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/consumption_time_with_amount_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_frequency_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
@@ -74,10 +76,13 @@ class _AddMedicationSchedulesScreenState
   }
 
   void _onContinuePressed() {
+    final medId = Uuid().v4();
     final UserMedication medication = widget.prefilledMedication.copyWith(
+      id: medId,
       medicationSchedules: _medicationSchedules,
     );
-    //TODO medication service ir irasom duomenis i db
+    context.read<UserProvider>().addMedication(medication);
+    //TODO medication service ir irasom duomenis i db, tikrinti cia ar editinamas ar naujas
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
@@ -172,7 +177,6 @@ class _ScheduleTileWidget extends StatelessWidget {
         "Dažnumas - ${schedule.medicationFrequencyType.getLabel.toLowerCase()}:";
     if (schedule.medicationFrequencyType ==
         MedicationFrequencyType.constantIntervals) {
-      debugPrint("INTERVALAI: ${schedule.intervalsDays}");
       text =
           "$text ${MedicationFrequencyType.intervalDaysLabels[schedule.intervalsDays! - 1].toLowerCase()}";
     } else {
@@ -197,7 +201,6 @@ class _ScheduleTileWidget extends StatelessWidget {
     return Column(
       children: [
         ThemedContainerWidget(
-          //height: 150,
           doesHeightExpand: true,
           child: Column(
             children: [
