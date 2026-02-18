@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_medication_schedules_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/widgets/checkbox_with_label_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_quantity_widget.dart';
@@ -22,6 +23,8 @@ class AddMedicationInfoScreen extends StatefulWidget {
 class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   final TextEditingController _medicationNameController =
       TextEditingController();
+  final TextEditingController _medicationQuantityInputController =
+      TextEditingController();
   final List<DropdownMenuEntry<MedicationType>> _medicationTypes =
       MedicationType.values
           .map((type) => DropdownMenuEntry(value: type, label: type.getLabel))
@@ -38,16 +41,26 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   DateTime? _expirationDate;
   MedicationType? _medicationType;
   MedicationMealTiming? _medicationMealTiming;
-  double? _currentQuantity;
+  String? _medicationNameError;
+  bool isQuantityAdded = false;
 
   void _onExpirationDatePicked(DateTime? date) {
-    _expirationDate = date;
+    setState(() {
+      _expirationDate = date;
+    });
   }
 
   void _onMedicationTypeSelected(MedicationType? medicationType) {
     setState(() {
       _medicationType = medicationType;
-      if (_currentQuantity != null) _currentQuantity = 0;
+      final String temp = _medicationQuantityInputController.text.replaceAll(
+        ",",
+        ".",
+      );
+      List<String> quantity = temp.split(".");
+      if (_medicationType!.consumedAmoutIsInteger && quantity.length == 2) {
+        _medicationQuantityInputController.text = quantity[0];
+      }
     });
   }
 
@@ -58,29 +71,41 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   void _onQuantityCheckboxChecked(bool? isChecked) {
     if (isChecked == null) return;
     setState(() {
-      _currentQuantity = isChecked ? _currentQuantity = 0 : null;
+      isQuantityAdded = !isQuantityAdded;
+      _medicationQuantityInputController.text = "0";
     });
   }
 
-  void _onCurrentQuantityChanged(double? quantity) {
-    _currentQuantity = quantity;
-  }
-
   void _onContinuePressed() {
+    if (_medicationNameController.text.trim().isEmpty) {
+      setState(() {
+        _medicationNameError = "Privalomas laukas";
+      });
+      return;
+    }
+    // setState(() { //nuemiau nes atrodo kad palagina atnaujinimas pries perjungima
+    //   _medicationNameError = null;
+    // });
+
     final UserMedication medication =
         (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
           name: _medicationNameController.text.trim(),
           expirationDate: _expirationDate,
           medicationMealTiming: _medicationMealTiming,
           medicationType: _medicationType,
-          currentQuantity: _currentQuantity,
+          currentQuantity: double.tryParse(
+            _medicationQuantityInputController.text.replaceAll(",", "."),
+          ),
         );
 
     debugPrint("APIE VAISTA: ${medication.toString()}");
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (contex) => AddTypeSelectionScreen()),
+      MaterialPageRoute(
+        builder: (contex) =>
+            AddMedicationSchedulesScreen(prefilledMedication: medication),
+      ),
     );
   }
 
@@ -98,6 +123,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   @override
   void dispose() {
     _medicationNameController.dispose();
+    _medicationQuantityInputController.dispose();
     super.dispose();
   }
 
@@ -107,72 +133,62 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
       appBar: AddMedicationAppBar(title: "Vaisto informacija"),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+          padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
-            child: Center(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _medicationNameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      labelText: "Vaisto pavadinimas",
-                      hintText: "Įveskite vaisto pavadinimą",
+            child: Column(
+              children: [
+                TextField(
+                  controller: _medicationNameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
+                    labelText: "Vaisto pavadinimas",
+                    hintText: "Įveskite vaisto pavadinimą",
+                    errorText: _medicationNameError,
                   ),
-                  const SizedBox(height: 10),
-                  MedicationDatePickerWidget(
-                    label: "Vaistas galioja iki:",
-                    onDatePicked: _onExpirationDatePicked,
+                ),
+                const SizedBox(height: 10),
+                MedicationDatePickerWidget(
+                  label: "Galioja iki:",
+                  selectedDate: _expirationDate,
+                  onDatePicked: _onExpirationDatePicked,
+                ),
+                const SizedBox(height: 10),
+                SectionTextWidget(label: "Pasirinkite vaisto tipą"),
+                DropdownMenuWidget<MedicationType>(
+                  initialSelection: _medicationType,
+                  entries: _medicationTypes,
+                  onEntrySelected: _onMedicationTypeSelected,
+                ),
+                const SizedBox(height: 5),
+                CheckboxWithLabelWidget(
+                  label: "Pridėti vaisto likutį",
+                  isChecked: isQuantityAdded,
+                  onChanged: _onQuantityCheckboxChecked,
+                ),
+                if (isQuantityAdded)
+                  MedicationQuantityWidget(
+                    medicationType: _medicationType!,
+                    controller: _medicationQuantityInputController,
                   ),
-                  const SizedBox(height: 10),
-                  SectionTextWidget(
-                    label: "Pasirinkite kada bus vartojamas vaistas",
-                  ),
-                  DropdownMenuWidget<MedicationMealTiming?>(
-                    initialSelection: _medicationMealTiming,
-                    entries: _medicationMealtTimings,
-                    onEntrySelected: _onMedicationMealTimingSelected,
-                  ),
-                  const SizedBox(height: 10),
-                  SectionTextWidget(label: "Pasirinkite vaisto tipą"),
-                  DropdownMenuWidget<MedicationType?>(
-                    initialSelection: _medicationType,
-                    entries: _medicationTypes,
-                    onEntrySelected: _onMedicationTypeSelected,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: _currentQuantity == null ? false : true,
-                            onChanged: _onQuantityCheckboxChecked,
-                          ),
-                          const Text(
-                            "Pridėti vaisto likutį",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (_currentQuantity != null)
-                    MedicationQuantityWidget(
-                      medicationType: _medicationType!,
-                      onQuantityChanged: _onCurrentQuantityChanged,
-                    ),
-                ],
-              ),
+                Divider(thickness: 2),
+                SectionTextWidget(
+                  label: "Pasirinkite kada bus vartojamas vaistas",
+                ),
+                DropdownMenuWidget<MedicationMealTiming>(
+                  initialSelection: _medicationMealTiming,
+                  entries: _medicationMealtTimings,
+                  onEntrySelected: _onMedicationMealTimingSelected,
+                ),
+                SizedBox(height: 100),
+              ],
             ),
           ),
         ),
       ),
       floatingActionButton: ContinueButton(
+        label: "Toliau",
         onContinuePressed: _onContinuePressed,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

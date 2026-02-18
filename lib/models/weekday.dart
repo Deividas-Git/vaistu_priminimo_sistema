@@ -1,4 +1,4 @@
-enum Weekdays {
+enum Weekday {
   monday,
   tuesday,
   wednesday,
@@ -9,19 +9,19 @@ enum Weekdays {
 
   String get getLabel {
     switch (this) {
-      case Weekdays.monday:
+      case Weekday.monday:
         return "Pir";
-      case Weekdays.tuesday:
+      case Weekday.tuesday:
         return "Ant";
-      case Weekdays.wednesday:
+      case Weekday.wednesday:
         return "Tre";
-      case Weekdays.thursday:
+      case Weekday.thursday:
         return "Ket";
-      case Weekdays.friday:
+      case Weekday.friday:
         return "Pen";
-      case Weekdays.saturday:
+      case Weekday.saturday:
         return "Šeš";
-      case Weekdays.sunday:
+      case Weekday.sunday:
         return "Sek";
     }
   }

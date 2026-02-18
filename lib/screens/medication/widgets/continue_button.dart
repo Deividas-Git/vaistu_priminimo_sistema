@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key, required this.onContinuePressed});
-  final VoidCallback onContinuePressed;
+  const ContinueButton({
+    super.key,
+    required this.label,
+    required this.onContinuePressed,
+  });
+  final String label;
+  final VoidCallback? onContinuePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +17,11 @@ class ContinueButton extends StatelessWidget {
         width: 250,
         child: FloatingActionButton(
           onPressed: onContinuePressed,
-          backgroundColor: ColorScheme.of(context).primary,
+          backgroundColor: onContinuePressed == null
+              ? const Color.fromARGB(194, 158, 158, 158)
+              : ColorScheme.of(context).primary,
           child: Text(
-            "Toliau",
+            label,
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),

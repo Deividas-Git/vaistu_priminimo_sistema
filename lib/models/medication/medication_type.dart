@@ -26,17 +26,17 @@ enum MedicationType {
   String get getDoseLabel {
     switch (this) {
       case MedicationType.pills:
-        return "Tablečių skaičius: ";
+        return "Tablečių skaičius:";
       case MedicationType.capsules:
-        return "Tablečių skaičius: ";
+        return "Kapsulių skaičius:";
       case MedicationType.drops:
-        return "Lašų skaičius: ";
+        return "Lašų skaičius:";
       case MedicationType.spray:
-        return "Purškimo kartai: ";
+        return "Purškimo kartai:";
       case MedicationType.ointment:
-        return "Tepimo kartai: ";
+        return "Tepimo kartai:";
       default:
-        return "Naudojimo kartai: ";
+        return "Naudojimo skaičius:";
     }
   }
 

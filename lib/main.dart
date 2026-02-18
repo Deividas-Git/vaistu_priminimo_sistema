@@ -15,23 +15,38 @@ class MainApp extends StatelessWidget {
   MainApp({super.key});
 
   final AuthService _authService = AuthService();
+  final Color themeColor = Colors.indigo;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: Colors.transparent,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: themeColor,
+          //surface: ColorScheme.fromSeed(seedColor: themeColor).surfaceContainer,
+          //brightness: Brightness.dark,
+        ),
+        splashColor: ColorScheme.of(context).surface.withValues(alpha: 0.25),
+        highlightColor: ColorScheme.of(
+          context,
+        ).secondary.withValues(alpha: 0.25),
       ),
       debugShowCheckedModeBanner: false,
       home: StreamBuilder(
         stream: _authService.firebaseAuth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); //CIA GAL DET SPLASH ANIMACIJA?
+            debugPrint("KRAUNA");
+            return Center(
+              child: CircularProgressIndicator(),
+            ); //CIA GAL DET SPLASH ANIMACIJA?
           }
           if (snapshot.hasData) {
+            debugPrint("DUOMENYS: ${snapshot.hasData}");
             return RootScreen();
           } else {
+            debugPrint("ATJUNGE");
             return LoginScreen();
           }
         },

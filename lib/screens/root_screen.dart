@@ -4,7 +4,8 @@ import 'package:vaistu_priminimo_sistema/screens/medication/medication_screen.da
 import 'package:vaistu_priminimo_sistema/screens/profile/profile_screen.dart';
 
 class RootScreen extends StatefulWidget {
-  const RootScreen({super.key});
+  const RootScreen({super.key, this.initialScreenIndex});
+  final int? initialScreenIndex;
 
   @override
   State<RootScreen> createState() => _RootScreenState();
@@ -17,12 +18,18 @@ class _RootScreenState extends State<RootScreen> {
     HomeScreen(),
     ProfileScreen(),
   ];
-  int _selectedScreenIndex = 0;
+  int? _selectedScreenIndex;
 
   void _onNavMenuSelected(int index) {
     setState(() {
       _selectedScreenIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedScreenIndex = widget.initialScreenIndex ?? 0;
   }
 
   @override
@@ -42,10 +49,10 @@ class _RootScreenState extends State<RootScreen> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Paskyra"),
         ],
-        currentIndex: _selectedScreenIndex,
+        currentIndex: _selectedScreenIndex!,
         onTap: _onNavMenuSelected,
       ),
-      body: _navBarScreens[_selectedScreenIndex],
+      body: _navBarScreens[_selectedScreenIndex!],
     );
   }
 }

@@ -12,7 +12,10 @@ class SectionTextWidget extends StatelessWidget {
           width: double.infinity,
           child: Text(
             label,
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(
+              fontSize: 20,
+              color: ColorScheme.of(context).inverseSurface,
+            ),
             textAlign: TextAlign.left,
           ),
         ),
