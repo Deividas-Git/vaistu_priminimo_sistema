@@ -64,7 +64,7 @@ class MainApp extends StatelessWidget {
 
                 AppUser? user = userSnapshot.data;
 
-                debugPrint(user.toString());
+                debugPrint("NAUDOTOJAS: $user");
 
                 if (user == null) {
                   user = AppUser(

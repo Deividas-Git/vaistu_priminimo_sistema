@@ -4,10 +4,10 @@ import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 
 class MedicationService {
   final _firestore = FirebaseFirestore.instance;
-  final _authService = AuthService();
+  //final _authService = AuthService();
 
   Future<List<UserMedication>> retrieveAllUserMedications() async {
-    String? uid = _authService.getUid();
+    String? uid; // = _authService.getUid();
 
     if (uid == null) {
       return [];
@@ -24,7 +24,16 @@ class MedicationService {
         .toList();
   }
 
-  void addMedication(UserMedication medication) {}
+  Future<void> addMedication(UserMedication medication) async {
+    String? uid; //= _authService.getUid();
+
+    await _firestore
+        .collection("users")
+        .doc(uid)
+        .collection("medications")
+        .doc(medication.id)
+        .set(medication.toMap());
+  }
 
   void updateMedication(UserMedication medication) {}
 

@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 
 const Map<String, String> authErrors = {
   'invalid-email': 'Neteisingas el. pašto formatas',
@@ -28,7 +27,6 @@ const Map<String, String> authErrors = {
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final UserService _userService = UserService();
 
   String? _returnedAuthMessage(FirebaseAuthException e) {
     return authErrors[e.code] ?? "Nenumatyta klaida";
@@ -62,18 +60,13 @@ class AuthService {
     }
   }
 
-  Future<String?> deleteUserAccount({required User? userCredentials}) async {
-    final String? dataDeletionMessage = await _userService.deleteUserData(
-      uid: userCredentials?.uid,
-    );
-    if (dataDeletionMessage != null) {
-      return dataDeletionMessage;
-    }
+  Future<String?> deleteUserAccount() async {
+    final User? userCredentials = firebaseAuth.currentUser;
+    if (userCredentials == null) return "Nera user credentials";
     try {
-      await userCredentials?.delete();
+      await userCredentials.delete();
       return null;
     } on FirebaseAuthException catch (e) {
-      debugPrint("KLAIDA TRINANT USER: $e");
       return _returnedAuthMessage(e);
     }
   }
@@ -81,14 +74,6 @@ class AuthService {
   Future<String?> logout() async {
     final User? userCredentials = firebaseAuth.currentUser;
     if (userCredentials == null) return "Nera user credentials";
-    if (firebaseAuth.currentUser!.isAnonymous) {
-      final String? message = await deleteUserAccount(
-        userCredentials: userCredentials,
-      );
-      if (message != null) {
-        return message;
-      }
-    }
     try {
       await firebaseAuth.signOut();
       return null;
