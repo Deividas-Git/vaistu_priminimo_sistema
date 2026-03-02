@@ -93,9 +93,11 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           expirationDate: _expirationDate,
           medicationMealTiming: _medicationMealTiming,
           medicationType: _medicationType,
-          currentQuantity: double.tryParse(
-            _medicationQuantityInputController.text.replaceAll(",", "."),
-          ),
+          currentQuantity: isQuantityAdded
+              ? double.tryParse(
+                  _medicationQuantityInputController.text.replaceAll(",", "."),
+                )
+              : null,
         );
 
     debugPrint("APIE VAISTA: ${medication.toString()}");

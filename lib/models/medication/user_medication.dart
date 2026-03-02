@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -23,6 +24,48 @@ class UserMedication {
     this.lastTimeTaken,
     this.medicationSchedules,
   });
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> map = {
+      "id": id,
+      "name": name,
+      "medicationType": medicationType!.name,
+      "medicationMealTiming": medicationMealTiming!.name,
+    };
+
+    if (currentQuantity != null) {
+      map["currentQuantity"] = currentQuantity;
+    }
+
+    if (expirationDate != null) {
+      map["expirationDate"] = Timestamp.fromDate(expirationDate!);
+    }
+
+    if (lastTimeTaken != null) {
+      map["lastTimeTaken"] = Timestamp.fromDate(lastTimeTaken!);
+    }
+
+    // if(medicationSchedules != null){
+    //   map["medicationSchedules"] = medicationSchedules;
+    // }
+
+    return map;
+  }
+
+  factory UserMedication.fromMap(Map<String, dynamic> map) {
+    return UserMedication(
+      id: map["id"],
+      name: map["name"],
+      currentQuantity: map["currentQuantity"],
+      medicationType: MedicationType.values.byName(map["medicationType"]),
+      medicationMealTiming: MedicationMealTiming.values.byName(
+        map["medicationMealTiming"],
+      ),
+      expirationDate: (map["expirationDate"] as Timestamp).toDate(),
+      lastTimeTaken: (map["lastTimeTaken"] as Timestamp).toDate(),
+      //medicationSchedules: map["medicationSchedules"],
+    );
+  }
 
   factory UserMedication.empty() {
     return UserMedication();
@@ -69,6 +112,6 @@ class UserMedication {
 
   @override
   String toString() {
-    return "Vaistas: $name; Kiekis: ${currentQuantity.toString()}; Tipas: ${medicationType.toString()}; Vartojama: ${medicationMealTiming.toString()}; Galioja iki: ${expirationDate.toString().split(" ")[0]}; Vartota: ${lastTimeTaken.toString()}";
+    return "Vaistas: $name; Kiekis: ${currentQuantity.toString()}; Tipas: $medicationType; Vartojama: ${medicationMealTiming.toString()}; Galioja iki: ${expirationDate.toString().split(" ")[0]}; Vartota: ${lastTimeTaken.toString()}, tvarkarasciai: ${medicationSchedules.toString()}";
   }
 }

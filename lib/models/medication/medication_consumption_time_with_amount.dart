@@ -8,4 +8,9 @@ class MedicationConsumptionTimeWithAmount {
     required this.time,
     required this.consumptionAmount,
   });
+
+  @override
+  String toString() {
+    return "laikas: ${time.hour}:${time.minute}; kiekis: $consumptionAmount";
+  }
 }

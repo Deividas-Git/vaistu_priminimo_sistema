@@ -34,9 +34,9 @@ class AuthService {
     return authErrors[e.code] ?? "Nenumatyta klaida";
   }
 
-  // User? getCurrentUserCredentials() {
-  //   return firebaseAuth.currentUser;
-  // }
+  String? getUid() {
+    return firebaseAuth.currentUser?.uid;
+  }
 
   Future<String?> loginWithEmailAndPassword({
     required String email,
@@ -64,7 +64,7 @@ class AuthService {
 
   Future<String?> deleteUserAccount({required User? userCredentials}) async {
     final String? dataDeletionMessage = await _userService.deleteUserData(
-      userCredentials: userCredentials,
+      uid: userCredentials?.uid,
     );
     if (dataDeletionMessage != null) {
       return dataDeletionMessage;

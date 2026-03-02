@@ -45,6 +45,6 @@ class MedicationSchedule {
 
   @override
   String toString() {
-    return "Pavadinimas: $name, Pradzia: $startDate, Pabaiga: $endDate, Daznumo tipas: $medicationFrequencyType, Intervalai: $intervalsDays, Pasirinktos dienos: $weekdays, Laikai ir kiekiai: ${consumptionTimesWithAmount?.length}";
+    return "Pavadinimas: $name, Pradzia: $startDate, Pabaiga: $endDate, Daznumo tipas: $medicationFrequencyType, Intervalai: $intervalsDays, Pasirinktos dienos: $weekdays, Laikai ir kiekiai: $consumptionTimesWithAmount";
   }
 }
