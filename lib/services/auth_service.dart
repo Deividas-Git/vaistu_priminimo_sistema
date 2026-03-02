@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 
 const Map<String, String> authErrors = {
   'invalid-email': 'Neteisingas el. pašto formatas',
@@ -27,14 +28,15 @@ const Map<String, String> authErrors = {
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final UserService _userService = UserService();
 
   String? _returnedAuthMessage(FirebaseAuthException e) {
     return authErrors[e.code] ?? "Nenumatyta klaida";
   }
 
-  User? getCurrentUserCredentials() {
-    return firebaseAuth.currentUser;
-  }
+  // User? getCurrentUserCredentials() {
+  //   return firebaseAuth.currentUser;
+  // }
 
   Future<String?> loginWithEmailAndPassword({
     required String email,
@@ -60,25 +62,39 @@ class AuthService {
     }
   }
 
-  Future<void> deleteUserAccount({required User? userCredentials}) async {
-    //PIRMA REIKIA ISTRINTI VISUS DUOMENIS, TADA PASKYRA
+  Future<String?> deleteUserAccount({required User? userCredentials}) async {
+    final String? dataDeletionMessage = await _userService.deleteUserData(
+      userCredentials: userCredentials,
+    );
+    if (dataDeletionMessage != null) {
+      return dataDeletionMessage;
+    }
     try {
       await userCredentials?.delete();
+      return null;
     } on FirebaseAuthException catch (e) {
       debugPrint("KLAIDA TRINANT USER: $e");
+      return _returnedAuthMessage(e);
     }
   }
 
-  Future<void> logout() async {
+  Future<String?> logout() async {
     final User? userCredentials = firebaseAuth.currentUser;
-    if (userCredentials == null) return;
-    try {
-      if (firebaseAuth.currentUser!.isAnonymous) {
-        await deleteUserAccount(userCredentials: userCredentials);
+    if (userCredentials == null) return "Nera user credentials";
+    if (firebaseAuth.currentUser!.isAnonymous) {
+      final String? message = await deleteUserAccount(
+        userCredentials: userCredentials,
+      );
+      if (message != null) {
+        return message;
       }
+    }
+    try {
       await firebaseAuth.signOut();
-    } catch (e) {
+      return null;
+    } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
+      return _returnedAuthMessage(e);
     }
   }
 

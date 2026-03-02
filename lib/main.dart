@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +7,7 @@ import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,6 +22,7 @@ class MainApp extends StatelessWidget {
   MainApp({super.key});
 
   final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   final Color themeColor = Colors.indigo;
 
   @override
@@ -48,18 +51,37 @@ class MainApp extends StatelessWidget {
             ); //CIA GAL DET SPLASH ANIMACIJA?
           }
           if (snapshot.hasData) {
-            debugPrint("DUOMENYS: ${snapshot.hasData}");
+            User? userCredentials = snapshot.data;
 
-            //laikinas, tures but is db istraukiama, jei nera irasyti nauja
-            final AppUser user = AppUser(
-              userCredentials: snapshot.data,
-              hasLoadedFirstTimeData: false,
-              allowsReminders: false,
-              userMedications: [],
+            return FutureBuilder(
+              future: _userService.retrieveUserData(
+                userCredentials: userCredentials,
+              ),
+              builder: (context, userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                AppUser? user = userSnapshot.data;
+
+                debugPrint(user.toString());
+
+                if (user == null) {
+                  user = AppUser(
+                    createdAt: DateTime.now(),
+                    userCredentials: userCredentials,
+                    //hasLoadedFirstTimeData: false,
+                    allowsReminders: false,
+                    userMedications: [],
+                  );
+                  _userService.addNewUser(user: user);
+                }
+
+                context.read<UserProvider>().setUser(user);
+
+                return RootScreen();
+              },
             );
-            context.read<UserProvider>().setUser(user);
-
-            return RootScreen();
           } else {
             debugPrint("ATJUNGE");
             return LoginScreen();

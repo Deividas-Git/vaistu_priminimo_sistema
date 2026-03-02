@@ -29,7 +29,6 @@ class _MedicationScreenState extends State<MedicationScreen> {
     super.dispose();
   }
 
-  //TODO reikia pakrauti pridetus naudotojo vaistus
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().appUser;
