@@ -24,9 +24,13 @@ class UserService {
   }
 
   Future<AppUser?> retrieveUserData({required User? userCredentials}) async {
+    if (userCredentials == null) {
+      return null;
+    }
+
     final userDataDoc = await _firestore
         .collection("users")
-        .doc(userCredentials!.uid)
+        .doc(userCredentials.uid)
         .get();
 
     if (userDataDoc.data() == null) {
