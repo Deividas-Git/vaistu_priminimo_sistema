@@ -30,7 +30,6 @@ class UserService {
       return null;
     }
 
-    //try catch?
     final userDataDoc = await _firestore
         .collection("users")
         .doc(userCredentials.uid)
@@ -40,9 +39,8 @@ class UserService {
       return null;
     }
 
-    //reiks gaut is medication service
     final List<UserMedication> userMedications = await _medicationService
-        .retrieveAllUserMedications();
+        .retrieveAllUserMedications(userCredentials.uid);
 
     return AppUser.fromMap(
       userDataDoc.data()!,

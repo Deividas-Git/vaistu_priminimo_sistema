@@ -59,7 +59,9 @@ class MainApp extends StatelessWidget {
               ),
               builder: (context, userSnapshot) {
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
                 }
 
                 AppUser? user = userSnapshot.data;

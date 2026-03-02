@@ -27,7 +27,6 @@ class UserMedication {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = {
-      "id": id,
       "name": name,
       "medicationType": medicationType!.name,
       "medicationMealTiming": medicationMealTiming!.name,
@@ -52,17 +51,21 @@ class UserMedication {
     return map;
   }
 
-  factory UserMedication.fromMap(Map<String, dynamic> map) {
+  factory UserMedication.fromMap(Map<String, dynamic> map, String id) {
     return UserMedication(
-      id: map["id"],
+      id: id,
       name: map["name"],
       currentQuantity: map["currentQuantity"],
       medicationType: MedicationType.values.byName(map["medicationType"]),
       medicationMealTiming: MedicationMealTiming.values.byName(
         map["medicationMealTiming"],
       ),
-      expirationDate: (map["expirationDate"] as Timestamp).toDate(),
-      lastTimeTaken: (map["lastTimeTaken"] as Timestamp).toDate(),
+      expirationDate: map["expirationDate"] != null
+          ? (map["expirationDate"] as Timestamp).toDate()
+          : null,
+      lastTimeTaken: map["lastTimeTaken"] != null
+          ? (map["lastTimeTaken"] as Timestamp).toDate()
+          : null,
       //medicationSchedules: map["medicationSchedules"],
     );
   }

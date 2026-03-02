@@ -45,7 +45,7 @@ class UserProvider extends ChangeNotifier {
   Future<void> addMedication(UserMedication medication) async {
     _appUser?.userMedications.add(medication);
     notifyListeners();
-    await _medicationService.addMedication(medication);
+    await _medicationService.addMedication(medication, _authService.getUid());
   }
 
   void removeMedication(UserMedication medication) {
