@@ -52,6 +52,10 @@ class MainApp extends StatelessWidget {
           }
           if (snapshot.hasData) {
             User? userCredentials = snapshot.data;
+            if (userCredentials == null) {
+              debugPrint("KLAIDA NEPAVYKO GAUTI CREDENTIALS");
+              return Scaffold(body: Center(child: CircularProgressIndicator()));
+            }
 
             return FutureBuilder(
               future: _userService.retrieveUserData(
@@ -64,20 +68,11 @@ class MainApp extends StatelessWidget {
                   );
                 }
 
-                AppUser? user = userSnapshot.data;
+                AppUser? user =
+                    userSnapshot.data ??
+                    context.read<UserProvider>().addNewUser(userCredentials);
 
                 debugPrint("NAUDOTOJAS: $user");
-
-                if (user == null) {
-                  user = AppUser(
-                    createdAt: DateTime.now(),
-                    userCredentials: userCredentials,
-                    //hasLoadedFirstTimeData: false,
-                    allowsReminders: false,
-                    userMedications: [],
-                  );
-                  _userService.addNewUser(user: user);
-                }
 
                 context.read<UserProvider>().setUser(user);
 

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
@@ -39,6 +40,18 @@ class UserProvider extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  AppUser addNewUser(User userCredentials) {
+    final user = AppUser(
+      createdAt: DateTime.now(),
+      userCredentials: userCredentials,
+      //hasLoadedFirstTimeData: false,
+      allowsReminders: false,
+      userMedications: [],
+    );
+    _userService.addNewUser(user: user);
+    return user;
   }
 
   //medication yra immutable, todel tik add arba remove
