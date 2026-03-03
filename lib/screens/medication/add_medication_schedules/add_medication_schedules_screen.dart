@@ -7,6 +7,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.d
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_frequency_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
@@ -83,9 +84,10 @@ class _AddMedicationSchedulesScreenState
           ? null
           : _medicationSchedules,
     );
-    context.read<UserProvider>().addMedication(medication);
+    final String uid = context.read<UserProvider>().appUser!.uid;
+    context.read<MedicationProvider>().addMedication(medication, uid);
     debugPrint(medication.toString());
-    //TODO medication service ir irasom duomenis i db, tikrinti cia ar editinamas ar naujas
+    //TODO tikrinti cia ar editinamas ar naujas
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 

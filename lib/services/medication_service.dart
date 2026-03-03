@@ -4,22 +4,17 @@ import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart'
 class MedicationService {
   final _firestore = FirebaseFirestore.instance;
 
-  Future<List<UserMedication>> retrieveAllUserMedications(String? uid) async {
-    if (uid == null) {
-      return [];
-    }
-
-    final medicationsDataCollection = await _firestore
+  Stream<List<UserMedication>> medicationsStream(String uid) {
+    return _firestore
         .collection("users")
         .doc(uid)
         .collection("medications")
-        .get();
-
-    final List<UserMedication> medications = medicationsDataCollection.docs
-        .map((doc) => UserMedication.fromMap(doc.data(), doc.id))
-        .toList();
-
-    return medications;
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserMedication.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   Future<void> addMedication(UserMedication medication, String? uid) async {

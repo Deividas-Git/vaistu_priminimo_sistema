@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 
@@ -28,6 +29,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     if (message != null) {
       debugPrint("KLAIDA: $message");
+      return;
+    }
+    if (mounted) {
+      context.read<MedicationProvider>().stopListening();
     }
   }
 

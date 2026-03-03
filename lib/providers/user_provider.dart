@@ -1,31 +1,25 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
-import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
 import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 
 class UserProvider extends ChangeNotifier {
   AppUser? _appUser;
   AppUser? get appUser => _appUser;
-  final AuthService _authService = AuthService();
-  final UserService _userService = UserService();
-  final MedicationService _medicationService = MedicationService();
+  final AuthService _authService;
+  final UserService _userService;
 
-  void setUser(AppUser? user) {
+  UserProvider(this._authService, this._userService);
+
+  void setUser(AppUser user) {
     _appUser = user;
   }
 
   Future<String?> clearUser() async {
-    if (_appUser == null) {
-      return "user is null";
-    }
-    final String uid = _appUser!.userCredentials!.uid;
     _appUser = null;
 
     final String? deleteUserDataMessage = await _userService.deleteUserData(
-      uid: uid,
+      uid: _appUser!.uid,
     );
 
     if (deleteUserDataMessage != null) {
@@ -47,28 +41,14 @@ class UserProvider extends ChangeNotifier {
     return null;
   }
 
-  AppUser addNewUser(User userCredentials) {
+  AppUser addNewUser(String uid) {
     final user = AppUser(
       createdAt: DateTime.now(),
-      userCredentials: userCredentials,
+      uid: uid,
       //hasLoadedFirstTimeData: false,
       allowsReminders: false,
-      userMedications: [],
     );
     _userService.addNewUser(user: user);
     return user;
-  }
-
-  //medication yra immutable, todel tik add arba remove
-  Future<void> addMedication(UserMedication medication) async {
-    _appUser?.userMedications.add(medication);
-    notifyListeners();
-    await _medicationService.addMedication(medication, _authService.getUid());
-  }
-
-  void removeMedication(UserMedication medication) {
-    _appUser?.userMedications.remove(medication);
-    notifyListeners();
-    _medicationService.removeMedication(medication);
   }
 }
