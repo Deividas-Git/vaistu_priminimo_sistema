@@ -19,14 +19,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (currentUser == null) {
       return;
     }
+    late String? message;
     if (currentUser.isAnonymous) {
-      final String? message = await context.read<UserProvider>().clearUser();
-      if (message != null) {
-        debugPrint("KLAIDA: $message");
-        return;
-      }
+      //TODO jei zmogus su anoniminiu acc, ideti mygtuka susieti su paskyra su email ir password
+      message = await context.read<UserProvider>().clearUser();
+    } else {
+      message = await _authService.logout();
     }
-    _authService.logout();
+    if (message != null) {
+      debugPrint("KLAIDA: $message");
+    }
   }
 
   @override
@@ -38,5 +40,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-//TODO jei zmogus su anoniminiu acc, ideti mygtuka susieti su paskyra su email ir password

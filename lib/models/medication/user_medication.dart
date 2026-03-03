@@ -68,12 +68,16 @@ class UserMedication {
       lastTimeTaken: map["lastTimeTaken"] != null
           ? (map["lastTimeTaken"] as Timestamp).toDate()
           : null,
-      medicationSchedules: (map["medicationSchedules"] as List<dynamic>)
-          .map(
-            ((schedule) =>
-                MedicationSchedule.fromMap(schedule as Map<String, dynamic>)),
-          )
-          .toList(),
+      medicationSchedules:
+          (map["medicationSchedules"] as List<dynamic>?)?.isNotEmpty == true
+          ? (map["medicationSchedules"] as List<dynamic>)
+                .map(
+                  ((schedule) => MedicationSchedule.fromMap(
+                    schedule as Map<String, dynamic>,
+                  )),
+                )
+                .toList()
+          : null,
     );
   }
 

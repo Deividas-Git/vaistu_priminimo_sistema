@@ -23,7 +23,7 @@ class UserProvider extends ChangeNotifier {
     }
     final String uid = _appUser!.userCredentials!.uid;
     _appUser = null;
-    notifyListeners();
+
     final String? deleteUserDataMessage = await _userService.deleteUserData(
       uid: uid,
     );
@@ -37,6 +37,11 @@ class UserProvider extends ChangeNotifier {
 
     if (deleteUserAccountMessage != null) {
       return deleteUserAccountMessage;
+    }
+
+    final String? logoutMessage = await _authService.logout();
+    if (logoutMessage != null) {
+      return logoutMessage;
     }
 
     return null;
