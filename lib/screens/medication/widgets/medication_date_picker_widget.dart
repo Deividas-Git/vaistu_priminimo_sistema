@@ -11,12 +11,12 @@ class MedicationDatePickerWidget extends StatelessWidget {
 
   final String label;
   final DateTime? selectedDate;
-  final ValueChanged<DateTime?> onDatePicked;
-  //DateTime? _selectedDate;
+  final ValueChanged<DateTime?>? onDatePicked;
 
-  // final String label;
   @override
   Widget build(BuildContext context) {
+    final bool isPreview = onDatePicked == null;
+
     return ThemedContainerWidget(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,30 +39,34 @@ class MedicationDatePickerWidget extends StatelessWidget {
 
           Expanded(
             child: OutlinedButton(
-              onPressed: () async {
-                final DateTime? date = await showDatePicker(
-                  context: context,
-                  firstDate: DateTime(DateTime.now().year),
-                  lastDate: DateTime(DateTime.now().year + 30),
-                );
-                onDatePicked(date);
-              },
+              onPressed: isPreview
+                  ? null
+                  : () async {
+                      final DateTime? date = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime(DateTime.now().year),
+                        lastDate: DateTime(DateTime.now().year + 30),
+                      );
+                      onDatePicked!(date);
+                    },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: ColorScheme.of(context).primary),
+                //side: BorderSide(color: ColorScheme.of(context).primary),
                 minimumSize: const Size(170, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(5.0),
                 ),
-                backgroundColor: ColorScheme.of(context).primary,
+                backgroundColor: isPreview
+                    ? ColorScheme.of(context).secondary
+                    : ColorScheme.of(context).primary,
               ),
               child: Text(
                 selectedDate == null
                     ? "Nepasirinkta"
                     : selectedDate.toString().split(" ")[0],
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
-                  //fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

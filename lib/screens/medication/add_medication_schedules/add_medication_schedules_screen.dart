@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';

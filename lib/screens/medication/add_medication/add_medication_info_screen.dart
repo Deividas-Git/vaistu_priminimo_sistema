@@ -42,7 +42,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   MedicationType? _medicationType;
   MedicationMealTiming? _medicationMealTiming;
   String? _medicationNameError;
-  bool isQuantityAdded = false;
+  late bool isQuantityAdded;
 
   void _onExpirationDatePicked(DateTime? date) {
     setState(() {
@@ -120,6 +120,16 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
         widget.prefilledMedication?.medicationMealTiming ??
         MedicationMealTiming.unspecified;
     _medicationNameController.text = widget.prefilledMedication?.name ?? "";
+    isQuantityAdded = widget.prefilledMedication?.currentQuantity != null
+        ? true
+        : false;
+    _medicationQuantityInputController.text = isQuantityAdded
+        ? widget.prefilledMedication!.medicationType!.consumedAmoutIsInteger
+              ? widget.prefilledMedication!.currentQuantity.toString().split(
+                  ".",
+                )[0]
+              : widget.prefilledMedication!.currentQuantity.toString()
+        : "0";
   }
 
   @override
