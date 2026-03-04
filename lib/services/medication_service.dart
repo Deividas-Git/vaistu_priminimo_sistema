@@ -22,11 +22,24 @@ class MedicationService {
         .collection("users")
         .doc(uid)
         .collection("medications")
+        .add(medication.toMap());
+  }
+
+  Future<void> updateMedication(UserMedication medication, String uid) async {
+    await _firestore
+        .collection("users")
+        .doc(uid)
+        .collection("medications")
         .doc(medication.id)
         .set(medication.toMap());
   }
 
-  void updateMedication(UserMedication medication) {}
-
-  void removeMedication(UserMedication medication) {}
+  Future<void> removeMedication(String medicationid, String uid) async {
+    await _firestore
+        .collection("users")
+        .doc(uid)
+        .collection("medications")
+        .doc(medicationid)
+        .delete();
+  }
 }

@@ -76,16 +76,20 @@ class _AddMedicationSchedulesScreenState
     });
   }
 
-  void _onNewMedicationAdded() {
-    final medId = Uuid().v4();
+  void _onSaveMedication() {
+    //final medId = Uuid().v4();
     final UserMedication medication = widget.prefilledMedication.copyWith(
-      id: medId,
+      //id: medId,
       medicationSchedules: _medicationSchedules.isEmpty
           ? null
           : _medicationSchedules,
     );
     final String uid = context.read<UserProvider>().appUser!.uid;
-    context.read<MedicationProvider>().addMedication(medication, uid);
+    if (medication.id == null) {
+      context.read<MedicationProvider>().addMedication(medication, uid);
+    } else {
+      context.read<MedicationProvider>().updateMedication(medication, uid);
+    }
     debugPrint(medication.toString());
     //TODO tikrinti cia ar editinamas ar naujas
     Navigator.popUntil(context, (route) => route.isFirst);
@@ -133,7 +137,7 @@ class _AddMedicationSchedulesScreenState
       ),
       floatingActionButton: ContinueButton(
         label: _medicationSchedules.isEmpty ? "Praleisti ir baigti" : "Baigti",
-        onContinuePressed: _onNewMedicationAdded,
+        onContinuePressed: _onSaveMedication,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

@@ -31,4 +31,12 @@ class MedicationProvider extends ChangeNotifier {
   void addMedication(UserMedication medication, String uid) {
     _medicationService.addMedication(medication, uid);
   }
+
+  void updateMedication(UserMedication medication, String uid) {
+    _medicationService.updateMedication(medication, uid);
+  }
+
+  void removeMedication(String medicationid, String uid) {
+    _medicationService.removeMedication(medicationid, uid);
+  }
 }
