@@ -13,7 +13,7 @@ class DeleteConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: Center(child: Text(title)),
       content: Text(message),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [

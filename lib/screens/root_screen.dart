@@ -47,16 +47,30 @@ class _RootScreenState extends State<RootScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Pagrindinis"),
           BottomNavigationBarItem(
-            icon: Icon(Icons.medication),
+            icon: _selectedScreenIndex == 0
+                ? Icon(Icons.home)
+                : Icon(Icons.home_outlined),
+            label: "Pagrindinis",
+          ),
+          BottomNavigationBarItem(
+            icon: _selectedScreenIndex == 1
+                ? Icon(Icons.medication)
+                : Icon(Icons.medication_outlined),
             label: "Vaistai",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
+            icon: _selectedScreenIndex == 2
+                ? Icon(Icons.bar_chart)
+                : Icon(Icons.bar_chart_outlined),
             label: "Progresas",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Paskyra"),
+          BottomNavigationBarItem(
+            icon: _selectedScreenIndex == 3
+                ? Icon(Icons.person)
+                : Icon(Icons.person_outline),
+            label: "Paskyra",
+          ),
         ],
         currentIndex: _selectedScreenIndex!,
         onTap: _onNavMenuSelected,

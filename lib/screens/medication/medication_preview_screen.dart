@@ -87,7 +87,7 @@ class MedicationPreviewScreen extends StatelessWidget {
                 value: medication.medicationMealTiming!.getLabel,
               ),
               MedicationDatePickerWidget(
-                label: "Vaistas galioja iki",
+                label: "Galioja iki",
                 selectedDate: medication.expirationDate,
                 onDatePicked: null,
               ),
@@ -97,6 +97,7 @@ class MedicationPreviewScreen extends StatelessWidget {
                 previewAmount: medication.currentQuantity,
               ),
               Divider(thickness: 2, color: ColorScheme.of(context).primary),
+              SizedBox(height: 5),
               SectionTextWidget(label: "Vartojimo tvarkaraščiai"),
               if (medication.medicationSchedules != null)
                 ...medication.medicationSchedules!.map(
