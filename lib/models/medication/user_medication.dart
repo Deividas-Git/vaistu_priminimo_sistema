@@ -3,6 +3,8 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timin
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 
+const _noChange = Object();
+
 class UserMedication {
   final String? id;
   final String? name;
@@ -28,8 +30,8 @@ class UserMedication {
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = {
       "name": name,
-      "medicationType": medicationType!.name,
-      "medicationMealTiming": medicationMealTiming!.name,
+      "medicationType": medicationType?.name,
+      "medicationMealTiming": medicationMealTiming?.name,
     };
 
     if (currentQuantity != null) {
@@ -86,41 +88,36 @@ class UserMedication {
   }
 
   UserMedication copyWith({
-    String? id,
-    String? name,
-    double? currentQuantity,
-    MedicationType? medicationType,
-    MedicationMealTiming? medicationMealTiming,
-    DateTime? expirationDate,
-    DateTime? lastTimeTaken,
-    List<MedicationSchedule>? medicationSchedules,
+    Object? id = _noChange,
+    Object? name = _noChange,
+    Object? currentQuantity = _noChange,
+    Object? medicationType = _noChange,
+    Object? medicationMealTiming = _noChange,
+    Object? expirationDate = _noChange,
+    Object? lastTimeTaken = _noChange,
+    Object? medicationSchedules = _noChange,
   }) {
     return UserMedication(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      currentQuantity: currentQuantity ?? this.currentQuantity,
-      medicationType: medicationType ?? this.medicationType,
-      medicationMealTiming: medicationMealTiming ?? this.medicationMealTiming,
-      expirationDate: expirationDate ?? this.expirationDate,
-      lastTimeTaken: lastTimeTaken ?? this.lastTimeTaken,
-      medicationSchedules: medicationSchedules ?? this.medicationSchedules,
-    );
-  }
-
-  UserMedication merge({UserMedication? medicationFromWhichUpdating}) {
-    if (medicationFromWhichUpdating == null) {
-      return this;
-    }
-
-    return copyWith(
-      id: medicationFromWhichUpdating.id,
-      name: medicationFromWhichUpdating.name,
-      currentQuantity: medicationFromWhichUpdating.currentQuantity,
-      medicationType: medicationFromWhichUpdating.medicationType,
-      medicationMealTiming: medicationFromWhichUpdating.medicationMealTiming,
-      expirationDate: medicationFromWhichUpdating.expirationDate,
-      lastTimeTaken: medicationFromWhichUpdating.lastTimeTaken,
-      medicationSchedules: medicationFromWhichUpdating.medicationSchedules,
+      id: id == _noChange ? this.id : id as String?,
+      name: name == _noChange ? this.name : name as String?,
+      currentQuantity: currentQuantity == _noChange
+          ? this.currentQuantity
+          : currentQuantity as double?,
+      medicationType: medicationType == _noChange
+          ? this.medicationType
+          : medicationType as MedicationType?,
+      medicationMealTiming: medicationMealTiming == _noChange
+          ? this.medicationMealTiming
+          : medicationMealTiming as MedicationMealTiming?,
+      expirationDate: expirationDate == _noChange
+          ? this.expirationDate
+          : expirationDate as DateTime?,
+      lastTimeTaken: lastTimeTaken == _noChange
+          ? this.lastTimeTaken
+          : lastTimeTaken as DateTime?,
+      medicationSchedules: medicationSchedules == _noChange
+          ? this.medicationSchedules
+          : medicationSchedules as List<MedicationSchedule>?,
     );
   }
 

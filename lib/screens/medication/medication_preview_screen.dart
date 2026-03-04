@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_medication_info_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_quantity_widget.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/widgets/schedule_tile_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
@@ -21,7 +26,23 @@ class MedicationPreviewScreen extends StatelessWidget {
     );
   }
 
-  void _onDelete(BuildContext context) {}
+  void _onDelete(BuildContext context) async {
+    final bool? didConfirm = await showDialog(
+      context: context,
+      builder: (context) => DeleteConfirmationDialog(
+        message: "Ar tikrai norite pašalinti pasirinktą vaistą?",
+        title: "Vaisto šalinimas",
+      ),
+    );
+
+    if (!context.mounted) return;
+
+    if (didConfirm == true) {
+      final String uid = context.read<UserProvider>().appUser!.uid;
+      context.read<MedicationProvider>().removeMedication(medication.id!, uid);
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +96,15 @@ class MedicationPreviewScreen extends StatelessWidget {
                 medicationType: medication.medicationType!,
                 previewAmount: medication.currentQuantity,
               ),
-              Divider(thickness: 2),
+              Divider(thickness: 2, color: ColorScheme.of(context).primary),
               SectionTextWidget(label: "Vartojimo tvarkaraščiai"),
+              if (medication.medicationSchedules != null)
+                ...medication.medicationSchedules!.map(
+                  (schedule) => ScheduleTileWidget(
+                    medicationType: medication.medicationType!,
+                    schedule: schedule,
+                  ),
+                ),
             ],
           ),
         ),

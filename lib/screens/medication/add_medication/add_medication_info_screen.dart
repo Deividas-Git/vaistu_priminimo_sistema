@@ -71,7 +71,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   void _onQuantityCheckboxChecked(bool? isChecked) {
     if (isChecked == null) return;
     setState(() {
-      isQuantityAdded = !isQuantityAdded;
+      isQuantityAdded = isChecked;
       _medicationQuantityInputController.text = "0";
     });
   }
@@ -87,6 +87,8 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
     //   _medicationNameError = null;
     // });
 
+    debugPrint("REDAGUOJAMAS VAISTAS: ${widget.prefilledMedication}");
+    debugPrint("galiojimas: $_expirationDate");
     final UserMedication medication =
         (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
           name: _medicationNameController.text.trim(),
@@ -130,6 +132,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                 )[0]
               : widget.prefilledMedication!.currentQuantity.toString()
         : "0";
+    _expirationDate = widget.prefilledMedication?.expirationDate;
   }
 
   @override

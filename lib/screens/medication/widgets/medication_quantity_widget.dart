@@ -65,6 +65,8 @@ class MedicationQuantityWidget extends StatelessWidget {
                     ? medicationType.consumedAmoutIsInteger
                           ? previewAmount.toString().split(".")[0]
                           : previewAmount.toString()
+                    : isPreview
+                    ? "Nežinoma"
                     : null,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
