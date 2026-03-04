@@ -65,7 +65,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               onPressed: () => _onDelete(context),
               icon: Icon(
                 Icons.delete,
-                color: const Color.fromARGB(110, 255, 17, 0),
+                //color: const Color.fromARGB(110, 255, 17, 0),
               ),
             ),
           ),

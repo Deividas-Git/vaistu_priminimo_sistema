@@ -70,7 +70,9 @@ class _MedicationScreenState extends State<MedicationScreen> {
         padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton(
           onPressed: _onAddMedication,
-          backgroundColor: const Color.fromARGB(255, 9, 175, 14),
+          backgroundColor: ColorScheme.of(
+            context,
+          ).primary, //const Color.fromARGB(255, 9, 175, 14)
           child: Icon(Icons.add, color: Colors.white),
         ),
       ),

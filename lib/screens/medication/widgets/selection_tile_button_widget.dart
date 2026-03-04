@@ -18,7 +18,7 @@ class SelectionTileButtonWidget<T> extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        splashColor: ColorScheme.of(context).secondary.withValues(alpha: 0.75),
+        splashColor: ColorScheme.of(context).secondary.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(5),
         highlightColor: ColorScheme.of(
           context,
@@ -31,7 +31,7 @@ class SelectionTileButtonWidget<T> extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
             color: isSelected
                 ? ColorScheme.of(context).primary.withValues(alpha: 0.85)
-                : ColorScheme.of(context).inversePrimary,
+                : ColorScheme.of(context).surface,
           ),
           child: Center(
             child: Text(

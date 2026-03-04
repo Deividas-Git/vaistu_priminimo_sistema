@@ -35,7 +35,7 @@ class MainApp extends StatelessWidget {
 
   final AuthService _authService = AuthService();
   final UserService _userService = UserService();
-  final Color themeColor = Colors.indigo;
+  final Color themeColor = Colors.teal;
 
   @override
   Widget build(BuildContext context) {

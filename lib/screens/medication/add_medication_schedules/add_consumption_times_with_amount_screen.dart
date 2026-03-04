@@ -173,7 +173,13 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(onPressed: _onEditPressed, icon: Icon(Icons.edit)),
+              IconButton(
+                onPressed: _onEditPressed,
+                icon: Icon(
+                  Icons.edit,
+                  //color: ColorScheme.of(context).secondary,
+                ),
+              ),
               SizedBox(
                 height: 45,
                 width: 60,
@@ -211,7 +217,9 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                 onPressed: _onDeletePressed,
                 icon: Icon(
                   Icons.delete,
-                  color: const Color.fromARGB(255, 196, 49, 38),
+                  // color: ColorScheme.of(
+                  //   context,
+                  // ).secondary, //const Color.fromARGB(255, 196, 49, 38),
                 ),
               ),
             ],

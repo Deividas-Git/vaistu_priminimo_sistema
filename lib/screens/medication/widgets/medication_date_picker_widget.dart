@@ -64,7 +64,9 @@ class MedicationDatePickerWidget extends StatelessWidget {
                     ? "Nepasirinkta"
                     : selectedDate.toString().split(" ")[0],
                 style: TextStyle(
-                  color: Colors.white,
+                  color: isPreview
+                      ? ColorScheme.of(context).secondaryContainer
+                      : Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
