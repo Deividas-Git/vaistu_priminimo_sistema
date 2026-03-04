@@ -1,32 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
+import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 
 class UserProvider extends ChangeNotifier {
   AppUser? _appUser;
   AppUser? get appUser => _appUser;
-  final MedicationService _medicationService = MedicationService();
+  final AuthService _authService;
+  final UserService _userService;
 
-  void setUser(AppUser? user) {
+  UserProvider(this._authService, this._userService);
+
+  void setUser(AppUser user) {
     _appUser = user;
   }
 
-  void clearUser() {
+  Future<String?> clearUser() async {
     _appUser = null;
-    notifyListeners();
+
+    final String? deleteUserDataMessage = await _userService.deleteUserData(
+      uid: _appUser!.uid,
+    );
+
+    if (deleteUserDataMessage != null) {
+      return deleteUserDataMessage;
+    }
+
+    final String? deleteUserAccountMessage = await _authService
+        .deleteUserAccount();
+
+    if (deleteUserAccountMessage != null) {
+      return deleteUserAccountMessage;
+    }
+
+    final String? logoutMessage = await _authService.logout();
+    if (logoutMessage != null) {
+      return logoutMessage;
+    }
+
+    return null;
   }
 
-  //medication yra immutable, todel tik add arba remove
-  void addMedication(UserMedication medication) {
-    _appUser?.userMedications.add(medication);
-    notifyListeners();
-    _medicationService.addMedication(medication);
-  }
-
-  void removeMedication(UserMedication medication) {
-    _appUser?.userMedications.remove(medication);
-    notifyListeners();
-    _medicationService.removeMedication(medication);
+  AppUser addNewUser(String uid) {
+    final user = AppUser(
+      createdAt: DateTime.now(),
+      uid: uid,
+      //hasLoadedFirstTimeData: false,
+      allowsReminders: false,
+    );
+    _userService.addNewUser(user: user);
+    return user;
   }
 }

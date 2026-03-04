@@ -42,7 +42,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   MedicationType? _medicationType;
   MedicationMealTiming? _medicationMealTiming;
   String? _medicationNameError;
-  bool isQuantityAdded = false;
+  late bool isQuantityAdded;
 
   void _onExpirationDatePicked(DateTime? date) {
     setState(() {
@@ -71,7 +71,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   void _onQuantityCheckboxChecked(bool? isChecked) {
     if (isChecked == null) return;
     setState(() {
-      isQuantityAdded = !isQuantityAdded;
+      isQuantityAdded = isChecked;
       _medicationQuantityInputController.text = "0";
     });
   }
@@ -87,15 +87,19 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
     //   _medicationNameError = null;
     // });
 
+    debugPrint("REDAGUOJAMAS VAISTAS: ${widget.prefilledMedication}");
+    debugPrint("galiojimas: $_expirationDate");
     final UserMedication medication =
         (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
           name: _medicationNameController.text.trim(),
           expirationDate: _expirationDate,
           medicationMealTiming: _medicationMealTiming,
           medicationType: _medicationType,
-          currentQuantity: double.tryParse(
-            _medicationQuantityInputController.text.replaceAll(",", "."),
-          ),
+          currentQuantity: isQuantityAdded
+              ? double.tryParse(
+                  _medicationQuantityInputController.text.replaceAll(",", "."),
+                )
+              : null,
         );
 
     debugPrint("APIE VAISTA: ${medication.toString()}");
@@ -118,6 +122,17 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
         widget.prefilledMedication?.medicationMealTiming ??
         MedicationMealTiming.unspecified;
     _medicationNameController.text = widget.prefilledMedication?.name ?? "";
+    isQuantityAdded = widget.prefilledMedication?.currentQuantity != null
+        ? true
+        : false;
+    _medicationQuantityInputController.text = isQuantityAdded
+        ? widget.prefilledMedication!.medicationType!.consumedAmoutIsInteger
+              ? widget.prefilledMedication!.currentQuantity.toString().split(
+                  ".",
+                )[0]
+              : widget.prefilledMedication!.currentQuantity.toString()
+        : "0";
+    _expirationDate = widget.prefilledMedication?.expirationDate;
   }
 
   @override

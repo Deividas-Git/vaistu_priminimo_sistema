@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -64,19 +65,28 @@ class _AddConsumptionTimesWithAmountState
 
   void _onDeleteConsumptionTimeAndAmount(
     MedicationConsumptionTimeWithAmount medicationConsumptionTimeWithAmount,
-  ) {
-    setState(() {
-      _consumptionTimesWithAmount.remove(medicationConsumptionTimeWithAmount);
-    });
+  ) async {
+    final bool? didConfirm = await showDialog(
+      context: context,
+      builder: (context) => DeleteConfirmationDialog(
+        message: "Ar tikrai norite panaikinti pasirinktą laiką?",
+        title: "Laiko ir kiekio šalinimas",
+      ),
+    );
+
+    if (didConfirm == true) {
+      setState(() {
+        _consumptionTimesWithAmount.remove(medicationConsumptionTimeWithAmount);
+      });
+    }
   }
 
   void _onCompletePressed() {
-    //debugPrint("LAIKAI ${_consumptionTimesWithAmount.length}");
     final MedicationSchedule medicationSchedule = widget
         .prefilledMedicationSchedule
         .copyWith(consumptionTimesWithAmount: _consumptionTimesWithAmount);
     widget.onScheduleAdded(medicationSchedule);
-    //debugPrint("TVARKARASTIS ${medicationSchedule.toString()}");
+
     Navigator.pop(context);
     Navigator.pop(context);
   }
@@ -91,7 +101,6 @@ class _AddConsumptionTimesWithAmountState
         : List.from(
             widget.prefilledMedicationSchedule.consumptionTimesWithAmount!,
           );
-    //debugPrint("LAIKAI IR KIEKIA: ${_consumptionTimesWithAmount.toString()}");
   }
 
   @override

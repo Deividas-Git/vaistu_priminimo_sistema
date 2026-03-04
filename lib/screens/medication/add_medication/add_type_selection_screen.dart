@@ -33,9 +33,6 @@ enum SelectedOptionToAddMedication {
   }
 }
 
-SelectedOptionToAddMedication _selectedOptionToAddMedication =
-    SelectedOptionToAddMedication.manual;
-
 class AddTypeSelectionScreen extends StatefulWidget {
   const AddTypeSelectionScreen({super.key});
 
@@ -44,6 +41,9 @@ class AddTypeSelectionScreen extends StatefulWidget {
 }
 
 class _AddTypeSelectionScreenState extends State<AddTypeSelectionScreen> {
+  SelectedOptionToAddMedication _selectedOptionToAddMedication =
+      SelectedOptionToAddMedication.manual;
+
   void _onOptionSelected(SelectedOptionToAddMedication optionToAddMedication) {
     setState(() {
       _selectedOptionToAddMedication = optionToAddMedication;
@@ -76,19 +76,15 @@ class _AddTypeSelectionScreenState extends State<AddTypeSelectionScreen> {
             child: Column(
               children: [
                 SectionTextWidget(label: "Kaip norėtumėte pridėti vaistą?"),
-                MedicationAddOptionButton(
-                  optionToAddMedication: SelectedOptionToAddMedication.manual,
-                  onOptionSelected: _onOptionSelected,
-                ),
-                SizedBox(height: 10),
-                MedicationAddOptionButton(
-                  optionToAddMedication: SelectedOptionToAddMedication.scan,
-                  onOptionSelected: _onOptionSelected,
-                ),
-                SizedBox(height: 10),
-                MedicationAddOptionButton(
-                  optionToAddMedication: SelectedOptionToAddMedication.import,
-                  onOptionSelected: _onOptionSelected,
+                ...SelectedOptionToAddMedication.values.map(
+                  (option) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: MedicationAddOptionButton(
+                      selection: _selectedOptionToAddMedication,
+                      optionToAddMedication: option,
+                      onOptionSelected: _onOptionSelected,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -107,10 +103,12 @@ class _AddTypeSelectionScreenState extends State<AddTypeSelectionScreen> {
 class MedicationAddOptionButton extends StatefulWidget {
   const MedicationAddOptionButton({
     super.key,
+    required this.selection,
     required this.optionToAddMedication,
     required this.onOptionSelected,
   });
 
+  final SelectedOptionToAddMedication selection;
   final SelectedOptionToAddMedication optionToAddMedication;
   final void Function(SelectedOptionToAddMedication) onOptionSelected;
 
@@ -133,8 +131,7 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
           height: 55,
           width: double.infinity,
           decoration: BoxDecoration(
-            color:
-                _selectedOptionToAddMedication == widget.optionToAddMedication
+            color: widget.selection == widget.optionToAddMedication
                 ? colorScheme.primary
                 : Colors.white,
             borderRadius: BorderRadius.circular(5),
@@ -145,9 +142,7 @@ class _MedicationAddOptionButtonState extends State<MedicationAddOptionButton> {
               widget.optionToAddMedication.getLabel,
               style: TextStyle(
                 fontSize: 16,
-                color:
-                    _selectedOptionToAddMedication ==
-                        widget.optionToAddMedication
+                color: widget.selection == widget.optionToAddMedication
                     ? Colors.white
                     : colorScheme.secondary,
               ),

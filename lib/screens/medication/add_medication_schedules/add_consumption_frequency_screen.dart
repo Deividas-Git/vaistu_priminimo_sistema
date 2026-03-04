@@ -251,6 +251,7 @@ class _AddConsumptionFrequencyScreenState
                     selectedDate: _endDate,
                     onDatePicked: _onEndDatePicked,
                   ),
+                SizedBox(height: 100),
               ],
             ),
           ),

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
 import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 import 'firebase_options.dart';
 
@@ -14,7 +16,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    ChangeNotifierProvider(create: (_) => UserProvider(), child: MainApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(AuthService(), UserService()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MedicationProvider(MedicationService()),
+        ),
+      ],
+      child: MainApp(),
+    ),
   );
 }
 
@@ -52,32 +64,28 @@ class MainApp extends StatelessWidget {
           }
           if (snapshot.hasData) {
             User? userCredentials = snapshot.data;
+            if (userCredentials == null) {
+              debugPrint("KLAIDA NEPAVYKO GAUTI CREDENTIALS");
+              return Scaffold(body: Center(child: CircularProgressIndicator()));
+            }
 
             return FutureBuilder(
-              future: _userService.retrieveUserData(
-                userCredentials: userCredentials,
-              ),
+              future: _userService.retrieveUserData(uid: userCredentials.uid),
               builder: (context, userSnapshot) {
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                AppUser? user = userSnapshot.data;
-
-                debugPrint(user.toString());
-
-                if (user == null) {
-                  user = AppUser(
-                    createdAt: DateTime.now(),
-                    userCredentials: userCredentials,
-                    //hasLoadedFirstTimeData: false,
-                    allowsReminders: false,
-                    userMedications: [],
+                  return Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
                   );
-                  _userService.addNewUser(user: user);
                 }
+
+                AppUser user =
+                    userSnapshot.data ??
+                    context.read<UserProvider>().addNewUser(
+                      userCredentials.uid,
+                    );
 
                 context.read<UserProvider>().setUser(user);
+                debugPrint("NAUDOTOJAS: $user");
 
                 return RootScreen();
               },

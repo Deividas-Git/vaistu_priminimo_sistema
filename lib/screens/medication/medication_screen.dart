@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/medication_preview_screen.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
@@ -31,15 +32,14 @@ class _MedicationScreenState extends State<MedicationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>().appUser;
-    final medications = user?.userMedications;
-    debugPrint("MEDICATION SKAICIUS: ${user?.userMedications.length}");
+    final medications = context.watch<MedicationProvider>().uerMedications;
+
     return Scaffold(
       appBar: RootAppBar(title: "Mano vaistai"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(40.0),
-          child: medications!.isEmpty
+          child: medications.isEmpty
               ? _NoMedicationsAddedNoticeWidget()
               : SingleChildScrollView(
                   child: Column(
@@ -56,7 +56,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                       //SizedBox(height: 10),
                       ...List.generate(
                         medications.length,
-                        (int index) => MedicationTile(
+                        (int index) => _MedicationTile(
                           medication: medications.elementAt(index),
                         ),
                       ),
@@ -96,10 +96,19 @@ class _NoMedicationsAddedNoticeWidget extends StatelessWidget {
   }
 }
 
-class MedicationTile extends StatelessWidget {
-  const MedicationTile({super.key, required this.medication});
+class _MedicationTile extends StatelessWidget {
+  const _MedicationTile({required this.medication});
 
   final UserMedication medication;
+
+  void _onMedicationPreview(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MedicationPreviewScreen(medication: medication),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +139,7 @@ class MedicationTile extends StatelessWidget {
                 ],
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => _onMedicationPreview(context),
                 icon: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,

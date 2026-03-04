@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/home/home_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/medication_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/profile/profile_screen.dart';
@@ -29,6 +32,12 @@ class _RootScreenState extends State<RootScreen> {
   @override
   void initState() {
     super.initState();
+
+    final String? uid = context.read<UserProvider>().appUser?.uid;
+    if (uid != null) {
+      context.read<MedicationProvider>().startListening(uid);
+    }
+
     _selectedScreenIndex = widget.initialScreenIndex ?? 0;
   }
 

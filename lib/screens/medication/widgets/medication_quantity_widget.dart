@@ -7,14 +7,18 @@ class MedicationQuantityWidget extends StatelessWidget {
   const MedicationQuantityWidget({
     super.key,
     required this.medicationType,
-    required this.controller,
+    this.controller,
+    this.previewAmount,
   });
 
   final MedicationType medicationType;
-  final TextEditingController controller;
+  final TextEditingController? controller;
+  final double? previewAmount;
 
   @override
   Widget build(BuildContext context) {
+    final bool isPreview = controller == null;
+
     return ThemedContainerWidget(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,22 +43,37 @@ class MedicationQuantityWidget extends StatelessWidget {
             height: 36,
             width: 90,
             child: TextField(
+              readOnly: isPreview,
               controller: controller,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
                 signed: false,
               ),
               inputFormatters: [
-                QuantityInputFormatter(medicationType: medicationType),
+                _QuantityInputFormatter(medicationType: medicationType),
               ],
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
               cursorColor: ColorScheme.of(context).inversePrimary,
               decoration: InputDecoration(
+                hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                hintText: previewAmount != null
+                    ? medicationType.consumedAmoutIsInteger
+                          ? previewAmount.toString().split(".")[0]
+                          : previewAmount.toString()
+                    : isPreview
+                    ? "Nežinoma"
+                    : null,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.primary,
+                fillColor: isPreview
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.primary,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
                   borderSide: BorderSide.none,
@@ -78,8 +97,8 @@ class MedicationQuantityWidget extends StatelessWidget {
   }
 }
 
-class QuantityInputFormatter extends TextInputFormatter {
-  QuantityInputFormatter({required this.medicationType});
+class _QuantityInputFormatter extends TextInputFormatter {
+  _QuantityInputFormatter({required this.medicationType});
 
   final MedicationType medicationType;
 
