@@ -25,13 +25,6 @@ class UserService {
       return null;
     }
 
-    // final List<UserMedication> userMedications = await _medicationService
-    //     .retrieveAllUserMedications(userCredentials.uid);
-
-    return AppUser.fromMap(
-      userDataDoc.data()!,
-      uid,
-      //userMedications,
-    );
+    return AppUser.fromMap(userDataDoc.data()!, uid);
   }
 }

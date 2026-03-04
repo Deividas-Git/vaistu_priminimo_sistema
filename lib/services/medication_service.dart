@@ -17,7 +17,7 @@ class MedicationService {
         );
   }
 
-  Future<void> addMedication(UserMedication medication, String? uid) async {
+  Future<void> addMedication(UserMedication medication, String uid) async {
     await _firestore
         .collection("users")
         .doc(uid)
