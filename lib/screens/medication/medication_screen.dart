@@ -32,7 +32,9 @@ class _MedicationScreenState extends State<MedicationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final medications = context.watch<MedicationProvider>().uerMedications;
+    final List<UserMedication> medications = context
+        .watch<MedicationProvider>()
+        .uerMedications;
 
     return Scaffold(
       appBar: RootAppBar(title: "Mano vaistai"),
