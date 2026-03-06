@@ -94,12 +94,27 @@ class _ConsumptionTimeWithAmountDialogState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SectionTextWidget(label: "Kiekis:"),
+            Row(
+              children: [
+                Expanded(child: SectionTextWidget(label: "Kiekis:")),
+                _AmountButtonWidget(
+                  icon: Icon(Icons.remove, color: Colors.white),
+                  onTap: _onAmountDecline,
+                ),
+                SizedBox(width: 5),
+                _AmountButtonWidget(
+                  icon: Icon(Icons.add, color: Colors.white),
+                  onTap: _onAmountAdd,
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
             ThemedContainerWidget(
               child: Row(
                 children: [
                   Expanded(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           widget.medicationType.getDoseLabel,
@@ -109,32 +124,16 @@ class _ConsumptionTimeWithAmountDialogState
                           ),
                         ),
                         SizedBox(width: 5),
-                        Expanded(
-                          child: Text(
-                            _amount.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: ColorScheme.of(context).secondary,
-                            ),
+                        Text(
+                          _amount.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: ColorScheme.of(context).secondary,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Row(
-                    children: [
-                      _AmountButtonWidget(
-                        icon: Icon(Icons.remove, color: Colors.white),
-                        onTap: _onAmountDecline,
-                      ),
-                      SizedBox(width: 5),
-                      _AmountButtonWidget(
-                        icon: Icon(Icons.add, color: Colors.white),
-                        onTap: _onAmountAdd,
-                      ),
-                    ],
                   ),
                 ],
               ),

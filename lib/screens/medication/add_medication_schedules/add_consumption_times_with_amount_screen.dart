@@ -182,7 +182,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
               ),
               SizedBox(
                 height: 45,
-                width: 60,
+                width: 55,
                 child: Container(
                   decoration: BoxDecoration(
                     color: ColorScheme.of(
@@ -202,9 +202,10 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 10),
+              SizedBox(width: 5),
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       medicationType.getDoseLabel,
@@ -213,7 +214,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                         color: ColorScheme.of(context).secondary,
                       ),
                     ),
-                    SizedBox(width: 5),
+                    //SizedBox(width: 5),
                     Text(
                       medicationConsumptionTimeWithAmount.consumptionAmount
                           .toString(),

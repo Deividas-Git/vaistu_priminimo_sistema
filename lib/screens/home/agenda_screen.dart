@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
@@ -123,6 +124,15 @@ class _AgendaTile extends StatelessWidget {
                       color: ColorScheme.of(context).onSurface,
                     ),
                   ),
+                  if (item.medicationMealTiming !=
+                      MedicationMealTiming.unspecified)
+                    Text(
+                      "${item.medicationMealTiming.getLabel},",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
+                    ),
                   Row(
                     children: [
                       Text(
@@ -138,14 +148,6 @@ class _AgendaTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: ColorScheme.of(context).onSurfaceVariant,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        "(${item.medicationMealTiming.getLabel.toLowerCase()})",
-                        style: TextStyle(
-                          fontSize: 18,
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
