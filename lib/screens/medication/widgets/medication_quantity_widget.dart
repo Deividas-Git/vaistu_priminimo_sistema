@@ -77,7 +77,7 @@ class MedicationQuantityWidget extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 filled: true,
                 fillColor: isPreview
-                    ? Theme.of(context).colorScheme.secondary
+                    ? Theme.of(context).colorScheme.onSurfaceVariant
                     : Theme.of(context).colorScheme.primary,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -93,7 +93,11 @@ class MedicationQuantityWidget extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             medicationType.getUnit,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: ColorScheme.of(context).onSurface,
+            ),
           ),
           const SizedBox(width: 10),
         ],

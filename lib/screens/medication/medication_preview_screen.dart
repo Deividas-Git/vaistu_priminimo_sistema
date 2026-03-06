@@ -130,7 +130,11 @@ class _LabelValueTile extends StatelessWidget {
               Text("$label: ", style: TextStyle(fontSize: 16)),
               Text(
                 value,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: ColorScheme.of(context).onSurfaceVariant,
+                ),
               ),
             ],
           ),

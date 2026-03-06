@@ -87,7 +87,8 @@ class _ConsumptionTimeWithAmountDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      actionsAlignment: MainAxisAlignment.center,
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      title: Text(textAlign: TextAlign.center, "Priskirti laiką ir kiekį"),
       content: SizedBox(
         height: 300,
         child: Column(
@@ -98,23 +99,42 @@ class _ConsumptionTimeWithAmountDialogState
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      "${widget.medicationType.getDoseLabel} $_amount",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          widget.medicationType.getDoseLabel,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: ColorScheme.of(context).secondary,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            _amount.toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: ColorScheme.of(context).secondary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(width: 10),
-                  _AmountButtonWidget(
-                    icon: Icon(Icons.remove, color: Colors.white),
-                    onTap: _onAmountDecline,
-                  ),
-                  SizedBox(width: 5),
-                  _AmountButtonWidget(
-                    icon: Icon(Icons.add, color: Colors.white),
-                    onTap: _onAmountAdd,
+                  Row(
+                    children: [
+                      _AmountButtonWidget(
+                        icon: Icon(Icons.remove, color: Colors.white),
+                        onTap: _onAmountDecline,
+                      ),
+                      SizedBox(width: 5),
+                      _AmountButtonWidget(
+                        icon: Icon(Icons.add, color: Colors.white),
+                        onTap: _onAmountAdd,
+                      ),
+                    ],
                   ),
                 ],
               ),

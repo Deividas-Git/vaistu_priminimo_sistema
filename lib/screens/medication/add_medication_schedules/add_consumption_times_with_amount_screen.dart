@@ -204,13 +204,26 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
               ),
               SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  "${medicationType.getDoseLabel} ${medicationConsumptionTimeWithAmount.consumptionAmount}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: ColorScheme.of(context).secondary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      medicationType.getDoseLabel,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      medicationConsumptionTimeWithAmount.consumptionAmount
+                          .toString(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: ColorScheme.of(context).secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(

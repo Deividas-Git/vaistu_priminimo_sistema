@@ -14,7 +14,7 @@ class SectionTextWidget extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 20,
-              color: ColorScheme.of(context).inverseSurface,
+              color: ColorScheme.of(context).onSurface,
             ),
             textAlign: TextAlign.left,
           ),

@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               fontSize: 18,
             ),
             unselectedLabelStyle: TextStyle(
-              color: ColorScheme.of(context).surfaceContainerHighest,
+              color: ColorScheme.of(context).onSurfaceVariant,
               fontSize: 16,
               //fontWeight: FontWeight.bold,
             ),

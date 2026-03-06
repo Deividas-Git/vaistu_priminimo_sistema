@@ -12,16 +12,17 @@ class AddInformationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: InkWell(
-        onTap: onStartAddingInfo,
-        splashColor: ColorScheme.of(context).primary.withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(5),
-        highlightColor: ColorScheme.of(
-          context,
-        ).secondary.withValues(alpha: 0.35),
-        child: Ink(
-          child: ThemedContainerWidget(
+    return ThemedContainerWidget(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onStartAddingInfo,
+          splashColor: ColorScheme.of(context).primary.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(5),
+          highlightColor: ColorScheme.of(
+            context,
+          ).secondary.withValues(alpha: 0.2),
+          child: Ink(
             child: Row(
               children: [
                 SizedBox(

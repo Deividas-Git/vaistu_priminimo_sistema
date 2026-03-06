@@ -56,7 +56,7 @@ class MedicationDatePickerWidget extends StatelessWidget {
                   borderRadius: BorderRadiusGeometry.circular(5.0),
                 ),
                 backgroundColor: isPreview
-                    ? ColorScheme.of(context).secondary
+                    ? ColorScheme.of(context).onSurfaceVariant
                     : ColorScheme.of(context).primary,
               ),
               child: Text(
