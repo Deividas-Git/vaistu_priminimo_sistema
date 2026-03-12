@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
@@ -29,9 +29,12 @@ class MedicationPreviewScreen extends StatelessWidget {
   void _onDelete(BuildContext context) async {
     final bool? didConfirm = await showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (context) => ConfirmationDialog(
         message: "Ar tikrai norite pašalinti pasirinktą vaistą?",
         title: "Vaisto šalinimas",
+        rightOptionText: "Naikinti",
+        leftOptionText: "Atšaukti",
+        leftSideHighlighted: true,
       ),
     );
 

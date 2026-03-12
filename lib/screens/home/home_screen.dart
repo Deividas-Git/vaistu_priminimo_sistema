@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/home/agenda_screen.dart';
+import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,9 +11,45 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DateTime today = DateTime.now();
-  final DateTime tomorrow = DateTime.now().add(Duration(days: 1));
-  final DateTime yesterday = DateTime.now().subtract(Duration(days: 1));
+  final DateTime _today = DateTime.now();
+  final DateTime _tomorrow = DateTime.now().add(Duration(days: 1));
+  final DateTime _yesterday = DateTime.now().subtract(Duration(days: 1));
+  final NotificationService _notificationService = NotificationService();
+  late final bool _allowsNotifications;
+
+  Future<bool> _areNotificationsAllowed() async {
+    return await _notificationService.areNotificationsAllowed();
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    _allowsNotifications = await _areNotificationsAllowed();
+    if (_allowsNotifications || !mounted) return;
+    bool? didConfirm = await showDialog(
+      context: context,
+      builder: (context) => ConfirmationDialog(
+        message: "Ar norėtumėte gauti priminimus vaistų vartojimui?",
+        title: "Vaistų priminimai",
+        rightOptionText: "Noriu gauti",
+        leftOptionText: "Ne dabar",
+        rightSideHighlighted: true,
+      ),
+    );
+
+    debugPrint("PASIRINKIMAS $didConfirm");
+
+    if (didConfirm == true) {
+      await _notificationService.requestNotificationPermissions();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestNotificationPermission();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: TabBarView(
           children: [
-            AgendaScreen(date: yesterday),
-            AgendaScreen(date: today),
-            AgendaScreen(date: tomorrow),
+            AgendaScreen(date: _yesterday),
+            AgendaScreen(date: _today),
+            AgendaScreen(date: _tomorrow),
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -68,9 +68,12 @@ class _AddConsumptionTimesWithAmountState
   ) async {
     final bool? didConfirm = await showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (context) => ConfirmationDialog(
         message: "Ar tikrai norite panaikinti pasirinktą laiką?",
         title: "Laiko ir kiekio šalinimas",
+        rightOptionText: "Naikinti",
+        leftOptionText: "Atšaukti",
+        leftSideHighlighted: true,
       ),
     );
 
