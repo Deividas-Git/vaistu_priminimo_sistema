@@ -173,7 +173,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
         ThemedContainerWidget(
           doesHeightExpand: true,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(
@@ -205,21 +205,24 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 5),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //SizedBox(width: 5),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorScheme.of(context).secondary,
+                  ),
                   children: [
-                    Text(
-                      medicationType.getDoseLabel,
+                    TextSpan(
+                      text: "${medicationType.getDoseLabel} ",
                       style: TextStyle(
                         fontSize: 16,
                         color: ColorScheme.of(context).secondary,
                       ),
                     ),
-                    //SizedBox(width: 5),
-                    Text(
-                      medicationConsumptionTimeWithAmount.consumptionAmount
+                    TextSpan(
+                      text: medicationConsumptionTimeWithAmount
+                          .consumptionAmount
                           .toString(),
                       style: TextStyle(
                         fontSize: 18,
@@ -230,6 +233,30 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ],
                 ),
               ),
+              // Expanded(
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Text(
+              //         medicationType.getDoseLabel,
+              //         style: TextStyle(
+              //           fontSize: 16,
+              //           color: ColorScheme.of(context).secondary,
+              //         ),
+              //       ),
+              //       //SizedBox(width: 5),
+              //       Text(
+              //         medicationConsumptionTimeWithAmount.consumptionAmount
+              //             .toString(),
+              //         style: TextStyle(
+              //           fontSize: 18,
+              //           color: ColorScheme.of(context).secondary,
+              //           fontWeight: FontWeight.bold,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               IconButton(
                 onPressed: _onDeletePressed,
                 icon: Icon(
