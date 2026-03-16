@@ -114,46 +114,56 @@ class _AgendaTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.medicationName,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: ColorScheme.of(context).onSurface,
-                    ),
-                  ),
-                  if (item.medicationMealTiming !=
-                      MedicationMealTiming.unspecified)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      "${item.medicationMealTiming.getLabel},",
+                      "[${item.scheduleName}]",
                       style: TextStyle(
-                        fontSize: 18,
-                        color: ColorScheme.of(context).onSurfaceVariant,
+                        fontSize: 16,
+                        color: ColorScheme.of(context).onSurface,
                       ),
                     ),
-                  Row(
-                    children: [
+                    Divider(thickness: 2),
+                    Text(
+                      item.medicationName,
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: ColorScheme.of(context).onSurface,
+                      ),
+                    ),
+                    if (item.medicationMealTiming !=
+                        MedicationMealTiming.unspecified)
                       Text(
-                        item.medicationType.getDoseLabel,
+                        "${item.medicationMealTiming.getLabel},",
                         style: TextStyle(
                           fontSize: 18,
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
-                      SizedBox(width: 5),
-                      Text(
-                        item.amountToTake.toString(),
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: ColorScheme.of(context).onSurfaceVariant,
+                    Row(
+                      children: [
+                        Text(
+                          item.medicationType.getDoseLabel,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: ColorScheme.of(context).onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        SizedBox(width: 5),
+                        Text(
+                          item.amountToTake.toString(),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: ColorScheme.of(context).onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               ArrowButton(onButtonPressed: _onTakeMedication),
             ],

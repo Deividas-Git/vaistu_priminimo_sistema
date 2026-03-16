@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
+import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 
@@ -102,27 +102,39 @@ class NotificationService {
         medications: medications,
       );
 
-      final List<AgendaItem> agenda = agendaService.getAgenda();
-      for (AgendaItem item in agenda) {
+      final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();
+      for (AgendaGroup group in groupedAgenda) {
         final scheduledDateTz = tz.TZDateTime(
           tz.local,
           checkedDate.year,
           checkedDate.month,
           checkedDate.day,
-          item.time.hour,
-          item.time.minute,
+          group.time.hour,
+          group.time.minute,
         );
 
         if (!scheduledDateTz.isAfter(nowTz)) continue;
         //debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
         final int id =
-            (item.medicationId.hashCode +
+            (group.items[0].medicationId.hashCode +
                 scheduledDateTz.millisecondsSinceEpoch) %
             2147483647;
+        String groupedMedications = group.items[0].medicationName;
+        if (group.items.length == 2) {
+          groupedMedications =
+              "$groupedMedications ir ${group.items[1].medicationName}";
+        } else if (group.items.length > 2) {
+          for (int i = 1; i < group.items.length - 1; i++) {
+            groupedMedications =
+                "$groupedMedications, ${group.items[i].medicationName}";
+          }
+          groupedMedications =
+              "$groupedMedications ir ${group.items[group.items.length - 1].medicationName}";
+        }
         await scheduleNotification(
           id: id,
           title: "Vaisto vartojimas",
-          body: "Tavęs laukia ${item.medicationName}!",
+          body: "Tavęs laukia $groupedMedications!",
           date: scheduledDateTz,
         );
       }

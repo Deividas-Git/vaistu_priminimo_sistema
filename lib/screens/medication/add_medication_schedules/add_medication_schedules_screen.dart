@@ -69,16 +69,21 @@ class _AddMedicationSchedulesScreenState
 
   void _onScheduleAdded(MedicationSchedule medicationSchedule) {
     setState(() {
-      //TODO SU TUO PACIU PAVADINIMU TRINAM, pirma alert dialogas
-
-      // for (final MedicationSchedule schedule in _medicationSchedules) {
-      //   if(schedule.name == medicationSchedule.name){
-      //   }
-      // }
-
       if (indexOfEditedSchedule == null) {
+        if (medicationSchedule.name!.isEmpty) {
+          final String defaultScheduleName =
+              "${widget.prefilledMedication.name} tvarkaraštis ${_medicationSchedules.length + 1}";
+          medicationSchedule = medicationSchedule.copyWith(
+            name: defaultScheduleName,
+          );
+        }
         _medicationSchedules.add(medicationSchedule);
       } else {
+        if (medicationSchedule.name!.isEmpty) {
+          medicationSchedule = medicationSchedule.copyWith(
+            name: "Redaguotas tvarkaraštis",
+          );
+        }
         _medicationSchedules[indexOfEditedSchedule!] = medicationSchedule;
         indexOfEditedSchedule = null;
       }

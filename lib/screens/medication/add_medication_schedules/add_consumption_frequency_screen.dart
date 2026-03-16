@@ -120,7 +120,7 @@ class _AddConsumptionFrequencyScreenState
           intervalsDays: _intervalDays,
           weekdays: _selectedWeekdays,
           name: _scheduleNameController.text.isEmpty
-              ? "Naujas tvarkarašis"
+              ? ""
               : _scheduleNameController.text,
         ).copyWith(
           consumptionTimesWithAmount:
