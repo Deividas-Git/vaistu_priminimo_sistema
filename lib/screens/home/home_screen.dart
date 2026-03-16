@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _requestNotificationPermission() async {
+    //await _notificationService.getPendingNotifications();
     _allowsNotifications = await _areNotificationsAllowed();
     if (_allowsNotifications || !mounted) return;
     bool? didConfirm = await showDialog(
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (didConfirm == true) {
       await _notificationService.requestNotificationPermissions();
+      await _notificationService.requestExactAlarmsPermission();
     }
   }
 
