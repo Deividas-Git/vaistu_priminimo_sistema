@@ -110,32 +110,32 @@ class _ConsumptionTimeWithAmountDialogState
             ),
             SizedBox(height: 10),
             ThemedContainerWidget(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.medicationType.getDoseLabel,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: ColorScheme.of(context).secondary,
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          _amount.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: ColorScheme.of(context).secondary,
-                          ),
-                        ),
-                      ],
+              child: Center(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ColorScheme.of(context).secondary,
                     ),
+                    children: [
+                      TextSpan(
+                        text: "${widget.medicationType.getDoseLabel} ",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: ColorScheme.of(context).secondary,
+                        ),
+                      ),
+                      TextSpan(
+                        text: _amount.toString(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: ColorScheme.of(context).secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
             Divider(thickness: 2),

@@ -47,7 +47,7 @@ class AgendaService {
     return false;
   }
 
-  List<AgendaItem> _getAgenda() {
+  List<AgendaItem> getAgenda() {
     List<AgendaItem> agenda = [];
     for (final UserMedication medication in medications) {
       if (medication.medicationSchedules == null) continue;
@@ -78,7 +78,7 @@ class AgendaService {
   }
 
   List<AgendaGroup> getGroupedAgenda() {
-    final List<AgendaItem> agenda = _getAgenda();
+    final List<AgendaItem> agenda = getAgenda();
     final Map<TimeOfDay, List<AgendaItem>> agendaGroups = {};
     for (AgendaItem item in agenda) {
       if (agendaGroups[item.time] == null) {

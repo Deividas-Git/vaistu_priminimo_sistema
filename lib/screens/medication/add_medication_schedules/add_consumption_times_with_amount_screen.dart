@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -68,9 +68,12 @@ class _AddConsumptionTimesWithAmountState
   ) async {
     final bool? didConfirm = await showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (context) => ConfirmationDialog(
         message: "Ar tikrai norite panaikinti pasirinktą laiką?",
         title: "Laiko ir kiekio šalinimas",
+        rightOptionText: "Naikinti",
+        leftOptionText: "Atšaukti",
+        leftSideHighlighted: true,
       ),
     );
 
@@ -170,7 +173,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
         ThemedContainerWidget(
           doesHeightExpand: true,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(
@@ -202,21 +205,24 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 5),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //SizedBox(width: 5),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorScheme.of(context).secondary,
+                  ),
                   children: [
-                    Text(
-                      medicationType.getDoseLabel,
+                    TextSpan(
+                      text: "${medicationType.getDoseLabel} ",
                       style: TextStyle(
                         fontSize: 16,
                         color: ColorScheme.of(context).secondary,
                       ),
                     ),
-                    //SizedBox(width: 5),
-                    Text(
-                      medicationConsumptionTimeWithAmount.consumptionAmount
+                    TextSpan(
+                      text: medicationConsumptionTimeWithAmount
+                          .consumptionAmount
                           .toString(),
                       style: TextStyle(
                         fontSize: 18,

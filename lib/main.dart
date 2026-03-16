@@ -9,12 +9,14 @@ import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
+import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService().initializeNotificationService();
   runApp(
     MultiProvider(
       providers: [
