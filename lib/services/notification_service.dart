@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:flutter_timezone/flutter_timezone.dart';
-// import 'package:flutter_timezone/timezone_info.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
@@ -41,12 +40,10 @@ class NotificationService {
     );
 
     tz.initializeTimeZones();
-    // final TimezoneInfo currentTimeZone =
-    //     await FlutterTimezone.getLocalTimezone();
-    // debugPrint("VIETOVE: ${currentTimeZone.localizedName?.name}");
-    // tz.setLocalLocation(
-    //   tz.getLocation(currentTimeZone.localizedName?.name ?? "Europe/Vilnius"),
-    // ); //laikinai kol emuliatoriu naudoju
+    final TimezoneInfo currentTimeZone =
+        await FlutterTimezone.getLocalTimezone();
+    debugPrint("VIETOVE: ${currentTimeZone.identifier}");
+    tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
     _isInitialized = true;
   }
 
@@ -117,7 +114,7 @@ class NotificationService {
         );
 
         if (!scheduledDateTz.isAfter(nowTz)) continue;
-        debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
+        //debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
         final int id =
             (item.medicationId.hashCode +
                 scheduledDateTz.millisecondsSinceEpoch) %
@@ -130,7 +127,7 @@ class NotificationService {
         );
       }
     }
-    await getPendingNotifications();
+    //await getPendingNotifications();
   }
 
   Future<void> requestNotificationPermissions() async {
@@ -151,10 +148,11 @@ class NotificationService {
     await android?.requestExactAlarmsPermission();
   }
 
-  Future<void> getPendingNotifications() async {
+  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     final List<PendingNotificationRequest> pendingNotificationRequests =
         await notificationsPlugin.pendingNotificationRequests();
     debugPrint("PENDING: ${pendingNotificationRequests.length.toString()}");
+    return pendingNotificationRequests;
   }
 
   Future<bool> areNotificationsAllowed() async {
