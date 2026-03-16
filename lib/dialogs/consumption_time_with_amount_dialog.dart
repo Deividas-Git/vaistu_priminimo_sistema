@@ -135,32 +135,6 @@ class _ConsumptionTimeWithAmountDialogState
                       ),
                     ],
                   ),
-                  // child: Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: [
-                  //           Text(
-                  //             widget.medicationType.getDoseLabel,
-                  //             style: TextStyle(
-                  //               fontSize: 16,
-                  //               color: ColorScheme.of(context).secondary,
-                  //             ),
-                  //           ),
-                  //           SizedBox(width: 5),
-                  //           Text(
-                  //             _amount.toString(),
-                  //             style: TextStyle(
-                  //               fontWeight: FontWeight.bold,
-                  //               fontSize: 18,
-                  //               color: ColorScheme.of(context).secondary,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ],
                 ),
               ),
             ),

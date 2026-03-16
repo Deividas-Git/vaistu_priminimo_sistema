@@ -233,30 +233,6 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              // Expanded(
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Text(
-              //         medicationType.getDoseLabel,
-              //         style: TextStyle(
-              //           fontSize: 16,
-              //           color: ColorScheme.of(context).secondary,
-              //         ),
-              //       ),
-              //       //SizedBox(width: 5),
-              //       Text(
-              //         medicationConsumptionTimeWithAmount.consumptionAmount
-              //             .toString(),
-              //         style: TextStyle(
-              //           fontSize: 18,
-              //           color: ColorScheme.of(context).secondary,
-              //           fontWeight: FontWeight.bold,
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               IconButton(
                 onPressed: _onDeletePressed,
                 icon: Icon(

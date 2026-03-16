@@ -11,11 +11,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DateTime _today = DateTime.now();
-  final DateTime _tomorrow = DateTime.now().add(Duration(days: 1));
-  final DateTime _yesterday = DateTime.now().subtract(Duration(days: 1));
   final NotificationService _notificationService = NotificationService();
   late final bool _allowsNotifications;
+  final List<DateTime> _dates = [
+    DateTime.now().subtract(Duration(days: 1)),
+    DateTime.now(),
+    DateTime.now().add(Duration(days: 1)),
+  ];
 
   Future<bool> _areNotificationsAllowed() async {
     return await _notificationService.areNotificationsAllowed();
@@ -77,20 +79,45 @@ class _HomeScreenState extends State<HomeScreen> {
               fontSize: 16,
               //fontWeight: FontWeight.bold,
             ),
-            tabs: [
-              Tab(text: "Vakar"),
-              Tab(text: "Šiandien"),
-              Tab(text: "Rytoj"),
-            ],
+            tabs: _dates.map((date) => _DateTab(date: date)).toList(),
           ),
         ),
         body: TabBarView(
-          children: [
-            AgendaScreen(date: _yesterday),
-            AgendaScreen(date: _today),
-            AgendaScreen(date: _tomorrow),
-          ],
+          children: _dates.map((date) => AgendaScreen(date: date)).toList(),
         ),
+      ),
+    );
+  }
+}
+
+class _DateTab extends StatelessWidget {
+  const _DateTab({required this.date});
+
+  final DateTime date;
+
+  String getDayLabel() {
+    final DateTime now = DateTime.now();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+    final DateTime target = DateTime(date.year, date.month, date.day);
+
+    if (target == today) return "Šiandien";
+    if (target == today.subtract(const Duration(days: 1))) return "Vakar";
+    if (target == today.add(const Duration(days: 1))) return "Rytoj";
+
+    return "";
+  }
+
+  String getMonthDayLabel() {
+    return "${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Tab(
+      height: 70,
+      child: Text(
+        "${getDayLabel()}\n${getMonthDayLabel()}",
+        textAlign: TextAlign.center,
       ),
     );
   }
