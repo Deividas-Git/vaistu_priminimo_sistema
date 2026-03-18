@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -114,6 +115,7 @@ class _AddConsumptionFrequencyScreenState
 
     MedicationSchedule medicationSchedule =
         MedicationSchedule(
+          id: widget.prefilledMedicationSchedule?.id ?? Uuid().v4(),
           startDate: _startDate!,
           endDate: _endDate,
           medicationFrequencyType: _medicationFrequencyType!,

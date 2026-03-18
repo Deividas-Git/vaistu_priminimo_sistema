@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
@@ -61,6 +62,9 @@ class _ConsumptionTimeWithAmountDialogState
     final time = TimeOfDay(hour: _hour, minute: _minute);
     final MedicationConsumptionTimeWithAmount
     medicationConsumptionTimeWithAmount = MedicationConsumptionTimeWithAmount(
+      id:
+          widget.prefilledMedicationConsumptionTimeWithAmount?.id ??
+          Uuid().v4(),
       time: time,
       consumptionAmount: _amount,
     );
