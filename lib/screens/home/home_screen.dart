@@ -16,8 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final MedicationProvider _medicationProvider;
-  late final MedicationRecordsProvider _medicationRecordsProvider;
   final NotificationService _notificationService = NotificationService();
   final List<DateTime> _dates = [
     DateTime.now().subtract(Duration(days: 1)),
@@ -30,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _requestNotificationPermission() async {
-    //await _notificationService.getPendingNotifications();
     final bool allowsNotifications = await _areNotificationsAllowed();
     if (allowsNotifications || !mounted) return;
     bool? didConfirm = await showDialog(
@@ -52,45 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _setupNotificationListeners() {
-    _medicationProvider = context.read<MedicationProvider>();
-    _medicationRecordsProvider = context.read<MedicationRecordsProvider>();
-
-    _medicationProvider.addListener(_scheduleNotifications);
-    _medicationRecordsProvider.addListener(_scheduleNotifications);
-  }
-
-  void _scheduleNotifications() {
-    final List<UserMedication> medications = context
-        .read<MedicationProvider>()
-        .uerMedications;
-    final List<MedicationRecord> medicationRecords = context
-        .read<MedicationRecordsProvider>()
-        .medicationRecords;
-    final Map<String, MedicationRecord> recordsMap = {
-      for (var record in medicationRecords) record.id: record,
-    };
-    _notificationService.scheduleAllMedications(
-      medications: medications,
-      recordsMap: recordsMap,
-    );
-  }
-
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
-      _setupNotificationListeners();
     });
-  }
-
-  @override
-  void dispose() {
-    _medicationProvider.removeListener(_scheduleNotifications);
-    _medicationRecordsProvider.removeListener(_scheduleNotifications);
-    super.dispose();
   }
 
   @override

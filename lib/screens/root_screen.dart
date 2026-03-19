@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/managers/notification_manager.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
@@ -17,6 +18,7 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+  late NotificationManager _notificationManager;
   final List<Widget> _navBarScreens = [
     HomeScreen(),
     MedicationScreen(),
@@ -39,9 +41,20 @@ class _RootScreenState extends State<RootScreen> {
     if (uid != null) {
       context.read<MedicationProvider>().startListening(uid);
       context.read<MedicationRecordsProvider>().startListening(uid);
+
+      _notificationManager = NotificationManager(
+        context.read<MedicationProvider>(),
+        context.read<MedicationRecordsProvider>(),
+      );
     }
 
     _selectedScreenIndex = widget.initialScreenIndex ?? 0;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _notificationManager.dispose();
   }
 
   @override
