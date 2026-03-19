@@ -62,7 +62,9 @@ class MedicationQuantityWidget extends StatelessWidget {
               decoration: InputDecoration(
                 hintStyle: TextStyle(
                   color: isPreview
-                      ? ColorScheme.of(context).secondaryContainer
+                      ? ColorScheme.of(
+                          context,
+                        ).onSecondary.withValues(alpha: 0.5)
                       : Colors.white,
                   fontSize: 16,
                 ),
@@ -77,7 +79,7 @@ class MedicationQuantityWidget extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 filled: true,
                 fillColor: isPreview
-                    ? Theme.of(context).colorScheme.onSurfaceVariant
+                    ? Theme.of(context).colorScheme.secondary
                     : Theme.of(context).colorScheme.primary,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -95,7 +97,7 @@ class MedicationQuantityWidget extends StatelessWidget {
             medicationType.getUnit,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              //fontWeight: FontWeight.bold,
               color: ColorScheme.of(context).onSurface,
             ),
           ),

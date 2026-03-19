@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/medication_state_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/arrow_button.dart';
@@ -53,7 +56,9 @@ class AgendaScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: groupedAgenda
-                    .map((group) => _GroupedAgendaTile(group: group))
+                    .map(
+                      (group) => _GroupedAgendaTile(group: group, date: date),
+                    )
                     .toList(),
               ),
             ),
@@ -62,9 +67,10 @@ class AgendaScreen extends StatelessWidget {
 }
 
 class _GroupedAgendaTile extends StatelessWidget {
-  const _GroupedAgendaTile({required this.group});
+  const _GroupedAgendaTile({required this.group, required this.date});
 
   final AgendaGroup group;
+  final DateTime date;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +91,7 @@ class _GroupedAgendaTile extends StatelessWidget {
           doesHeightExpand: true,
           child: Column(
             children: group.items
-                .map((item) => _AgendaTile(item: item))
+                .map((item) => _AgendaTile(item: item, date: date))
                 .toList(),
           ),
         ),
@@ -96,11 +102,19 @@ class _GroupedAgendaTile extends StatelessWidget {
 }
 
 class _AgendaTile extends StatelessWidget {
-  const _AgendaTile({required this.item});
+  const _AgendaTile({required this.item, required this.date});
 
   final AgendaItem item;
+  final DateTime date;
 
-  void _onTakeMedication() {}
+  void _onTakeMedication(BuildContext context) async {
+    final MedicationStateActionResult result = await showDialog(
+      context: context,
+      builder: (context) => MedicationStateDialog(agendaItem: item, date: date),
+    );
+
+    debugPrint("RESULT: $result");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,30 +155,38 @@ class _AgendaTile extends StatelessWidget {
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
-                    Row(
-                      children: [
-                        Text(
-                          item.medicationType.getDoseLabel,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: ColorScheme.of(context).onSurfaceVariant,
-                          ),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: ColorScheme.of(context).onSurfaceVariant,
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          item.amountToTake.toString(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: ColorScheme.of(context).onSurfaceVariant,
+                        children: [
+                          TextSpan(text: item.medicationType.getDoseLabel),
+                          TextSpan(
+                            text: " ${item.amountToTake.toString()}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: ColorScheme.of(context).onSurfaceVariant,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      item.state.getLabel,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
               ),
-              ArrowButton(onButtonPressed: _onTakeMedication),
+              ArrowButton(onButtonPressed: () => _onTakeMedication(context)),
             ],
           ),
         ),
