@@ -7,6 +7,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 
@@ -90,6 +91,7 @@ class NotificationService {
 
   Future<void> scheduleAllMedications({
     required List<UserMedication> medications,
+    required Map<String, MedicationRecord> recordsMap,
   }) async {
     await notificationsPlugin.cancelAll();
 
@@ -100,6 +102,7 @@ class NotificationService {
       AgendaService agendaService = AgendaService(
         date: DateTime(checkedDate.year, checkedDate.month, checkedDate.day),
         medications: medications,
+        recordsMap: recordsMap,
       );
 
       final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();
@@ -112,7 +115,7 @@ class NotificationService {
           group.time.hour,
           group.time.minute,
         );
-
+        //TODO Tikrinti ar jau suvartotas kad neschedulintu
         if (!scheduledDateTz.isAfter(nowTz)) continue;
         //debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
         final int id =

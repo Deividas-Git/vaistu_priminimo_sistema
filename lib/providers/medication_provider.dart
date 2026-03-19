@@ -7,7 +7,7 @@ import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
 class MedicationProvider extends ChangeNotifier {
   final MedicationService _medicationService;
-  final _notificationService = NotificationService();
+  final NotificationService _notificationService = NotificationService();
   StreamSubscription? _streamSubscription;
   List<UserMedication> _userMedications = [];
   List<UserMedication> get uerMedications => _userMedications;
@@ -22,10 +22,6 @@ class MedicationProvider extends ChangeNotifier {
       _userMedications = medications;
       debugPrint("VAISTAI: $medications");
       notifyListeners();
-
-      await _notificationService.scheduleAllMedications(
-        medications: medications,
-      );
     });
   }
 

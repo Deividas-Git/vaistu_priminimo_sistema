@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/arrow_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
-class AgendaScreen extends StatefulWidget {
-  const AgendaScreen({super.key, required this.date});
+class AgendaScreen extends StatelessWidget {
+  const AgendaScreen({
+    super.key,
+    required this.date,
+    required this.medications,
+    required this.medicationRecords,
+  });
 
   final DateTime date;
+  final List<UserMedication> medications;
+  final Map<String, MedicationRecord> medicationRecords;
 
-  @override
-  State<AgendaScreen> createState() => _AgendaScreenState();
-}
-
-class _AgendaScreenState extends State<AgendaScreen> {
   @override
   Widget build(BuildContext context) {
-    final List<UserMedication> medications = context
-        .watch<MedicationProvider>()
-        .uerMedications;
     final AgendaService agendaService = AgendaService(
-      date: widget.date,
+      date: date,
       medications: medications,
+      recordsMap: medicationRecords,
     );
 
     final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();

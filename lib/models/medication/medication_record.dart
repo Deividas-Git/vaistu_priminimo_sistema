@@ -1,19 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 
 class MedicationRecord {
+  final String id;
   final String medicationId;
-  final String scheduleId;
   final String timeId;
   final DateTime scheduledDate;
   final DateTime? takenDate;
   final MedicationRecordState state;
 
   MedicationRecord({
+    required this.id,
     required this.medicationId,
-    required this.scheduleId,
     required this.timeId,
     required this.scheduledDate,
     required this.takenDate,
     required this.state,
   });
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> map = {
+      "id": id,
+      "medicationId": medicationId,
+      "timeId": timeId,
+      "scheduledDate": Timestamp.fromDate(scheduledDate),
+      "state": state.getLabel,
+    };
+
+    if (takenDate != null) {
+      map["takenDate"] = takenDate;
+    }
+
+    return map;
+  }
+
+  factory MedicationRecord.fromMap(Map<String, dynamic> map) {
+    return MedicationRecord(
+      id: map["id"],
+      medicationId: map["medicationId"],
+      timeId: map["timeId"],
+      scheduledDate: (map["scheduledDate"] as Timestamp).toDate(),
+      takenDate: map["scheduledDate"] != null
+          ? (map["scheduledDate"] as Timestamp).toDate()
+          : null,
+      state: MedicationRecordState.values.byName(map["state"]),
+    );
+  }
+
+  static String buildId({
+    required String medicationId,
+    required String timeId,
+    required DateTime date,
+  }) {
+    return "${medicationId}_${timeId}_${date.year.toString().padLeft(4, '0')}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}";
+  }
 }

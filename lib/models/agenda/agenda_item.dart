@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 
 class AgendaItem {
@@ -10,6 +11,7 @@ class AgendaItem {
   final MedicationType medicationType;
   final TimeOfDay time;
   final String scheduleName;
+  final MedicationRecordState state;
 
   AgendaItem({
     required this.medicationId,
@@ -19,10 +21,11 @@ class AgendaItem {
     required this.medicationType,
     required this.time,
     required this.scheduleName,
+    required this.state,
   });
 
   @override
   String toString() {
-    return "Med ID: $medicationId, vaistas: $medicationName, laikas: $time, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName";
+    return "Med ID: $medicationId, vaistas: $medicationName, laikas: $time, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state";
   }
 }

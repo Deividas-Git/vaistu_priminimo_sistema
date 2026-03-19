@@ -3,6 +3,8 @@ import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
@@ -10,8 +12,13 @@ import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 class AgendaService {
   late final DateTime agendaDate;
   final List<UserMedication> medications;
+  final Map<String, MedicationRecord> recordsMap;
 
-  AgendaService({required DateTime date, required this.medications}) {
+  AgendaService({
+    required DateTime date,
+    required this.medications,
+    required this.recordsMap,
+  }) {
     agendaDate = _normalizedDate(date)!;
   }
 
@@ -67,6 +74,14 @@ class AgendaService {
             medicationType: medication.medicationType!,
             time: timeWithAmount.time,
             scheduleName: schedule.name!,
+            state:
+                recordsMap[MedicationRecord.buildId(
+                      medicationId: medication.id!,
+                      timeId: timeWithAmount.id,
+                      date: agendaDate,
+                    )]
+                    ?.state ??
+                MedicationRecordState.pending,
           );
 
           agenda.add(item);

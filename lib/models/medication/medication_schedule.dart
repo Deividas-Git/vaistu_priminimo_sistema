@@ -4,7 +4,6 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 
 class MedicationSchedule {
-  final String id;
   final DateTime startDate;
   final DateTime? endDate;
   final MedicationFrequencyType medicationFrequencyType;
@@ -14,7 +13,6 @@ class MedicationSchedule {
   final String? name;
 
   MedicationSchedule({
-    required this.id,
     required this.startDate,
     this.endDate,
     required this.medicationFrequencyType,
@@ -25,7 +23,6 @@ class MedicationSchedule {
   });
 
   MedicationSchedule copyWith({
-    String? id,
     DateTime? startDate,
     DateTime? endDate,
     MedicationFrequencyType? medicationFrequencyType,
@@ -35,7 +32,6 @@ class MedicationSchedule {
     String? name,
   }) {
     return MedicationSchedule(
-      id: id ?? this.id,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       medicationFrequencyType:
@@ -50,7 +46,6 @@ class MedicationSchedule {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      "id": id,
       "startDate": Timestamp.fromDate(startDate),
       "medicationFrequencyType": medicationFrequencyType.name,
       "name": name,
@@ -79,7 +74,6 @@ class MedicationSchedule {
 
   factory MedicationSchedule.fromMap(Map<String, dynamic> map) {
     return MedicationSchedule(
-      id: map["id"] ?? "",
       startDate: (map["startDate"] as Timestamp).toDate(),
       endDate: map["endDate"] != null
           ? (map["endDate"] as Timestamp).toDate()
@@ -107,6 +101,6 @@ class MedicationSchedule {
 
   @override
   String toString() {
-    return "id: $id, Pavadinimas: $name, Pradzia: $startDate, Pabaiga: $endDate, Daznumo tipas: $medicationFrequencyType, Intervalai: $intervalsDays, Pasirinktos dienos: $weekdays, Laikai ir kiekiai: $consumptionTimesWithAmount";
+    return "Pavadinimas: $name, Pradzia: $startDate, Pabaiga: $endDate, Daznumo tipas: $medicationFrequencyType, Intervalai: $intervalsDays, Pasirinktos dienos: $weekdays, Laikai ir kiekiai: $consumptionTimesWithAmount";
   }
 }
