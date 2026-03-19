@@ -4,7 +4,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_record_sta
 class MedicationRecord {
   final String id;
   final String medicationId;
-  final String timeId;
+  //final String timeId;
   final DateTime scheduledDate;
   final DateTime? takenDate;
   final MedicationRecordState state;
@@ -12,7 +12,7 @@ class MedicationRecord {
   MedicationRecord({
     required this.id,
     required this.medicationId,
-    required this.timeId,
+    //required this.timeId,
     required this.scheduledDate,
     required this.takenDate,
     required this.state,
@@ -20,11 +20,10 @@ class MedicationRecord {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = {
-      "id": id,
       "medicationId": medicationId,
-      "timeId": timeId,
+      //"timeId": timeId,
       "scheduledDate": Timestamp.fromDate(scheduledDate),
-      "state": state.getLabel,
+      "state": state.name,
     };
 
     if (takenDate != null) {
@@ -34,11 +33,11 @@ class MedicationRecord {
     return map;
   }
 
-  factory MedicationRecord.fromMap(Map<String, dynamic> map) {
+  factory MedicationRecord.fromMap(Map<String, dynamic> map, String id) {
     return MedicationRecord(
-      id: map["id"],
+      id: id,
       medicationId: map["medicationId"],
-      timeId: map["timeId"],
+      //timeId: map["timeId"],
       scheduledDate: (map["scheduledDate"] as Timestamp).toDate(),
       takenDate: map["scheduledDate"] != null
           ? (map["scheduledDate"] as Timestamp).toDate()

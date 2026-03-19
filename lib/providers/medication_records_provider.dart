@@ -27,8 +27,15 @@ class MedicationRecordsProvider extends ChangeNotifier {
     _medicationRecords = [];
   }
 
+  Map<String, MedicationRecord> getRecordsMap() {
+    return {for (var record in medicationRecords) record.id: record};
+  }
+
   Future<void> saveMedicationRecord(String uid, MedicationRecord record) async {
-    await _medicationRecordService.saveRecord(uid, record);
+    final recordsMap = getRecordsMap();
+    if (recordsMap[record.id] == null) {
+      await _medicationRecordService.saveRecord(uid, record);
+    }
   }
 
   Future<void> removeMedicationRecord(

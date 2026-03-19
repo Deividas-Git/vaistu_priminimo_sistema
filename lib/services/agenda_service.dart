@@ -66,22 +66,38 @@ class AgendaService {
         }
         for (MedicationConsumptionTimeWithAmount timeWithAmount
             in schedule.consumptionTimesWithAmount!) {
+          final String recordId = MedicationRecord.buildId(
+            medicationId: medication.id!,
+            timeId: timeWithAmount.id,
+            date: agendaDate,
+          );
+          final MedicationRecordState? state = recordsMap[recordId]?.state;
           final AgendaItem item = AgendaItem(
             medicationId: medication.id!,
             medicationName: medication.name!,
             amountToTake: timeWithAmount.consumptionAmount,
             medicationMealTiming: medication.medicationMealTiming!,
             medicationType: medication.medicationType!,
-            time: timeWithAmount.time,
+            date: agendaDate.add(
+              Duration(
+                hours: timeWithAmount.time.hour,
+                minutes: timeWithAmount.time.minute,
+              ),
+            ),
             scheduleName: schedule.name!,
+            medicationRecordId: recordId,
             state:
-                recordsMap[MedicationRecord.buildId(
-                      medicationId: medication.id!,
-                      timeId: timeWithAmount.id,
-                      date: agendaDate,
-                    )]
-                    ?.state ??
-                MedicationRecordState.pending,
+                state ??
+                (agendaDate
+                        .add(
+                          Duration(
+                            hours: timeWithAmount.time.hour,
+                            minutes: timeWithAmount.time.minute,
+                          ),
+                        )
+                        .isBefore(DateTime.now())
+                    ? MedicationRecordState.missed
+                    : MedicationRecordState.pending),
           );
 
           agenda.add(item);
@@ -89,22 +105,27 @@ class AgendaService {
       }
     }
 
-    agenda.sort((a, b) => a.time.compareTo(b.time));
+    agenda.sort((a, b) => a.date.compareTo(b.date));
     return agenda;
   }
 
   List<AgendaGroup> getGroupedAgenda() {
     final List<AgendaItem> agenda = _getAgenda();
-    final Map<TimeOfDay, List<AgendaItem>> agendaGroups = {};
+    final Map<DateTime, List<AgendaItem>> agendaGroups = {};
     for (AgendaItem item in agenda) {
-      if (agendaGroups[item.time] == null) {
-        agendaGroups[item.time] = [item];
+      if (agendaGroups[item.date] == null) {
+        agendaGroups[item.date] = [item];
       } else {
-        agendaGroups[item.time]!.add(item);
+        agendaGroups[item.date]!.add(item);
       }
     }
     return agendaGroups.entries
-        .map((group) => AgendaGroup(time: group.key, items: group.value))
+        .map(
+          (group) => AgendaGroup(
+            time: TimeOfDay(hour: group.key.hour, minute: group.key.minute),
+            items: group.value,
+          ),
+        )
         .toList();
   }
 }

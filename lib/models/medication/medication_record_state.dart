@@ -6,8 +6,8 @@ enum MedicationRecordState {
 
   String get getLabel => switch (this) {
     taken => "Suvartota",
-    missed => "Praleista",
+    missed => "Nevartota",
     pending => "Laukiama",
-    skipped => "Nevartota",
+    skipped => "Praleista",
   };
 }

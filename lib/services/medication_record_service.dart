@@ -12,7 +12,7 @@ class MedicationRecordService {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map((doc) => MedicationRecord.fromMap(doc.data()))
+              .map((doc) => MedicationRecord.fromMap(doc.data(), doc.id))
               .toList(),
         );
   }

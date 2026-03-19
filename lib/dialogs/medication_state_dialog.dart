@@ -6,14 +6,9 @@ import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/time_spinner_widget.dart';
 
 class MedicationStateDialog extends StatefulWidget {
-  const MedicationStateDialog({
-    super.key,
-    required this.agendaItem,
-    required this.date,
-  });
+  const MedicationStateDialog({super.key, required this.agendaItem});
 
   final AgendaItem agendaItem;
-  final DateTime date;
 
   @override
   State<MedicationStateDialog> createState() => _MedicationStateDialogState();
@@ -50,9 +45,9 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.pending,
       delayedUntil: DateTime(
-        widget.date.year,
-        widget.date.month,
-        widget.date.day,
+        widget.agendaItem.date.year,
+        widget.agendaItem.date.month,
+        widget.agendaItem.date.day,
         selectedTime.hour,
         selectedTime.minute,
       ),
@@ -64,11 +59,11 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.taken,
       takenAt: DateTime(
-        widget.date.year,
-        widget.date.month,
-        widget.date.day,
-        widget.agendaItem.time.hour,
-        widget.agendaItem.time.minute,
+        widget.agendaItem.date.year,
+        widget.agendaItem.date.month,
+        widget.agendaItem.date.day,
+        widget.agendaItem.date.hour,
+        widget.agendaItem.date.minute,
       ),
     );
     Navigator.pop(context, result);
@@ -83,9 +78,9 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.taken,
       takenAt: DateTime(
-        widget.date.year,
-        widget.date.month,
-        widget.date.day,
+        widget.agendaItem.date.year,
+        widget.agendaItem.date.month,
+        widget.agendaItem.date.day,
         selectedTime.hour,
         selectedTime.minute,
       ),
@@ -146,7 +141,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                         ),
                       ),
                       child: Text(
-                        "Laiku (${widget.agendaItem.time.hour.toString().padLeft(2, '0')}:${widget.agendaItem.time.minute.toString().padLeft(2, '0')})",
+                        "Laiku (${widget.agendaItem.date.hour.toString().padLeft(2, '0')}:${widget.agendaItem.date.minute.toString().padLeft(2, '0')})",
                         style: TextStyle(color: colorScheme.onPrimary),
                       ),
                     ),

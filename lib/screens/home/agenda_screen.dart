@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/medication_state_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/arrow_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
@@ -56,9 +58,7 @@ class AgendaScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: groupedAgenda
-                    .map(
-                      (group) => _GroupedAgendaTile(group: group, date: date),
-                    )
+                    .map((group) => _GroupedAgendaTile(group: group))
                     .toList(),
               ),
             ),
@@ -67,10 +67,9 @@ class AgendaScreen extends StatelessWidget {
 }
 
 class _GroupedAgendaTile extends StatelessWidget {
-  const _GroupedAgendaTile({required this.group, required this.date});
+  const _GroupedAgendaTile({required this.group});
 
   final AgendaGroup group;
-  final DateTime date;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +90,7 @@ class _GroupedAgendaTile extends StatelessWidget {
           doesHeightExpand: true,
           child: Column(
             children: group.items
-                .map((item) => _AgendaTile(item: item, date: date))
+                .map((item) => _AgendaTile(item: item))
                 .toList(),
           ),
         ),
@@ -102,16 +101,31 @@ class _GroupedAgendaTile extends StatelessWidget {
 }
 
 class _AgendaTile extends StatelessWidget {
-  const _AgendaTile({required this.item, required this.date});
+  const _AgendaTile({required this.item});
 
   final AgendaItem item;
-  final DateTime date;
 
   void _onTakeMedication(BuildContext context) async {
-    final MedicationStateActionResult result = await showDialog(
+    final MedicationStateActionResult? result = await showDialog(
       context: context,
-      builder: (context) => MedicationStateDialog(agendaItem: item, date: date),
+      builder: (context) => MedicationStateDialog(agendaItem: item),
     );
+
+    if (result != null) {
+      final MedicationRecord record = MedicationRecord(
+        id: item.medicationRecordId,
+        medicationId: item.medicationId,
+        scheduledDate: item.date,
+        takenDate: result.takenAt,
+        state: result.state,
+      );
+      if (!context.mounted) return;
+      final String uid = context.read<UserProvider>().appUser!.uid;
+      context.read<MedicationRecordsProvider>().saveMedicationRecord(
+        uid,
+        record,
+      );
+    }
 
     debugPrint("RESULT: $result");
   }
