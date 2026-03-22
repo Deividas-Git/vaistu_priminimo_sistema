@@ -115,7 +115,6 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
         child: Column(
           children: [
             Divider(thickness: 2),
-            //if (widget.agendaItem.lastTimeTaken != null)
             widget.agendaItem.lastTimeTaken != null
                 ? Text(
                     "Paskutinį kartą vartota\n${_labelForLastTimeTaken()}",

@@ -5,6 +5,7 @@ import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
@@ -188,13 +189,28 @@ class _AgendaTile extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      item.state.getLabel,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: ColorScheme.of(context).onSurfaceVariant,
+                    SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: MedicationRecordState.getColorForStateLabel(
+                          ColorScheme.of(context),
+                          item.state,
+                        ).withValues(alpha: 0.125),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          item.state.getLabel,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: MedicationRecordState.getColorForStateLabel(
+                              ColorScheme.of(context),
+                              item.state,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

@@ -50,25 +50,6 @@ class MedicationProvider extends ChangeNotifier {
         lastTimeTaken: lastTakenTimeForMedications[medication.id],
       );
     }
-
-    debugPrint("IRASAI: $lastTakenTimeForMedications");
-
-    // for (int i = 0; i<_userMedications.length; i++) {
-    //   final UserMedication medication = _userMedications[i];
-    //   final filteredRecordsForMedication = records
-    //       .where((r) => r.medicationId == medication.id)
-    //       .map((r) => r.takenDate);
-    //   final DateTime? lastTimeTaken = filteredRecordsForMedication.isEmpty
-    //       ? null
-    //       : filteredRecordsForMedication.reduce(
-    //           (a, b) => a != null && b != null
-    //               ? a.isAfter(b)
-    //                     ? a
-    //                     : b
-    //               : a ?? b,
-    //         );
-    //   _userMedications[i] = medication.copyWith(lastTimeTaken: lastTimeTaken);
-    // }
   }
 
   Future<void> addMedication(UserMedication medication, String uid) async {
