@@ -88,6 +88,22 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     Navigator.pop(context, result);
   }
 
+  String _labelForLastTimeTaken() {
+    String label = widget.agendaItem.lastTimeTaken!.year.toString().padLeft(
+      4,
+      '0',
+    );
+    label =
+        "$label-${widget.agendaItem.lastTimeTaken!.month.toString().padLeft(2, '0')}";
+    label =
+        "$label-${widget.agendaItem.lastTimeTaken!.day.toString().padLeft(2, '0')}";
+    label =
+        "$label ${widget.agendaItem.lastTimeTaken!.hour.toString().padLeft(2, '0')}";
+    label =
+        "$label:${widget.agendaItem.lastTimeTaken!.minute.toString().padLeft(2, '0')}";
+    return label;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
@@ -95,11 +111,17 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     return AlertDialog(
       title: Center(child: Text(widget.agendaItem.medicationName)),
       content: SizedBox(
-        height: _isTakingMedication ? 200 : 150,
+        height: _isTakingMedication ? 220 : 170,
         child: Column(
           children: [
             Divider(thickness: 2),
-            Text("Paskutinį kartą išgertą: "),
+            //if (widget.agendaItem.lastTimeTaken != null)
+            widget.agendaItem.lastTimeTaken != null
+                ? Text(
+                    "Paskutinį kartą vartota\n${_labelForLastTimeTaken()}",
+                    textAlign: TextAlign.center,
+                  )
+                : Text("Anksčiau vartota nebuvo"),
             SizedBox(height: 10),
             ThemedContainerWidget(
               doesHeightExpand: true,
@@ -145,7 +167,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                         style: TextStyle(color: colorScheme.onPrimary),
                       ),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(width: 2),
                     TextButton(
                       onPressed: _onMedicationTakenOnCustomTime,
                       style: TextButton.styleFrom(

@@ -86,6 +86,7 @@ class AgendaService {
             ),
             scheduleName: schedule.name!,
             medicationRecordId: recordId,
+            lastTimeTaken: medication.lastTimeTaken,
             state:
                 state ??
                 (agendaDate

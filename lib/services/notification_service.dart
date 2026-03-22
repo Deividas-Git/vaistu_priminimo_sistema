@@ -82,6 +82,10 @@ class NotificationService {
   //   );
   // }
 
+  Future<void> cancelAllNotifications() async {
+    await notificationsPlugin.cancelAll();
+  }
+
   Future<void> scheduleNotification({
     required int id,
     required String title,
@@ -102,7 +106,7 @@ class NotificationService {
     required List<UserMedication> medications,
     required Map<String, MedicationRecord> recordsMap,
   }) async {
-    await notificationsPlugin.cancelAll();
+    await cancelAllNotifications();
 
     final nowTz = tz.TZDateTime.now(tz.local);
 

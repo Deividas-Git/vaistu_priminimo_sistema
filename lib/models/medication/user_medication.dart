@@ -9,9 +9,8 @@ class UserMedication {
   final String? id;
   final String? name;
   final double? currentQuantity;
-  final MedicationType? medicationType; // = MedicationType.other;
-  final MedicationMealTiming?
-  medicationMealTiming; // = MedicationMealTiming.unspecified;
+  final MedicationType? medicationType;
+  final MedicationMealTiming? medicationMealTiming;
   final DateTime? expirationDate;
   final DateTime? lastTimeTaken;
   final List<MedicationSchedule>? medicationSchedules;
@@ -42,10 +41,6 @@ class UserMedication {
       map["expirationDate"] = Timestamp.fromDate(expirationDate!);
     }
 
-    if (lastTimeTaken != null) {
-      map["lastTimeTaken"] = Timestamp.fromDate(lastTimeTaken!);
-    }
-
     if (medicationSchedules != null) {
       map["medicationSchedules"] = medicationSchedules!
           .map(((schedule) => schedule.toMap()))
@@ -66,9 +61,6 @@ class UserMedication {
       ),
       expirationDate: map["expirationDate"] != null
           ? (map["expirationDate"] as Timestamp).toDate()
-          : null,
-      lastTimeTaken: map["lastTimeTaken"] != null
-          ? (map["lastTimeTaken"] as Timestamp).toDate()
           : null,
       medicationSchedules:
           (map["medicationSchedules"] as List<dynamic>?)?.isNotEmpty == true

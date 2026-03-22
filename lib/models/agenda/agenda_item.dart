@@ -12,6 +12,7 @@ class AgendaItem {
   final String scheduleName;
   final MedicationRecordState state;
   final String medicationRecordId;
+  final DateTime? lastTimeTaken;
 
   AgendaItem({
     required this.medicationId,
@@ -23,10 +24,11 @@ class AgendaItem {
     required this.scheduleName,
     required this.state,
     required this.medicationRecordId,
+    required this.lastTimeTaken,
   });
 
   @override
   String toString() {
-    return "Med ID: $medicationId, recordId: $medicationRecordId, vaistas: $medicationName, data: $date, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state";
+    return "Med ID: $medicationId, recordId: $medicationRecordId, vaistas: $medicationName, data: $date, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state, vartota $lastTimeTaken";
   }
 }

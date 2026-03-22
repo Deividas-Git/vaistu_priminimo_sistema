@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/app_user.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/home/agenda_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
@@ -30,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _requestNotificationPermission() async {
     final bool allowsNotifications = await _areNotificationsAllowed();
     if (allowsNotifications || !mounted) return;
+    final AppUser? user = context.read<UserProvider>().appUser;
+    if (user == null) return;
     bool? didConfirm = await showDialog(
       context: context,
       builder: (context) => ConfirmationDialog(
@@ -69,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final Map<String, MedicationRecord> recordsMap = {
       for (var record in medicationRecords) record.id: record,
     };
+    context.read<MedicationProvider>().updateLastTimeTaken(medicationRecords);
 
     return DefaultTabController(
       length: 3,
