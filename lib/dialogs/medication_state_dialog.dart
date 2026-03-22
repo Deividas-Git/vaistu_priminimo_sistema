@@ -145,7 +145,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                         style: TextStyle(color: colorScheme.onPrimary),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 2,),
                     TextButton(
                       onPressed: _onMedicationTakenOnCustomTime,
                       style: TextButton.styleFrom(
@@ -155,7 +155,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                         ),
                       ),
                       child: Text(
-                        "Pasirinkti laiką",
+                        "Rinktis laiką",
                         style: TextStyle(
                           color: colorScheme.onSecondary.withValues(
                             alpha: 0.85,

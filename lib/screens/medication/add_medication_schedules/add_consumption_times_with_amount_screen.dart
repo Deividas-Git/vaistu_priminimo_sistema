@@ -185,7 +185,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
               ),
               SizedBox(
                 height: 45,
-                width: 55,
+                //width: 55,
                 child: Container(
                   decoration: BoxDecoration(
                     color: ColorScheme.of(
@@ -194,12 +194,15 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Center(
-                    child: Text(
-                      "${(medicationConsumptionTimeWithAmount.time.hour).toString().padLeft(2, '0')}:${(medicationConsumptionTimeWithAmount.time.minute).toString().padLeft(2, '0')}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 16,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        "${(medicationConsumptionTimeWithAmount.time.hour).toString().padLeft(2, '0')}:${(medicationConsumptionTimeWithAmount.time.minute).toString().padLeft(2, '0')}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -225,7 +228,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                           .consumptionAmount
                           .toString(),
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         color: ColorScheme.of(context).secondary,
                         fontWeight: FontWeight.bold,
                       ),
