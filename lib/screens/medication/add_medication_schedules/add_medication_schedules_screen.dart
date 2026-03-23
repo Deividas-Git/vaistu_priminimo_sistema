@@ -91,10 +91,13 @@ class _AddMedicationSchedulesScreenState
   }
 
   void _onSaveMedication() {
+    final DateTime addedAt =
+        widget.prefilledMedication.addedAt ?? DateTime.now();
     final UserMedication medication = widget.prefilledMedication.copyWith(
       medicationSchedules: _medicationSchedules.isEmpty
           ? null
           : _medicationSchedules,
+      addedAt: addedAt,
     );
     final String uid = context.read<UserProvider>().appUser!.uid;
     if (medication.id == null) {

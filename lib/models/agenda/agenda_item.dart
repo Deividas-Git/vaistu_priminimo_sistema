@@ -13,6 +13,7 @@ class AgendaItem {
   final MedicationRecordState state;
   final String medicationRecordId;
   final DateTime? lastTimeTaken;
+  final DateTime? upcomingIntakeAt;
 
   AgendaItem({
     required this.medicationId,
@@ -25,6 +26,7 @@ class AgendaItem {
     required this.state,
     required this.medicationRecordId,
     required this.lastTimeTaken,
+    required this.upcomingIntakeAt,
   });
 
   @override

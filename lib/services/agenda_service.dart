@@ -27,41 +27,97 @@ class AgendaService {
     return DateTime(date.year, date.month, date.day);
   }
 
-  bool _isMedicationInculded(MedicationSchedule schedule) {
+  bool _isMedicationInculded(MedicationSchedule schedule, DateTime date) {
     final DateTime startDate = _normalizedDate(schedule.startDate)!;
     final DateTime? endDate = _normalizedDate(schedule.endDate);
 
-    //debugPrint("AGENDA DATE: $agendaDate, START DATE: $startDate");
-    // debugPrint(
-    //   "PRASIDEJO TA PACIA DIENA: ${startDate == agendaDate}, ${schedule.name}",
-    // );
-    if (endDate != null && endDate.isBefore(agendaDate)) return false;
-    if (startDate.isBefore(agendaDate) || startDate == agendaDate) {
-      //debugPrint("PRAEJO ${schedule.name}");
+    if (endDate != null && endDate.isBefore(date)) return false;
+    if (startDate.isBefore(date) || startDate == date) {
       if (schedule.medicationFrequencyType ==
               MedicationFrequencyType.selectedDays &&
           schedule.weekdays!.contains(
-            Weekday.getWeekdayFromNumber(agendaDate.weekday),
+            Weekday.getWeekdayFromNumber(date.weekday),
           )) {
         return true;
       } else if (schedule.medicationFrequencyType ==
               MedicationFrequencyType.constantIntervals &&
-          agendaDate.difference(startDate).inDays % schedule.intervalsDays! ==
-              0) {
+          date.difference(startDate).inDays % schedule.intervalsDays! == 0) {
         return true;
       }
     }
     return false;
   }
 
+  DateTime? _getUpcomingIntakeForSchedule(
+    MedicationSchedule schedule,
+    DateTime now,
+  ) {
+    for (int i = 0; i <= 7; i++) {
+      final DateTime checkedDate = now.add(Duration(days: i));
+      if (!_isMedicationInculded(schedule, checkedDate)) continue;
+      schedule.consumptionTimesWithAmount!.sort(
+        (a, b) => checkedDate
+            .add(Duration(hours: a.time.hour, minutes: a.time.minute))
+            .compareTo(
+              checkedDate.add(
+                Duration(hours: b.time.hour, minutes: b.time.minute),
+              ),
+            ),
+      );
+      for (var timeWithAmount in schedule.consumptionTimesWithAmount!) {
+        final DateTime nearestNextTime = DateTime(
+          checkedDate.year,
+          checkedDate.month,
+          checkedDate.day,
+          timeWithAmount.time.hour,
+          timeWithAmount.time.minute,
+        );
+        if (nearestNextTime.isAfter(now)) {
+          return nearestNextTime;
+        }
+      }
+    }
+    return null;
+  }
+
+  DateTime? _getUpcomingIntakeForMedication(
+    UserMedication medication,
+    DateTime from,
+  ) {
+    if (medication.medicationSchedules == null) return null;
+    final List<DateTime> nearestTimesFromEachSchedule = [];
+    for (var schedule in medication.medicationSchedules!) {
+      final DateTime? possibleNearestTime = _getUpcomingIntakeForSchedule(
+        schedule,
+        from,
+      );
+      if (possibleNearestTime != null) {
+        nearestTimesFromEachSchedule.add(possibleNearestTime);
+      }
+    }
+    if (nearestTimesFromEachSchedule.isEmpty) return null;
+    nearestTimesFromEachSchedule.sort((a, b) => a.compareTo(b));
+    return nearestTimesFromEachSchedule.first;
+  }
+
+  Map<String, DateTime?> _getUpcomingIntakesForMedicationsMap() {
+    final Map<String, DateTime?> upcomingIntakesForMedication = {};
+    for (UserMedication medication in medications) {
+      upcomingIntakesForMedication[medication.id!] =
+          _getUpcomingIntakeForMedication(medication, DateTime.now());
+    }
+    return upcomingIntakesForMedication;
+  }
+
   List<AgendaItem> _getAgenda() {
-    List<AgendaItem> agenda = [];
+    final Map<String, DateTime?> upcomingIntakesForMedication =
+        _getUpcomingIntakesForMedicationsMap();
+    final List<AgendaItem> agenda = [];
     for (final UserMedication medication in medications) {
       if (medication.medicationSchedules == null) continue;
       for (final MedicationSchedule schedule
           in medication.medicationSchedules!) {
-        if (!_isMedicationInculded(schedule)) {
-          //debugPrint("NEPRAEJO ${medication.name}");
+        if (!_isMedicationInculded(schedule, agendaDate)) {
           continue;
         }
         for (MedicationConsumptionTimeWithAmount timeWithAmount
@@ -99,6 +155,7 @@ class AgendaService {
                         .isBefore(DateTime.now())
                     ? MedicationRecordState.missed
                     : MedicationRecordState.pending),
+            upcomingIntakeAt: upcomingIntakesForMedication[medication.id],
           );
 
           agenda.add(item);

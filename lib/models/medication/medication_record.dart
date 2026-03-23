@@ -39,8 +39,8 @@ class MedicationRecord {
       medicationId: map["medicationId"],
       //timeId: map["timeId"],
       scheduledDate: (map["scheduledDate"] as Timestamp).toDate(),
-      takenDate: map["scheduledDate"] != null
-          ? (map["scheduledDate"] as Timestamp).toDate()
+      takenDate: map["takenDate"] != null
+          ? (map["takenDate"] as Timestamp).toDate()
           : null,
       state: MedicationRecordState.values.byName(map["state"]),
     );

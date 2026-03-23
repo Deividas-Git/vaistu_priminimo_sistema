@@ -14,6 +14,7 @@ class UserMedication {
   final DateTime? expirationDate;
   final DateTime? lastTimeTaken;
   final List<MedicationSchedule>? medicationSchedules;
+  final DateTime? addedAt;
 
   UserMedication({
     this.id,
@@ -24,6 +25,7 @@ class UserMedication {
     this.expirationDate,
     this.lastTimeTaken,
     this.medicationSchedules,
+    this.addedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -45,6 +47,10 @@ class UserMedication {
       map["medicationSchedules"] = medicationSchedules!
           .map(((schedule) => schedule.toMap()))
           .toList();
+    }
+
+    if (addedAt != null) {
+      map["addedAt"] = Timestamp.fromDate(addedAt!);
     }
 
     return map;
@@ -72,6 +78,9 @@ class UserMedication {
                 )
                 .toList()
           : null,
+      addedAt: map["addedAt"] != null
+          ? (map["addedAt"] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -88,6 +97,7 @@ class UserMedication {
     Object? expirationDate = _noChange,
     Object? lastTimeTaken = _noChange,
     Object? medicationSchedules = _noChange,
+    Object? addedAt = _noChange,
   }) {
     return UserMedication(
       id: id == _noChange ? this.id : id as String?,
@@ -110,6 +120,7 @@ class UserMedication {
       medicationSchedules: medicationSchedules == _noChange
           ? this.medicationSchedules
           : medicationSchedules as List<MedicationSchedule>?,
+      addedAt: addedAt == _noChange ? this.addedAt : addedAt as DateTime,
     );
   }
 

@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
+import 'package:vaistu_priminimo_sistema/widgets/amount_button.dart';
+import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/time_spinner_widget.dart';
+
+String _getFormattedDateTime(DateTime date) {
+  String label = date.year.toString().padLeft(4, '0');
+  label = "$label-${date.month.toString().padLeft(2, '0')}";
+  label = "$label-${date.day.toString().padLeft(2, '0')}";
+  label = "$label ${date.hour.toString().padLeft(2, '0')}";
+  label = "$label:${date.minute.toString().padLeft(2, '0')}";
+  return label;
+}
 
 class MedicationStateDialog extends StatefulWidget {
   const MedicationStateDialog({super.key, required this.agendaItem});
@@ -33,7 +44,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   void _onDelayMedication() async {
     TimeOfDay? selectedTime = await showDialog(
       context: context,
-      builder: (context) => _TimeSelectionDialog(),
+      builder: (context) => _TimeDelayDialog(agendaItem: widget.agendaItem),
     );
     if (!mounted) return;
     if (selectedTime == null) {
@@ -58,13 +69,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   void _onMedicationTakenOnTime() {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.taken,
-      takenAt: DateTime(
-        widget.agendaItem.date.year,
-        widget.agendaItem.date.month,
-        widget.agendaItem.date.day,
-        widget.agendaItem.date.hour,
-        widget.agendaItem.date.minute,
-      ),
+      takenAt: widget.agendaItem.date,
     );
     Navigator.pop(context, result);
   }
@@ -88,22 +93,6 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     Navigator.pop(context, result);
   }
 
-  String _labelForLastTimeTaken() {
-    String label = widget.agendaItem.lastTimeTaken!.year.toString().padLeft(
-      4,
-      '0',
-    );
-    label =
-        "$label-${widget.agendaItem.lastTimeTaken!.month.toString().padLeft(2, '0')}";
-    label =
-        "$label-${widget.agendaItem.lastTimeTaken!.day.toString().padLeft(2, '0')}";
-    label =
-        "$label ${widget.agendaItem.lastTimeTaken!.hour.toString().padLeft(2, '0')}";
-    label =
-        "$label:${widget.agendaItem.lastTimeTaken!.minute.toString().padLeft(2, '0')}";
-    return label;
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
@@ -116,11 +105,31 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
           children: [
             Divider(thickness: 2),
             widget.agendaItem.lastTimeTaken != null
-                ? Text(
-                    "Paskutinį kartą vartota\n${_labelForLastTimeTaken()}",
+                ? RichText(
                     textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
+                      children: [
+                        TextSpan(text: "Paskutinį kartą vartota\n"),
+                        TextSpan(
+                          text: _getFormattedDateTime(
+                            widget.agendaItem.lastTimeTaken!,
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            //fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   )
-                : Text("Anksčiau vartota nebuvo"),
+                : Text(
+                    "Anksčiau vartota nebuvo",
+                    style: TextStyle(fontSize: 14),
+                  ),
             SizedBox(height: 10),
             ThemedContainerWidget(
               doesHeightExpand: true,
@@ -194,6 +203,142 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   }
 }
 
+class _TimeDelayDialog extends StatefulWidget {
+  const _TimeDelayDialog({required this.agendaItem});
+
+  final AgendaItem agendaItem;
+
+  @override
+  State<_TimeDelayDialog> createState() => _TimeDelayDialogState();
+}
+
+class _TimeDelayDialogState extends State<_TimeDelayDialog> {
+  late final DateTime _scheduledDate;
+  late final DateTime _upcomingIntakeAt;
+  int _delayTimes = 1;
+
+  void _onAmountDecline() {
+    setState(() {
+      _delayTimes -= 1;
+    });
+  }
+
+  void _onAmountAdd() {
+    setState(() {
+      _delayTimes += 1;
+    });
+  }
+
+  void _onConfirmTime(BuildContext context) {
+    //Navigator.pop(context, TimeOfDay(hour: _hour, minute: _minute));
+  }
+
+  void _onCancel(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduledDate = widget.agendaItem.date;
+    _upcomingIntakeAt = widget.agendaItem.upcomingIntakeAt!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      title: Center(child: Text("Vartojimo atidėjimas")),
+      content: SizedBox(
+        height: 160,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Expanded(child: SectionTextWidget(label: "15 min. pokytis:")),
+                AmountButton(
+                  icon: Icons.remove,
+                  onTap: _onAmountDecline,
+                  isDisabled: _delayTimes == 1,
+                ),
+                SizedBox(width: 5),
+                AmountButton(icon: Icons.add, onTap: _onAmountAdd),
+              ],
+            ),
+            ThemedContainerWidget(
+              doesHeightExpand: true,
+              child: Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: ColorScheme.of(context).secondary,
+                    ),
+                    children: [
+                      TextSpan(text: "Atidėti iki: "),
+                      TextSpan(
+                        text: _getFormattedDateTime(
+                          _scheduledDate.add(
+                            Duration(minutes: 15 * _delayTimes),
+                          ),
+                        ),
+                        style: TextStyle(
+                          //fontSize: 18,
+                          color: ColorScheme.of(context).secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorScheme.of(context).onSurfaceVariant,
+                ),
+                children: [
+                  TextSpan(text: "Artimiausias vaisto "),
+                  TextSpan(
+                    text: widget.agendaItem.medicationName,
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  TextSpan(text: " vartojimas "),
+                  TextSpan(
+                    text: _getFormattedDateTime(_upcomingIntakeAt),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () => _onCancel(context),
+          child: Text("Atšaukti"),
+        ),
+        ElevatedButton(
+          onPressed: () => _onConfirmTime(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ColorScheme.of(context).primary,
+          ),
+          child: Text(
+            "Pasirinkti",
+            style: TextStyle(color: ColorScheme.of(context).onPrimary),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _TimeSelectionDialog extends StatefulWidget {
   const _TimeSelectionDialog();
 
@@ -224,6 +369,7 @@ class _TimeSelectionDialogState extends State<_TimeSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      actionsAlignment: MainAxisAlignment.spaceBetween,
       title: Center(child: Text("Laiko pasirinkimas")),
       content: SizedBox(
         height: 100,

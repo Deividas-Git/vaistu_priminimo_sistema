@@ -42,9 +42,6 @@ class MedicationProvider extends ChangeNotifier {
     }
 
     for (int i = 0; i < _userMedications.length; i++) {
-      if (!lastTakenTimeForMedications.containsKey(_userMedications[i].id)) {
-        continue;
-      }
       final UserMedication medication = _userMedications[i];
       _userMedications[i] = medication.copyWith(
         lastTimeTaken: lastTakenTimeForMedications[medication.id],

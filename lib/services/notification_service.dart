@@ -129,8 +129,14 @@ class NotificationService {
           group.time.minute,
         );
         //TODO Tikrinti ar jau suvartotas kad neschedulintu
-        if (!scheduledDateTz.isAfter(nowTz)) continue;
-        //debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
+        if (scheduledDateTz.isBefore(nowTz)) continue;
+        // final List<AgendaItem> itemsToSchedule = group.items
+        //     .where(
+        //       (item) =>
+        //           item.state == MedicationRecordState.pending ||
+        //           item.state == MedicationRecordState.delayed,
+        //     )
+        //     .toList();
         final int id =
             (group.items[0].medicationId.hashCode +
                 scheduledDateTz.millisecondsSinceEpoch) %

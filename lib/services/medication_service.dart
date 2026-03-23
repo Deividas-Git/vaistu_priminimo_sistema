@@ -9,6 +9,7 @@ class MedicationService {
         .collection("users")
         .doc(uid)
         .collection("medications")
+        .orderBy("addedAt", descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs

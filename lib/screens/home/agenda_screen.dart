@@ -116,7 +116,7 @@ class _AgendaTile extends StatelessWidget {
       final MedicationRecord record = MedicationRecord(
         id: item.medicationRecordId,
         medicationId: item.medicationId,
-        scheduledDate: item.date,
+        scheduledDate: item.date, //result.delayedUntil ?? item.date
         takenDate: result.takenAt,
         state: result.state,
       );
