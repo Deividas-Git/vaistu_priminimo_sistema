@@ -42,4 +42,17 @@ class MedicationRecordsProvider extends ChangeNotifier {
   ) async {
     await _medicationRecordService.removeRecord(uid, record);
   }
+
+  Future<void> removeAllRecordsForMedication(
+    String uid,
+    String medicationId,
+  ) async {
+    final allMedicationRecords = _medicationRecords.where(
+      (record) => record.medicationId == medicationId,
+    );
+    debugPrint("ATRINKTI REKORDAI: $allMedicationRecords");
+    for (MedicationRecord record in allMedicationRecords) {
+      await removeMedicationRecord(uid, record);
+    }
+  }
 }

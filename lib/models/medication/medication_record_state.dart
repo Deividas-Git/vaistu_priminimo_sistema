@@ -4,13 +4,15 @@ enum MedicationRecordState {
   taken,
   missed,
   pending,
-  skipped;
+  skipped,
+  delayed;
 
   String get getLabel => switch (this) {
     taken => "Suvartota",
     missed => "Nevartota",
     pending => "Laukiama",
     skipped => "Praleista",
+    delayed => "Atidėta",
   };
 
   static Color getColorForStateLabel(
@@ -22,6 +24,7 @@ enum MedicationRecordState {
       missed => colorScheme.error,
       pending => colorScheme.onSurfaceVariant,
       skipped => const Color.fromARGB(255, 198, 150, 4),
+      delayed => Colors.blue,
     };
   }
 }

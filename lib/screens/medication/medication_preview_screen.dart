@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_medication_info_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
@@ -38,13 +39,16 @@ class MedicationPreviewScreen extends StatelessWidget {
       ),
     );
 
-    if (!context.mounted) return;
+    if (!context.mounted || didConfirm != true) return;
 
-    if (didConfirm == true) {
-      final String uid = context.read<UserProvider>().appUser!.uid;
-      context.read<MedicationProvider>().removeMedication(medication.id!, uid);
-      Navigator.pop(context);
-    }
+    final String uid = context.read<UserProvider>().appUser!.uid;
+    final medicationProvider = context.read<MedicationProvider>();
+    final medicationRecordProvider = context.read<MedicationRecordsProvider>();
+
+    Navigator.pop(context);
+
+    medicationRecordProvider.removeAllRecordsForMedication(uid, medication.id!);
+    medicationProvider.removeMedication(medication.id!, uid);
   }
 
   @override

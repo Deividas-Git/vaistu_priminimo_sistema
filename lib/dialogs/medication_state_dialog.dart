@@ -43,7 +43,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
       return;
     }
     final MedicationStateActionResult result = MedicationStateActionResult(
-      state: MedicationRecordState.pending,
+      state: MedicationRecordState.delayed,
       delayedUntil: DateTime(
         widget.agendaItem.date.year,
         widget.agendaItem.date.month,
