@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
@@ -6,15 +7,6 @@ import 'package:vaistu_priminimo_sistema/widgets/amount_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/time_spinner_widget.dart';
-
-String _getFormattedDateTime(DateTime date) {
-  String label = date.year.toString().padLeft(4, '0');
-  label = "$label-${date.month.toString().padLeft(2, '0')}";
-  label = "$label-${date.day.toString().padLeft(2, '0')}";
-  label = "$label ${date.hour.toString().padLeft(2, '0')}";
-  label = "$label:${date.minute.toString().padLeft(2, '0')}";
-  return label;
-}
 
 class MedicationStateDialog extends StatefulWidget {
   const MedicationStateDialog({super.key, required this.agendaItem});
@@ -42,12 +34,12 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   }
 
   void _onDelayMedication() async {
-    TimeOfDay? selectedTime = await showDialog(
+    DateTime? delayedUntil = await showDialog(
       context: context,
       builder: (context) => _TimeDelayDialog(agendaItem: widget.agendaItem),
     );
     if (!mounted) return;
-    if (selectedTime == null) {
+    if (delayedUntil == null) {
       setState(() {
         _isTakingMedication = false;
       });
@@ -55,13 +47,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     }
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.delayed,
-      delayedUntil: DateTime(
-        widget.agendaItem.date.year,
-        widget.agendaItem.date.month,
-        widget.agendaItem.date.day,
-        selectedTime.hour,
-        selectedTime.minute,
-      ),
+      delayedUntil: delayedUntil,
     );
     Navigator.pop(context, result);
   }
@@ -69,7 +55,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   void _onMedicationTakenOnTime() {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.taken,
-      takenAt: widget.agendaItem.date,
+      takenAt: widget.agendaItem.scheduledDate,
     );
     Navigator.pop(context, result);
   }
@@ -83,9 +69,9 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     final MedicationStateActionResult result = MedicationStateActionResult(
       state: MedicationRecordState.taken,
       takenAt: DateTime(
-        widget.agendaItem.date.year,
-        widget.agendaItem.date.month,
-        widget.agendaItem.date.day,
+        widget.agendaItem.scheduledDate.year,
+        widget.agendaItem.scheduledDate.month,
+        widget.agendaItem.scheduledDate.day,
         selectedTime.hour,
         selectedTime.minute,
       ),
@@ -115,7 +101,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                       children: [
                         TextSpan(text: "Paskutinį kartą vartota\n"),
                         TextSpan(
-                          text: _getFormattedDateTime(
+                          text: DateHelper.getFormattedDateTime(
                             widget.agendaItem.lastTimeTaken!,
                           ),
                           style: TextStyle(
@@ -171,7 +157,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                         ),
                       ),
                       child: Text(
-                        "Laiku (${widget.agendaItem.date.hour.toString().padLeft(2, '0')}:${widget.agendaItem.date.minute.toString().padLeft(2, '0')})",
+                        "Laiku (${widget.agendaItem.scheduledDate.hour.toString().padLeft(2, '0')}:${widget.agendaItem.scheduledDate.minute.toString().padLeft(2, '0')})",
                         style: TextStyle(color: colorScheme.onPrimary),
                       ),
                     ),
@@ -215,6 +201,7 @@ class _TimeDelayDialog extends StatefulWidget {
 class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   late final DateTime _scheduledDate;
   late final DateTime _upcomingIntakeAt;
+  final int _delayeMins = 15;
   int _delayTimes = 1;
 
   void _onAmountDecline() {
@@ -230,7 +217,10 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   }
 
   void _onConfirmTime(BuildContext context) {
-    //Navigator.pop(context, TimeOfDay(hour: _hour, minute: _minute));
+    Navigator.pop(
+      context,
+      _scheduledDate.add(Duration(minutes: _delayeMins * _delayTimes)),
+    );
   }
 
   void _onCancel(BuildContext context) {
@@ -240,7 +230,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   @override
   void initState() {
     super.initState();
-    _scheduledDate = widget.agendaItem.date;
+    _scheduledDate = widget.agendaItem.scheduledDate;
     _upcomingIntakeAt = widget.agendaItem.upcomingIntakeAt!;
   }
 
@@ -279,9 +269,9 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                     children: [
                       TextSpan(text: "Atidėti iki: "),
                       TextSpan(
-                        text: _getFormattedDateTime(
+                        text: DateHelper.getFormattedDateTime(
                           _scheduledDate.add(
-                            Duration(minutes: 15 * _delayTimes),
+                            Duration(minutes: _delayeMins * _delayTimes),
                           ),
                         ),
                         style: TextStyle(
@@ -310,7 +300,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                   ),
                   TextSpan(text: " vartojimas "),
                   TextSpan(
-                    text: _getFormattedDateTime(_upcomingIntakeAt),
+                    text: DateHelper.getFormattedDateTime(_upcomingIntakeAt),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

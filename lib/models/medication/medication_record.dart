@@ -7,6 +7,7 @@ class MedicationRecord {
   //final String timeId;
   final DateTime scheduledDate;
   final DateTime? takenDate;
+  final DateTime? delaydUntil;
   final MedicationRecordState state;
 
   MedicationRecord({
@@ -15,6 +16,7 @@ class MedicationRecord {
     //required this.timeId,
     required this.scheduledDate,
     required this.takenDate,
+    required this.delaydUntil,
     required this.state,
   });
 
@@ -30,6 +32,10 @@ class MedicationRecord {
       map["takenDate"] = takenDate;
     }
 
+    if (delaydUntil != null) {
+      map["delayedUntil"] = delaydUntil;
+    }
+
     return map;
   }
 
@@ -41,6 +47,9 @@ class MedicationRecord {
       scheduledDate: (map["scheduledDate"] as Timestamp).toDate(),
       takenDate: map["takenDate"] != null
           ? (map["takenDate"] as Timestamp).toDate()
+          : null,
+      delaydUntil: map["delayedUntil"] != null
+          ? (map["delayedUntil"] as Timestamp).toDate()
           : null,
       state: MedicationRecordState.values.byName(map["state"]),
     );

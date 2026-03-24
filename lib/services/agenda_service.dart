@@ -134,7 +134,7 @@ class AgendaService {
             amountToTake: timeWithAmount.consumptionAmount,
             medicationMealTiming: medication.medicationMealTiming!,
             medicationType: medication.medicationType!,
-            date: agendaDate.add(
+            scheduledDate: agendaDate.add(
               Duration(
                 hours: timeWithAmount.time.hour,
                 minutes: timeWithAmount.time.minute,
@@ -156,6 +156,7 @@ class AgendaService {
                     ? MedicationRecordState.missed
                     : MedicationRecordState.pending),
             upcomingIntakeAt: upcomingIntakesForMedication[medication.id],
+            delayedUntil: recordsMap[recordId]?.delaydUntil,
           );
 
           agenda.add(item);
@@ -163,7 +164,7 @@ class AgendaService {
       }
     }
 
-    agenda.sort((a, b) => a.date.compareTo(b.date));
+    agenda.sort((a, b) => a.scheduledDate.compareTo(b.scheduledDate));
     return agenda;
   }
 
@@ -171,10 +172,10 @@ class AgendaService {
     final List<AgendaItem> agenda = _getAgenda();
     final Map<DateTime, List<AgendaItem>> agendaGroups = {};
     for (AgendaItem item in agenda) {
-      if (agendaGroups[item.date] == null) {
-        agendaGroups[item.date] = [item];
+      if (agendaGroups[item.scheduledDate] == null) {
+        agendaGroups[item.scheduledDate] = [item];
       } else {
-        agendaGroups[item.date]!.add(item);
+        agendaGroups[item.scheduledDate]!.add(item);
       }
     }
     return agendaGroups.entries

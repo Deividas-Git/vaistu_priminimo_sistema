@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/medication_state_dialog.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
@@ -116,8 +117,9 @@ class _AgendaTile extends StatelessWidget {
       final MedicationRecord record = MedicationRecord(
         id: item.medicationRecordId,
         medicationId: item.medicationId,
-        scheduledDate: item.date, //result.delayedUntil ?? item.date
+        scheduledDate: item.scheduledDate, //result.delayedUntil ?? item.date
         takenDate: result.takenAt,
+        delaydUntil: result.delayedUntil,
         state: result.state,
       );
       if (!context.mounted) return;
@@ -200,15 +202,30 @@ class _AgendaTile extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          item.state.getLabel,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: MedicationRecordState.getColorForStateLabel(
-                              ColorScheme.of(context),
-                              item.state,
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  MedicationRecordState.getColorForStateLabel(
+                                    ColorScheme.of(context),
+                                    item.state,
+                                  ),
                             ),
+                            children: [
+                              TextSpan(
+                                text: item.delayedUntil == null
+                                    ? item.state.getLabel
+                                    : "${item.state.getLabel} iki\n",
+                              ),
+                              if (item.delayedUntil != null)
+                                TextSpan(
+                                  text: DateHelper.getFormattedDateTime(
+                                    item.delayedUntil!,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),

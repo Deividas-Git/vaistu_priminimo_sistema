@@ -8,12 +8,13 @@ class AgendaItem {
   final int amountToTake;
   final MedicationMealTiming medicationMealTiming;
   final MedicationType medicationType;
-  final DateTime date;
+  final DateTime scheduledDate;
   final String scheduleName;
   final MedicationRecordState state;
   final String medicationRecordId;
   final DateTime? lastTimeTaken;
   final DateTime? upcomingIntakeAt;
+  final DateTime? delayedUntil;
 
   AgendaItem({
     required this.medicationId,
@@ -21,16 +22,17 @@ class AgendaItem {
     required this.amountToTake,
     required this.medicationMealTiming,
     required this.medicationType,
-    required this.date,
+    required this.scheduledDate,
     required this.scheduleName,
     required this.state,
     required this.medicationRecordId,
     required this.lastTimeTaken,
     required this.upcomingIntakeAt,
+    required this.delayedUntil,
   });
 
   @override
   String toString() {
-    return "Med ID: $medicationId, recordId: $medicationRecordId, vaistas: $medicationName, data: $date, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state, vartota $lastTimeTaken";
+    return "Med ID: $medicationId, recordId: $medicationRecordId, vaistas: $medicationName, data: $scheduledDate, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state, vartota $lastTimeTaken";
   }
 }
