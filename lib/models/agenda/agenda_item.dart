@@ -13,7 +13,6 @@ class AgendaItem {
   final MedicationRecordState state;
   final String medicationRecordId;
   final DateTime? lastTimeTaken;
-  final DateTime? upcomingIntakeAt;
   final DateTime? delayedUntil;
 
   AgendaItem({
@@ -27,7 +26,6 @@ class AgendaItem {
     required this.state,
     required this.medicationRecordId,
     required this.lastTimeTaken,
-    required this.upcomingIntakeAt,
     required this.delayedUntil,
   });
 

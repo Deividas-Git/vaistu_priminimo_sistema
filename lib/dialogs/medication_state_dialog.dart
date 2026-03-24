@@ -9,9 +9,16 @@ import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/time_spinner_widget.dart';
 
 class MedicationStateDialog extends StatefulWidget {
-  const MedicationStateDialog({super.key, required this.agendaItem});
+  const MedicationStateDialog({
+    super.key,
+    required this.agendaItem,
+    required this.upcomingMedicationIntakeAt,
+    required this.maxDelayUntil,
+  });
 
   final AgendaItem agendaItem;
+  final DateTime? upcomingMedicationIntakeAt;
+  final DateTime? maxDelayUntil;
 
   @override
   State<MedicationStateDialog> createState() => _MedicationStateDialogState();
@@ -36,7 +43,10 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   void _onDelayMedication() async {
     DateTime? delayedUntil = await showDialog(
       context: context,
-      builder: (context) => _TimeDelayDialog(agendaItem: widget.agendaItem),
+      builder: (context) => _TimeDelayDialog(
+        agendaItem: widget.agendaItem,
+        maxDelayUntil: widget.maxDelayUntil,
+      ),
     );
     if (!mounted) return;
     if (delayedUntil == null) {
@@ -86,36 +96,15 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
     return AlertDialog(
       title: Center(child: Text(widget.agendaItem.medicationName)),
       content: SizedBox(
-        height: _isTakingMedication ? 220 : 170,
+        height: _isTakingMedication ? 270 : 210,
         child: Column(
           children: [
             Divider(thickness: 2),
-            widget.agendaItem.lastTimeTaken != null
-                ? RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: ColorScheme.of(context).onSurfaceVariant,
-                      ),
-                      children: [
-                        TextSpan(text: "Paskutinį kartą vartota\n"),
-                        TextSpan(
-                          text: DateHelper.getFormattedDateTime(
-                            widget.agendaItem.lastTimeTaken!,
-                          ),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            //fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Text(
-                    "Anksčiau vartota nebuvo",
-                    style: TextStyle(fontSize: 14),
-                  ),
+            _MedicationDateTimeWidget(
+              date: widget.agendaItem.lastTimeTaken,
+              topLabel: "Paskutinį kartą vartota\n",
+              bottomLabel: "Anksčiau vartota nebuvo",
+            ),
             SizedBox(height: 10),
             ThemedContainerWidget(
               doesHeightExpand: true,
@@ -182,6 +171,12 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
                   ],
                 ),
               ),
+            SizedBox(height: 5),
+            _MedicationDateTimeWidget(
+              date: widget.upcomingMedicationIntakeAt,
+              topLabel: "Artimiausias vartojimas\n",
+              bottomLabel: "Nėra kito numatomo vartojimo",
+            ),
           ],
         ),
       ),
@@ -189,10 +184,51 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   }
 }
 
+class _MedicationDateTimeWidget extends StatelessWidget {
+  const _MedicationDateTimeWidget({
+    required this.topLabel,
+    required this.bottomLabel,
+    required this.date,
+  });
+
+  final String topLabel;
+  final String bottomLabel;
+  final DateTime? date;
+
+  @override
+  Widget build(BuildContext context) {
+    return date != null
+        ? RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 16,
+                color: ColorScheme.of(context).onSurfaceVariant,
+              ),
+              children: [
+                TextSpan(text: topLabel),
+                TextSpan(
+                  text: DateHelper.getFormattedDateTime(date!),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    //fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Text(bottomLabel, style: TextStyle(fontSize: 16));
+  }
+}
+
 class _TimeDelayDialog extends StatefulWidget {
-  const _TimeDelayDialog({required this.agendaItem});
+  const _TimeDelayDialog({
+    required this.agendaItem,
+    required this.maxDelayUntil,
+  });
 
   final AgendaItem agendaItem;
+  final DateTime? maxDelayUntil;
 
   @override
   State<_TimeDelayDialog> createState() => _TimeDelayDialogState();
@@ -200,9 +236,22 @@ class _TimeDelayDialog extends StatefulWidget {
 
 class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   late final DateTime _scheduledDate;
-  late final DateTime _upcomingIntakeAt;
+  late final DateTime? _maxDelayUntil;
   final int _delayeMins = 15;
   int _delayTimes = 1;
+
+  int _maxDelayPresses() {
+    if (_maxDelayUntil == null) {
+      return (6 * 60) ~/ _delayeMins;
+    }
+    final remainingMinutes = _maxDelayUntil
+        .difference(_scheduledDate)
+        .inMinutes;
+    final allowedMinutes = remainingMinutes - _delayeMins;
+    final steps = allowedMinutes ~/ _delayeMins;
+
+    return steps > 0 ? steps : 1;
+  }
 
   void _onAmountDecline() {
     setState(() {
@@ -231,7 +280,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   void initState() {
     super.initState();
     _scheduledDate = widget.agendaItem.scheduledDate;
-    _upcomingIntakeAt = widget.agendaItem.upcomingIntakeAt!;
+    _maxDelayUntil = widget.maxDelayUntil;
   }
 
   @override
@@ -240,7 +289,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
       actionsAlignment: MainAxisAlignment.spaceBetween,
       title: Center(child: Text("Vartojimo atidėjimas")),
       content: SizedBox(
-        height: 160,
+        height: 140,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -253,7 +302,11 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                   isDisabled: _delayTimes == 1,
                 ),
                 SizedBox(width: 5),
-                AmountButton(icon: Icons.add, onTap: _onAmountAdd),
+                AmountButton(
+                  icon: Icons.add,
+                  onTap: _onAmountAdd,
+                  isDisabled: _delayTimes >= _maxDelayPresses(),
+                ),
               ],
             ),
             ThemedContainerWidget(
@@ -293,16 +346,22 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                   color: ColorScheme.of(context).onSurfaceVariant,
                 ),
                 children: [
-                  TextSpan(text: "Artimiausias vaisto "),
                   TextSpan(
-                    text: widget.agendaItem.medicationName,
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                    text: _maxDelayUntil != null
+                        ? "Atidėti galima iki kito vartojimo\n"
+                        : "Atidėti galima iki\n",
                   ),
-                  TextSpan(text: " vartojimas "),
-                  TextSpan(
-                    text: DateHelper.getFormattedDateTime(_upcomingIntakeAt),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  _maxDelayUntil != null
+                      ? TextSpan(
+                          text: DateHelper.getFormattedDateTime(_maxDelayUntil),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      : TextSpan(
+                          text: DateHelper.getFormattedDateTime(
+                            _scheduledDate.add(Duration(hours: 6)),
+                          ),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                 ],
               ),
             ),

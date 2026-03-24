@@ -60,7 +60,12 @@ class AgendaScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: groupedAgenda
-                    .map((group) => _GroupedAgendaTile(group: group))
+                    .map(
+                      (group) => Provider(
+                        create: (_) => agendaService,
+                        child: _GroupedAgendaTile(group: group),
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -108,9 +113,18 @@ class _AgendaTile extends StatelessWidget {
   final AgendaItem item;
 
   void _onTakeMedication(BuildContext context) async {
+    final agendaService = context.read<AgendaService>();
     final MedicationStateActionResult? result = await showDialog(
       context: context,
-      builder: (context) => MedicationStateDialog(agendaItem: item),
+      builder: (context) => MedicationStateDialog(
+        agendaItem: item,
+        upcomingMedicationIntakeAt: agendaService
+            .getUpcomingIntakeForMedication(
+              agendaService.getMedicationFromId(item.medicationId),
+              DateTime.now(),
+            ),
+        maxDelayUntil: agendaService.getNextIntakeAfterDate(item),
+      ),
     );
 
     if (result != null) {

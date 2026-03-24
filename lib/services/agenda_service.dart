@@ -13,6 +13,7 @@ class AgendaService {
   late final DateTime agendaDate;
   final List<UserMedication> medications;
   final Map<String, MedicationRecord> recordsMap;
+  late final List<AgendaItem> agenda;
 
   AgendaService({
     required DateTime date,
@@ -20,6 +21,7 @@ class AgendaService {
     required this.recordsMap,
   }) {
     agendaDate = _normalizedDate(date)!;
+    agenda = _getAgenda();
   }
 
   DateTime? _normalizedDate(DateTime? date) {
@@ -80,38 +82,18 @@ class AgendaService {
     return null;
   }
 
-  DateTime? _getUpcomingIntakeForMedication(
-    UserMedication medication,
-    DateTime from,
-  ) {
-    if (medication.medicationSchedules == null) return null;
-    final List<DateTime> nearestTimesFromEachSchedule = [];
-    for (var schedule in medication.medicationSchedules!) {
-      final DateTime? possibleNearestTime = _getUpcomingIntakeForSchedule(
-        schedule,
-        from,
-      );
-      if (possibleNearestTime != null) {
-        nearestTimesFromEachSchedule.add(possibleNearestTime);
-      }
-    }
-    if (nearestTimesFromEachSchedule.isEmpty) return null;
-    nearestTimesFromEachSchedule.sort((a, b) => a.compareTo(b));
-    return nearestTimesFromEachSchedule.first;
-  }
-
-  Map<String, DateTime?> _getUpcomingIntakesForMedicationsMap() {
-    final Map<String, DateTime?> upcomingIntakesForMedication = {};
-    for (UserMedication medication in medications) {
-      upcomingIntakesForMedication[medication.id!] =
-          _getUpcomingIntakeForMedication(medication, DateTime.now());
-    }
-    return upcomingIntakesForMedication;
-  }
+  // Map<String, DateTime?> _getUpcomingIntakesForMedicationsMap() {
+  //   final Map<String, DateTime?> upcomingIntakesForMedication = {};
+  //   for (UserMedication medication in medications) {
+  //     upcomingIntakesForMedication[medication.id!] =
+  //         getUpcomingIntakeForMedication(medication, DateTime.now());
+  //   }
+  //   return upcomingIntakesForMedication;
+  // }
 
   List<AgendaItem> _getAgenda() {
-    final Map<String, DateTime?> upcomingIntakesForMedication =
-        _getUpcomingIntakesForMedicationsMap();
+    // final Map<String, DateTime?> upcomingIntakesForMedication =
+    //     _getUpcomingIntakesForMedicationsMap();
     final List<AgendaItem> agenda = [];
     for (final UserMedication medication in medications) {
       if (medication.medicationSchedules == null) continue;
@@ -155,7 +137,6 @@ class AgendaService {
                         .isBefore(DateTime.now())
                     ? MedicationRecordState.missed
                     : MedicationRecordState.pending),
-            upcomingIntakeAt: upcomingIntakesForMedication[medication.id],
             delayedUntil: recordsMap[recordId]?.delaydUntil,
           );
 
@@ -168,8 +149,36 @@ class AgendaService {
     return agenda;
   }
 
+  DateTime? getNextIntakeAfterDate(AgendaItem item) {
+    final UserMedication medication = getMedicationFromId(item.medicationId);
+    return getUpcomingIntakeForMedication(medication, item.scheduledDate);
+  }
+
+  DateTime? getUpcomingIntakeForMedication(
+    UserMedication medication,
+    DateTime from,
+  ) {
+    if (medication.medicationSchedules == null) return null;
+    final List<DateTime> nearestTimesFromEachSchedule = [];
+    for (var schedule in medication.medicationSchedules!) {
+      final DateTime? possibleNearestTime = _getUpcomingIntakeForSchedule(
+        schedule,
+        from,
+      );
+      if (possibleNearestTime != null) {
+        nearestTimesFromEachSchedule.add(possibleNearestTime);
+      }
+    }
+    if (nearestTimesFromEachSchedule.isEmpty) return null;
+    nearestTimesFromEachSchedule.sort((a, b) => a.compareTo(b));
+    return nearestTimesFromEachSchedule.first;
+  }
+
+  UserMedication getMedicationFromId(String id) {
+    return medications.where((med) => med.id == id).first;
+  }
+
   List<AgendaGroup> getGroupedAgenda() {
-    final List<AgendaItem> agenda = _getAgenda();
     final Map<DateTime, List<AgendaItem>> agendaGroups = {};
     for (AgendaItem item in agenda) {
       if (agendaGroups[item.scheduledDate] == null) {
