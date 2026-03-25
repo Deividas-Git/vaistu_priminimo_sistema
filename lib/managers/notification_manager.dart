@@ -18,7 +18,11 @@ class NotificationManager {
     _scheduleMedications();
   }
 
-  void _scheduleMedications() {
+  void _scheduleMedications() async {
+    final bool allowsNotifications = await _notificationService
+        .areNotificationsAllowed();
+    if (!allowsNotifications) return;
+
     final List<UserMedication> medications = _medicationProvider.uerMedications;
     final List<MedicationRecord> records =
         _medicationRecordsProvider.medicationRecords;

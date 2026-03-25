@@ -50,6 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (didConfirm == true) {
       await _notificationService.requestNotificationPermissions();
       await _notificationService.requestExactAlarmsPermission();
+      if (!mounted) return;
+      _notificationService.scheduleAllMedications(
+        medications: context.read<MedicationProvider>().uerMedications,
+        recordsMap: context.read<MedicationRecordsProvider>().getRecordsMap(),
+      );
     }
   }
 
@@ -70,9 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<MedicationRecord> medicationRecords = context
         .watch<MedicationRecordsProvider>()
         .medicationRecords;
-    final Map<String, MedicationRecord> recordsMap = {
-      for (var record in medicationRecords) record.id: record,
-    };
+    final Map<String, MedicationRecord> recordsMap = context
+        .read<MedicationRecordsProvider>()
+        .getRecordsMap();
     context.read<MedicationProvider>().updateLastTimeTaken(medicationRecords);
 
     return DefaultTabController(
