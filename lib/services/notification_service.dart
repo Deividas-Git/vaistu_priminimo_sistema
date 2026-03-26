@@ -118,7 +118,8 @@ class NotificationService {
         recordsMap: recordsMap,
       );
 
-      final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();
+      final List<AgendaGroup> groupedAgenda = agendaService
+          .getGroupedAgendaForNotifications();
       for (AgendaGroup group in groupedAgenda) {
         final scheduledDateTz = tz.TZDateTime(
           tz.local,
@@ -128,15 +129,8 @@ class NotificationService {
           group.time.hour,
           group.time.minute,
         );
-        //TODO Tikrinti ar jau suvartotas kad neschedulintu
+
         if (scheduledDateTz.isBefore(nowTz)) continue;
-        // final List<AgendaItem> itemsToSchedule = group.items
-        //     .where(
-        //       (item) =>
-        //           item.state == MedicationRecordState.pending ||
-        //           item.state == MedicationRecordState.delayed,
-        //     )
-        //     .toList();
         final int id =
             (group.items[0].medicationId.hashCode +
                 scheduledDateTz.millisecondsSinceEpoch) %

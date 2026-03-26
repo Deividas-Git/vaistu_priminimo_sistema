@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_record_service.dart';
 
 class MedicationRecordsProvider extends ChangeNotifier {
@@ -31,9 +32,36 @@ class MedicationRecordsProvider extends ChangeNotifier {
     return {for (var record in medicationRecords) record.id: record};
   }
 
+  MedicationRecord _checkRecordIfWasDelayedAndExpired(MedicationRecord record) {
+    if (record.state == MedicationRecordState.delayed &&
+        record.delaydUntil!.isBefore(DateTime.now())) {
+      final MedicationRecord updatedRecord = MedicationRecord(
+        id: record.id,
+        medicationId: record.medicationId,
+        scheduledDate: record.scheduledDate,
+        takenDate: null,
+        delaydUntil: record.delaydUntil,
+        state: MedicationRecordState.missed,
+      );
+      return updatedRecord;
+    }
+    return record;
+  }
+
+  Future<void> updateExpiredDelayedRecords(String uid) async {
+    for (MedicationRecord record in _medicationRecords) {
+      await _medicationRecordService.saveRecord(
+        uid,
+        _checkRecordIfWasDelayedAndExpired(record),
+      );
+    }
+  }
+
   Future<void> saveMedicationRecord(String uid, MedicationRecord record) async {
-    //final recordsMap = getRecordsMap();
-    await _medicationRecordService.saveRecord(uid, record);
+    await _medicationRecordService.saveRecord(
+      uid,
+      _checkRecordIfWasDelayedAndExpired(record),
+    );
   }
 
   Future<void> removeMedicationRecord(
@@ -50,7 +78,6 @@ class MedicationRecordsProvider extends ChangeNotifier {
     final allMedicationRecords = _medicationRecords.where(
       (record) => record.medicationId == medicationId,
     );
-    debugPrint("ATRINKTI REKORDAI: $allMedicationRecords");
     for (MedicationRecord record in allMedicationRecords) {
       await removeMedicationRecord(uid, record);
     }

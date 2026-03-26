@@ -35,7 +35,8 @@ class AgendaScreen extends StatelessWidget {
       recordsMap: medicationRecords,
     );
 
-    final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();
+    final List<AgendaGroup> groupedAgenda = agendaService
+        .getGroupedAgendaForUI();
 
     return groupedAgenda.isEmpty
         ? Center(
@@ -131,7 +132,7 @@ class _AgendaTile extends StatelessWidget {
       final MedicationRecord record = MedicationRecord(
         id: item.medicationRecordId,
         medicationId: item.medicationId,
-        scheduledDate: item.scheduledDate, //result.delayedUntil ?? item.date
+        scheduledDate: item.scheduledDate,
         takenDate: result.takenAt,
         delaydUntil: result.delayedUntil,
         state: result.state,
@@ -143,8 +144,6 @@ class _AgendaTile extends StatelessWidget {
         record,
       );
     }
-
-    debugPrint("RESULT: $result");
   }
 
   @override
@@ -231,13 +230,12 @@ class _AgendaTile extends StatelessWidget {
                               TextSpan(
                                 text: item.delayedUntil == null
                                     ? item.state.getLabel
-                                    : "${item.state.getLabel} iki\n",
+                                    : "${item.state.getLabel} ",
                               ),
                               if (item.delayedUntil != null)
                                 TextSpan(
-                                  text: DateHelper.getFormattedDateTime(
-                                    item.delayedUntil!,
-                                  ),
+                                  text:
+                                      "(${DateHelper.getFormattedTime(item.delayedUntil!)})",
                                 ),
                             ],
                           ),

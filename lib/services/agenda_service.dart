@@ -109,6 +109,11 @@ class AgendaService {
             timeId: timeWithAmount.id,
             date: agendaDate,
           );
+          // final MedicationRecordState? state =
+          //     recordsMap[recordId]?.delaydUntil != null &&
+          //         recordsMap[recordId]!.delaydUntil!.isBefore(DateTime.now())
+          //     ? null
+          //     : recordsMap[recordId]?.state;
           final MedicationRecordState? state = recordsMap[recordId]?.state;
           final AgendaItem item = AgendaItem(
             medicationId: medication.id!,
@@ -178,7 +183,36 @@ class AgendaService {
     return medications.where((med) => med.id == id).first;
   }
 
-  List<AgendaGroup> getGroupedAgenda() {
+  List<AgendaGroup> getGroupedAgendaForNotifications() {
+    final Map<DateTime, List<AgendaItem>> agendaGroups = {};
+    for (AgendaItem item in agenda) {
+      if (item.state != MedicationRecordState.delayed &&
+          item.state != MedicationRecordState.pending) {
+        continue;
+      }
+      final DateTime checkedDate =
+          recordsMap.containsKey(item.medicationRecordId) &&
+              item.state == MedicationRecordState.delayed
+          ? item.delayedUntil!
+          : item.scheduledDate;
+      if (!agendaGroups.containsKey(checkedDate)) {
+        agendaGroups[checkedDate] = [item];
+      } else {
+        agendaGroups[checkedDate]!.add(item);
+      }
+    }
+
+    return agendaGroups.entries
+        .map(
+          (group) => AgendaGroup(
+            time: TimeOfDay(hour: group.key.hour, minute: group.key.minute),
+            items: group.value,
+          ),
+        )
+        .toList();
+  }
+
+  List<AgendaGroup> getGroupedAgendaForUI() {
     final Map<DateTime, List<AgendaItem>> agendaGroups = {};
     for (AgendaItem item in agenda) {
       if (agendaGroups[item.scheduledDate] == null) {

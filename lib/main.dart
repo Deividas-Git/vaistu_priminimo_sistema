@@ -90,9 +90,8 @@ class MainApp extends StatelessWidget {
                     context.read<UserProvider>().addNewUser(
                       userCredentials.uid,
                     );
-
                 context.read<UserProvider>().setUser(user);
-                debugPrint("NAUDOTOJAS: $user");
+                //debugPrint("NAUDOTOJAS: $user");
 
                 return RootScreen();
               },

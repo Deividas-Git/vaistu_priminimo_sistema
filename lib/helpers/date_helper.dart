@@ -7,4 +7,10 @@ class DateHelper {
     label = "$label:${date.minute.toString().padLeft(2, '0')}";
     return label;
   }
+
+  static String getFormattedTime(DateTime date) {
+    String label = date.hour.toString().padLeft(2, '0');
+    label = "$label:${date.minute.toString().padLeft(2, '0')}";
+    return label;
+  }
 }

@@ -25,6 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.now().add(Duration(days: 1)),
   ];
 
+  Future<void> _updateExpiredDelayedMedicationRecords() async {
+    final String? uid = context.read<UserProvider>().appUser?.uid;
+    if (uid != null) {
+      await context
+          .read<MedicationRecordsProvider>()
+          .updateExpiredDelayedRecords(uid);
+    }
+  }
+
   Future<bool> _areNotificationsAllowed() async {
     return await _notificationService.areNotificationsAllowed();
   }
@@ -45,8 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    debugPrint("PASIRINKIMAS $didConfirm");
-
     if (didConfirm == true) {
       await _notificationService.requestNotificationPermissions();
       await _notificationService.requestExactAlarmsPermission();
@@ -64,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
+      _updateExpiredDelayedMedicationRecords();
     });
   }
 

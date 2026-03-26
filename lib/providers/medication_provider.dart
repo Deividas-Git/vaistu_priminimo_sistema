@@ -19,7 +19,7 @@ class MedicationProvider extends ChangeNotifier {
       medications,
     ) {
       _userMedications = medications;
-      debugPrint("VAISTAI: $medications");
+      //debugPrint("VAISTAI: $medications");
       notifyListeners();
     });
   }
