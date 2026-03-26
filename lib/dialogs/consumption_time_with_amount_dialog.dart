@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/widgets/amount_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/time_spinner_widget.dart';
@@ -61,6 +63,9 @@ class _ConsumptionTimeWithAmountDialogState
     final time = TimeOfDay(hour: _hour, minute: _minute);
     final MedicationConsumptionTimeWithAmount
     medicationConsumptionTimeWithAmount = MedicationConsumptionTimeWithAmount(
+      id:
+          widget.prefilledMedicationConsumptionTimeWithAmount?.id ??
+          Uuid().v4(),
       time: time,
       consumptionAmount: _amount,
     );
@@ -87,36 +92,48 @@ class _ConsumptionTimeWithAmountDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      actionsAlignment: MainAxisAlignment.center,
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      title: Text(textAlign: TextAlign.center, "Priskirti laiką ir kiekį"),
       content: SizedBox(
         height: 300,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SectionTextWidget(label: "Kiekis:"),
+            Row(
+              children: [
+                Expanded(child: SectionTextWidget(label: "Kiekis:")),
+                AmountButton(
+                  icon: Icons.remove,
+                  onTap: _onAmountDecline,
+                  isDisabled: _amount == 1,
+                ),
+                SizedBox(width: 5),
+                AmountButton(icon: Icons.add, onTap: _onAmountAdd),
+              ],
+            ),
+            SizedBox(height: 10),
             ThemedContainerWidget(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "${widget.medicationType.getDoseLabel} $_amount",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
+              child: Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ColorScheme.of(context).secondary,
                     ),
+                    children: [
+                      TextSpan(text: "${widget.medicationType.getDoseLabel} "),
+                      TextSpan(
+                        text: _amount.toString(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: ColorScheme.of(context).secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  _AmountButtonWidget(
-                    icon: Icon(Icons.remove, color: Colors.white),
-                    onTap: _onAmountDecline,
-                  ),
-                  SizedBox(width: 5),
-                  _AmountButtonWidget(
-                    icon: Icon(Icons.add, color: Colors.white),
-                    onTap: _onAmountAdd,
-                  ),
-                ],
+                ),
               ),
             ),
             Divider(thickness: 2),
@@ -153,37 +170,6 @@ class _ConsumptionTimeWithAmountDialogState
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AmountButtonWidget extends StatelessWidget {
-  const _AmountButtonWidget({required this.icon, required this.onTap});
-
-  final Icon icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: ColorScheme.of(context).primary.withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(5),
-        highlightColor: ColorScheme.of(
-          context,
-        ).secondary.withValues(alpha: 0.35),
-        onTap: onTap,
-        child: Ink(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: ColorScheme.of(context).primary.withValues(alpha: 0.7),
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: icon,
-        ),
-      ),
     );
   }
 }

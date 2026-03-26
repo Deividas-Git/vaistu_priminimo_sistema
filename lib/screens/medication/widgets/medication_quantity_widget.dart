@@ -60,7 +60,14 @@ class MedicationQuantityWidget extends StatelessWidget {
               ),
               cursorColor: ColorScheme.of(context).inversePrimary,
               decoration: InputDecoration(
-                hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                hintStyle: TextStyle(
+                  color: isPreview
+                      ? ColorScheme.of(
+                          context,
+                        ).onSecondary.withValues(alpha: 0.5)
+                      : Colors.white,
+                  fontSize: 16,
+                ),
                 hintText: previewAmount != null
                     ? medicationType.consumedAmoutIsInteger
                           ? previewAmount.toString().split(".")[0]
@@ -88,7 +95,11 @@ class MedicationQuantityWidget extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             medicationType.getUnit,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 16,
+              //fontWeight: FontWeight.bold,
+              color: ColorScheme.of(context).onSurface,
+            ),
           ),
           const SizedBox(width: 10),
         ],

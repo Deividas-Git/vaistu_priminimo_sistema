@@ -16,11 +16,11 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<String?> clearUser() async {
-    _appUser = null;
-
     final String? deleteUserDataMessage = await _userService.deleteUserData(
       uid: _appUser!.uid,
     );
+
+    _appUser = null;
 
     if (deleteUserDataMessage != null) {
       return deleteUserDataMessage;

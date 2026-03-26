@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
@@ -68,9 +68,12 @@ class _AddConsumptionTimesWithAmountState
   ) async {
     final bool? didConfirm = await showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (context) => ConfirmationDialog(
         message: "Ar tikrai norite panaikinti pasirinktą laiką?",
         title: "Laiko ir kiekio šalinimas",
+        rightOptionText: "Naikinti",
+        leftOptionText: "Atšaukti",
+        leftSideHighlighted: true,
       ),
     );
 
@@ -170,13 +173,19 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
         ThemedContainerWidget(
           doesHeightExpand: true,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(onPressed: _onEditPressed, icon: Icon(Icons.edit)),
+              IconButton(
+                onPressed: _onEditPressed,
+                icon: Icon(
+                  Icons.edit,
+                  //color: ColorScheme.of(context).secondary,
+                ),
+              ),
               SizedBox(
                 height: 45,
-                width: 60,
+                //width: 55,
                 child: Container(
                   decoration: BoxDecoration(
                     color: ColorScheme.of(
@@ -185,33 +194,55 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Center(
-                    child: Text(
-                      "${(medicationConsumptionTimeWithAmount.time.hour).toString().padLeft(2, '0')}:${(medicationConsumptionTimeWithAmount.time.minute).toString().padLeft(2, '0')}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 16,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        "${(medicationConsumptionTimeWithAmount.time.hour).toString().padLeft(2, '0')}:${(medicationConsumptionTimeWithAmount.time.minute).toString().padLeft(2, '0')}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  "${medicationType.getDoseLabel} ${medicationConsumptionTimeWithAmount.consumptionAmount}",
+              //SizedBox(width: 5),
+              RichText(
+                text: TextSpan(
                   style: TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).secondary,
-                    fontWeight: FontWeight.bold,
                   ),
+                  children: [
+                    TextSpan(
+                      text: "${medicationType.getDoseLabel} ",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                    TextSpan(
+                      text: medicationConsumptionTimeWithAmount
+                          .consumptionAmount
+                          .toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: ColorScheme.of(context).secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
                 onPressed: _onDeletePressed,
                 icon: Icon(
                   Icons.delete,
-                  color: const Color.fromARGB(255, 196, 49, 38),
+                  // color: ColorScheme.of(
+                  //   context,
+                  // ).secondary, //const Color.fromARGB(255, 196, 49, 38),
                 ),
               ),
             ],

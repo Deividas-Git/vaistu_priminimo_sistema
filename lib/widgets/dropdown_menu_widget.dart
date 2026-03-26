@@ -34,7 +34,9 @@ class DropdownMenuWidget<T> extends StatelessWidget {
         prefixIconColor: Colors.white,
       ),
       menuStyle: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(colorScheme.inversePrimary),
+        backgroundColor: WidgetStatePropertyAll(
+          colorScheme.surfaceContainerHighest,
+        ),
         elevation: const WidgetStatePropertyAll(4.0),
       ),
     );

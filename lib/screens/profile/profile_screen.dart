@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     if (mounted) {
       context.read<MedicationProvider>().stopListening();
+      context.read<MedicationRecordsProvider>().stopListening();
+      NotificationService().cancelAllNotifications();
     }
   }
 

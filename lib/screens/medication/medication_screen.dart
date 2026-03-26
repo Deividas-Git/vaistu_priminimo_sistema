@@ -4,6 +4,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart'
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/medication_preview_screen.dart';
+import 'package:vaistu_priminimo_sistema/widgets/arrow_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
@@ -32,13 +33,20 @@ class _MedicationScreenState extends State<MedicationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final medications = context.watch<MedicationProvider>().uerMedications;
+    final List<UserMedication> medications = context
+        .watch<MedicationProvider>()
+        .uerMedications;
 
     return Scaffold(
       appBar: RootAppBar(title: "Mano vaistai"),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.only(
+            right: 40.0,
+            left: 40.0,
+            top: 20.0,
+            bottom: 20.0,
+          ),
           child: medications.isEmpty
               ? _NoMedicationsAddedNoticeWidget()
               : SingleChildScrollView(
@@ -70,7 +78,9 @@ class _MedicationScreenState extends State<MedicationScreen> {
         padding: const EdgeInsets.all(16.0),
         child: FloatingActionButton(
           onPressed: _onAddMedication,
-          backgroundColor: const Color.fromARGB(255, 9, 175, 14),
+          backgroundColor: ColorScheme.of(
+            context,
+          ).primary, //const Color.fromARGB(255, 9, 175, 14)
           child: Icon(Icons.add, color: Colors.white),
         ),
       ),
@@ -89,7 +99,11 @@ class _NoMedicationsAddedNoticeWidget extends StatelessWidget {
         children: [
           Icon(Icons.medication_outlined, size: 60, color: Colors.grey),
           SizedBox(height: 16),
-          Text("Neturite pridėtų vaistų", style: TextStyle(fontSize: 18)),
+          Text(
+            textAlign: TextAlign.center,
+            "Neturite pridėtų vaistų",
+            style: TextStyle(fontSize: 18),
+          ),
         ],
       ),
     );
@@ -125,33 +139,30 @@ class _MedicationTile extends StatelessWidget {
                 children: [
                   Text(
                     medication.name!,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: ColorScheme.of(context).onSurfaceVariant,
+                    ),
                   ),
                   Text(
                     medication.medicationType!.getLabel,
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: ColorScheme.of(context).onSurfaceVariant,
+                    ),
                   ),
                   if (medication.currentQuantity != null)
                     Text(
                       "Likutis: ${medication.medicationType!.consumedAmoutIsInteger ? medication.currentQuantity!.toInt() : medication.currentQuantity} ${medication.medicationType!.getUnit}",
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
                     ),
                 ],
               ),
-              IconButton(
-                onPressed: () => _onMedicationPreview(context),
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ColorScheme.of(context).primary,
-                  ),
-                  child: SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: Icon(Icons.arrow_forward, color: Colors.white),
-                  ),
-                ),
-              ),
+              ArrowButton(onButtonPressed: () => _onMedicationPreview(context)),
             ],
           ),
         ),

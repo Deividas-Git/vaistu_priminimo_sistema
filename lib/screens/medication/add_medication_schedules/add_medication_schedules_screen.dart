@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vaistu_priminimo_sistema/dialogs/delete_confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
@@ -51,9 +51,12 @@ class _AddMedicationSchedulesScreenState
   void _onDeleteSchedule(MedicationSchedule medicationSchedule) async {
     final bool? didConfirm = await showDialog(
       context: context,
-      builder: (context) => DeleteConfirmationDialog(
+      builder: (context) => ConfirmationDialog(
         message: "Ar tikrai norite panaikinti pasirinktą tvarkaraštį?",
         title: "Tvarkaraščio šalinimas",
+        rightOptionText: "Naikinti",
+        leftOptionText: "Atšaukti",
+        leftSideHighlighted: true,
       ),
     );
 
@@ -66,16 +69,21 @@ class _AddMedicationSchedulesScreenState
 
   void _onScheduleAdded(MedicationSchedule medicationSchedule) {
     setState(() {
-      //TODO SU TUO PACIU PAVADINIMU TRINAM, pirma alert dialogas
-
-      // for (final MedicationSchedule schedule in _medicationSchedules) {
-      //   if(schedule.name == medicationSchedule.name){
-      //   }
-      // }
-
       if (indexOfEditedSchedule == null) {
+        if (medicationSchedule.name!.isEmpty) {
+          final String defaultScheduleName =
+              "${widget.prefilledMedication.name} tvarkaraštis ${_medicationSchedules.length + 1}";
+          medicationSchedule = medicationSchedule.copyWith(
+            name: defaultScheduleName,
+          );
+        }
         _medicationSchedules.add(medicationSchedule);
       } else {
+        if (medicationSchedule.name!.isEmpty) {
+          medicationSchedule = medicationSchedule.copyWith(
+            name: "Redaguotas tvarkaraštis",
+          );
+        }
         _medicationSchedules[indexOfEditedSchedule!] = medicationSchedule;
         indexOfEditedSchedule = null;
       }
@@ -83,10 +91,13 @@ class _AddMedicationSchedulesScreenState
   }
 
   void _onSaveMedication() {
+    final DateTime addedAt =
+        widget.prefilledMedication.addedAt ?? DateTime.now();
     final UserMedication medication = widget.prefilledMedication.copyWith(
       medicationSchedules: _medicationSchedules.isEmpty
           ? null
           : _medicationSchedules,
+      addedAt: addedAt,
     );
     final String uid = context.read<UserProvider>().appUser!.uid;
     if (medication.id == null) {

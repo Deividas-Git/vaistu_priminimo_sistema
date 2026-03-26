@@ -20,7 +20,7 @@ class ThemedContainerWidget extends StatelessWidget {
           : height ?? 55, //55 default dydis atitinkantis textField
       child: Container(
         decoration: BoxDecoration(
-          color: ColorScheme.of(context).inversePrimary.withValues(alpha: 0.8),
+          color: ColorScheme.of(context).secondaryContainer,
           border: BoxBorder.all(color: ColorScheme.of(context).secondary),
           borderRadius: BorderRadius.circular(5.0),
         ),

@@ -7,22 +7,20 @@ enum Weekday {
   saturday,
   sunday;
 
-  String get getLabel {
-    switch (this) {
-      case Weekday.monday:
-        return "Pir";
-      case Weekday.tuesday:
-        return "Ant";
-      case Weekday.wednesday:
-        return "Tre";
-      case Weekday.thursday:
-        return "Ket";
-      case Weekday.friday:
-        return "Pen";
-      case Weekday.saturday:
-        return "Šeš";
-      case Weekday.sunday:
-        return "Sek";
+  static Weekday getWeekdayFromNumber(int num) {
+    if (num > 7 || num < 1) {
+      throw Exception("Klaida gaunant savaitės dieną $num");
     }
+    return Weekday.values[num - 1];
   }
+
+  String get getLabel => switch (this) {
+    monday => "Pir",
+    tuesday => "Ant",
+    wednesday => "Tre",
+    thursday => "Ket",
+    friday => "Pen",
+    saturday => "Šeš",
+    sunday => "Sek",
+  };
 }

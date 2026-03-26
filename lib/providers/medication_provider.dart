@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
 
@@ -18,7 +19,7 @@ class MedicationProvider extends ChangeNotifier {
       medications,
     ) {
       _userMedications = medications;
-      debugPrint("VAISTAI: $medications");
+      //debugPrint("VAISTAI: $medications");
       notifyListeners();
     });
   }
@@ -28,15 +29,35 @@ class MedicationProvider extends ChangeNotifier {
     _userMedications = [];
   }
 
-  void addMedication(UserMedication medication, String uid) {
-    _medicationService.addMedication(medication, uid);
+  void updateLastTimeTaken(List<MedicationRecord> records) {
+    final Map<String, DateTime> lastTakenTimeForMedications = {};
+
+    for (MedicationRecord record in records) {
+      if (record.takenDate == null) continue;
+      final String medId = record.medicationId;
+      if (!lastTakenTimeForMedications.containsKey(medId) ||
+          record.takenDate!.isAfter(lastTakenTimeForMedications[medId]!)) {
+        lastTakenTimeForMedications[medId] = record.takenDate!;
+      }
+    }
+
+    for (int i = 0; i < _userMedications.length; i++) {
+      final UserMedication medication = _userMedications[i];
+      _userMedications[i] = medication.copyWith(
+        lastTimeTaken: lastTakenTimeForMedications[medication.id],
+      );
+    }
   }
 
-  void updateMedication(UserMedication medication, String uid) {
-    _medicationService.updateMedication(medication, uid);
+  Future<void> addMedication(UserMedication medication, String uid) async {
+    await _medicationService.addMedication(medication, uid);
   }
 
-  void removeMedication(String medicationid, String uid) {
-    _medicationService.removeMedication(medicationid, uid);
+  Future<void> updateMedication(UserMedication medication, String uid) async {
+    await _medicationService.updateMedication(medication, uid);
+  }
+
+  Future<void> removeMedication(String medicationid, String uid) async {
+    await _medicationService.removeMedication(medicationid, uid);
   }
 }

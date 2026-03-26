@@ -102,7 +102,7 @@ class ScheduleTileWidget extends StatelessWidget {
                       onPressed: _onDeleteSchedule,
                       icon: Icon(
                         Icons.delete,
-                        color: const Color.fromARGB(255, 196, 49, 38),
+                        //color: const Color.fromARGB(255, 196, 49, 38),
                       ),
                     ),
                 ],

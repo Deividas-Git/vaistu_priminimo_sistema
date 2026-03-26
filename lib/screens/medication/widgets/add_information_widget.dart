@@ -12,16 +12,17 @@ class AddInformationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: InkWell(
-        onTap: onStartAddingInfo,
-        splashColor: ColorScheme.of(context).primary.withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(5),
-        highlightColor: ColorScheme.of(
-          context,
-        ).secondary.withValues(alpha: 0.35),
-        child: Ink(
-          child: ThemedContainerWidget(
+    return ThemedContainerWidget(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onStartAddingInfo,
+          splashColor: ColorScheme.of(context).primary.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(5),
+          highlightColor: ColorScheme.of(
+            context,
+          ).secondary.withValues(alpha: 0.2),
+          child: Ink(
             child: Row(
               children: [
                 SizedBox(
@@ -29,10 +30,14 @@ class AddInformationWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: BoxBorder.all(
-                        color: const Color.fromARGB(255, 11, 138, 15),
+                        color: ColorScheme.of(
+                          context,
+                        ).primary, //const Color.fromARGB(255, 11, 138, 15),
                         width: 2,
                       ),
-                      color: const Color.fromARGB(255, 9, 175, 14),
+                      color: ColorScheme.of(
+                        context,
+                      ).primary, //const Color.fromARGB(255, 9, 175, 14),
                     ),
                     child: const Icon(Icons.add, color: Colors.white),
                   ),
