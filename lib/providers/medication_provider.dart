@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
-import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
 class MedicationProvider extends ChangeNotifier {
   final MedicationService _medicationService;
-  final _notificationService = NotificationService();
   StreamSubscription? _streamSubscription;
   List<UserMedication> _userMedications = [];
   List<UserMedication> get uerMedications => _userMedications;
@@ -18,20 +17,36 @@ class MedicationProvider extends ChangeNotifier {
     _streamSubscription?.cancel();
     _streamSubscription = _medicationService.medicationsStream(uid).listen((
       medications,
-    ) async {
+    ) {
       _userMedications = medications;
-      debugPrint("VAISTAI: $medications");
+      //debugPrint("VAISTAI: $medications");
       notifyListeners();
-
-      await _notificationService.scheduleAllMedications(
-        medications: medications,
-      );
     });
   }
 
   void stopListening() {
     _streamSubscription?.cancel();
     _userMedications = [];
+  }
+
+  void updateLastTimeTaken(List<MedicationRecord> records) {
+    final Map<String, DateTime> lastTakenTimeForMedications = {};
+
+    for (MedicationRecord record in records) {
+      if (record.takenDate == null) continue;
+      final String medId = record.medicationId;
+      if (!lastTakenTimeForMedications.containsKey(medId) ||
+          record.takenDate!.isAfter(lastTakenTimeForMedications[medId]!)) {
+        lastTakenTimeForMedications[medId] = record.takenDate!;
+      }
+    }
+
+    for (int i = 0; i < _userMedications.length; i++) {
+      final UserMedication medication = _userMedications[i];
+      _userMedications[i] = medication.copyWith(
+        lastTimeTaken: lastTakenTimeForMedications[medication.id],
+      );
+    }
   }
 
   Future<void> addMedication(UserMedication medication, String uid) async {

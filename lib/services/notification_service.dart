@@ -7,6 +7,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
 
@@ -31,7 +32,15 @@ class NotificationService {
     const initSettingsAndroid = AndroidInitializationSettings(
       "@mipmap/ic_launcher",
     );
-    const initSettings = InitializationSettings(android: initSettingsAndroid);
+    const initIosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const initSettings = InitializationSettings(
+      android: initSettingsAndroid,
+      iOS: initIosSettings,
+    );
 
     await notificationsPlugin.initialize(
       settings: initSettings,
@@ -56,6 +65,7 @@ class NotificationService {
         importance: Importance.high,
         priority: Priority.high,
       ),
+      iOS: DarwinNotificationDetails(),
     );
   }
 
@@ -71,6 +81,10 @@ class NotificationService {
   //     notificationDetails: notificationDetails(),
   //   );
   // }
+
+  Future<void> cancelAllNotifications() async {
+    await notificationsPlugin.cancelAll();
+  }
 
   Future<void> scheduleNotification({
     required int id,
@@ -90,8 +104,9 @@ class NotificationService {
 
   Future<void> scheduleAllMedications({
     required List<UserMedication> medications,
+    required Map<String, MedicationRecord> recordsMap,
   }) async {
-    await notificationsPlugin.cancelAll();
+    await cancelAllNotifications();
 
     final nowTz = tz.TZDateTime.now(tz.local);
 
@@ -100,9 +115,11 @@ class NotificationService {
       AgendaService agendaService = AgendaService(
         date: DateTime(checkedDate.year, checkedDate.month, checkedDate.day),
         medications: medications,
+        recordsMap: recordsMap,
       );
 
-      final List<AgendaGroup> groupedAgenda = agendaService.getGroupedAgenda();
+      final List<AgendaGroup> groupedAgenda = agendaService
+          .getGroupedAgendaForNotifications();
       for (AgendaGroup group in groupedAgenda) {
         final scheduledDateTz = tz.TZDateTime(
           tz.local,
@@ -113,8 +130,7 @@ class NotificationService {
           group.time.minute,
         );
 
-        if (!scheduledDateTz.isAfter(nowTz)) continue;
-        //debugPrint("NUMATYTA $scheduledDateTz, DABAR: $nowTz");
+        if (scheduledDateTz.isBefore(nowTz)) continue;
         final int id =
             (group.items[0].medicationId.hashCode +
                 scheduledDateTz.millisecondsSinceEpoch) %

@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/app_user.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/home/agenda_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 
@@ -12,21 +19,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final NotificationService _notificationService = NotificationService();
-  late final bool _allowsNotifications;
   final List<DateTime> _dates = [
     DateTime.now().subtract(Duration(days: 1)),
     DateTime.now(),
     DateTime.now().add(Duration(days: 1)),
   ];
 
+  Future<void> _updateExpiredDelayedMedicationRecords() async {
+    final String? uid = context.read<UserProvider>().appUser?.uid;
+    if (uid != null) {
+      await context
+          .read<MedicationRecordsProvider>()
+          .updateExpiredDelayedRecords(uid);
+    }
+  }
+
   Future<bool> _areNotificationsAllowed() async {
     return await _notificationService.areNotificationsAllowed();
   }
 
   Future<void> _requestNotificationPermission() async {
-    //await _notificationService.getPendingNotifications();
-    _allowsNotifications = await _areNotificationsAllowed();
-    if (_allowsNotifications || !mounted) return;
+    final bool allowsNotifications = await _areNotificationsAllowed();
+    if (allowsNotifications || !mounted) return;
+    final AppUser? user = context.read<UserProvider>().appUser;
+    if (user == null) return;
     bool? didConfirm = await showDialog(
       context: context,
       builder: (context) => ConfirmationDialog(
@@ -38,11 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    debugPrint("PASIRINKIMAS $didConfirm");
-
     if (didConfirm == true) {
       await _notificationService.requestNotificationPermissions();
       await _notificationService.requestExactAlarmsPermission();
+      if (!mounted) return;
+      _notificationService.scheduleAllMedications(
+        medications: context.read<MedicationProvider>().uerMedications,
+        recordsMap: context.read<MedicationRecordsProvider>().getRecordsMap(),
+      );
     }
   }
 
@@ -52,11 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
+      _updateExpiredDelayedMedicationRecords();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<UserMedication> medications = context
+        .watch<MedicationProvider>()
+        .uerMedications;
+    final List<MedicationRecord> medicationRecords = context
+        .watch<MedicationRecordsProvider>()
+        .medicationRecords;
+    final Map<String, MedicationRecord> recordsMap = context
+        .read<MedicationRecordsProvider>()
+        .getRecordsMap();
+    context.read<MedicationProvider>().updateLastTimeTaken(medicationRecords);
+
     return DefaultTabController(
       length: 3,
       initialIndex: 1,
@@ -85,7 +116,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         body: TabBarView(
-          children: _dates.map((date) => AgendaScreen(date: date)).toList(),
+          children: _dates
+              .map(
+                (date) => AgendaScreen(
+                  date: date,
+                  medications: medications,
+                  medicationRecords: recordsMap,
+                ),
+              )
+              .toList(),
         ),
       ),
     );

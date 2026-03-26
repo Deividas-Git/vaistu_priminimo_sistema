@@ -4,10 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/medication_record_service.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
 import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 import 'package:vaistu_priminimo_sistema/services/user_service.dart';
@@ -25,6 +27,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => MedicationProvider(MedicationService()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MedicationRecordsProvider(MedicationRecordService()),
         ),
       ],
       child: MainApp(),
@@ -85,9 +90,8 @@ class MainApp extends StatelessWidget {
                     context.read<UserProvider>().addNewUser(
                       userCredentials.uid,
                     );
-
                 context.read<UserProvider>().setUser(user);
-                debugPrint("NAUDOTOJAS: $user");
+                //debugPrint("NAUDOTOJAS: $user");
 
                 return RootScreen();
               },

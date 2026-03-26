@@ -9,12 +9,12 @@ class UserMedication {
   final String? id;
   final String? name;
   final double? currentQuantity;
-  final MedicationType? medicationType; // = MedicationType.other;
-  final MedicationMealTiming?
-  medicationMealTiming; // = MedicationMealTiming.unspecified;
+  final MedicationType? medicationType;
+  final MedicationMealTiming? medicationMealTiming;
   final DateTime? expirationDate;
   final DateTime? lastTimeTaken;
   final List<MedicationSchedule>? medicationSchedules;
+  final DateTime? addedAt;
 
   UserMedication({
     this.id,
@@ -25,6 +25,7 @@ class UserMedication {
     this.expirationDate,
     this.lastTimeTaken,
     this.medicationSchedules,
+    this.addedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,14 +43,14 @@ class UserMedication {
       map["expirationDate"] = Timestamp.fromDate(expirationDate!);
     }
 
-    if (lastTimeTaken != null) {
-      map["lastTimeTaken"] = Timestamp.fromDate(lastTimeTaken!);
-    }
-
     if (medicationSchedules != null) {
       map["medicationSchedules"] = medicationSchedules!
           .map(((schedule) => schedule.toMap()))
           .toList();
+    }
+
+    if (addedAt != null) {
+      map["addedAt"] = Timestamp.fromDate(addedAt!);
     }
 
     return map;
@@ -67,9 +68,6 @@ class UserMedication {
       expirationDate: map["expirationDate"] != null
           ? (map["expirationDate"] as Timestamp).toDate()
           : null,
-      lastTimeTaken: map["lastTimeTaken"] != null
-          ? (map["lastTimeTaken"] as Timestamp).toDate()
-          : null,
       medicationSchedules:
           (map["medicationSchedules"] as List<dynamic>?)?.isNotEmpty == true
           ? (map["medicationSchedules"] as List<dynamic>)
@@ -79,6 +77,9 @@ class UserMedication {
                   )),
                 )
                 .toList()
+          : null,
+      addedAt: map["addedAt"] != null
+          ? (map["addedAt"] as Timestamp).toDate()
           : null,
     );
   }
@@ -96,6 +97,7 @@ class UserMedication {
     Object? expirationDate = _noChange,
     Object? lastTimeTaken = _noChange,
     Object? medicationSchedules = _noChange,
+    Object? addedAt = _noChange,
   }) {
     return UserMedication(
       id: id == _noChange ? this.id : id as String?,
@@ -118,6 +120,7 @@ class UserMedication {
       medicationSchedules: medicationSchedules == _noChange
           ? this.medicationSchedules
           : medicationSchedules as List<MedicationSchedule>?,
+      addedAt: addedAt == _noChange ? this.addedAt : addedAt as DateTime,
     );
   }
 

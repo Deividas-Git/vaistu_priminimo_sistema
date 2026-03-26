@@ -56,7 +56,7 @@ class MedicationDatePickerWidget extends StatelessWidget {
                   borderRadius: BorderRadiusGeometry.circular(5.0),
                 ),
                 backgroundColor: isPreview
-                    ? ColorScheme.of(context).onSurfaceVariant
+                    ? ColorScheme.of(context).secondary
                     : ColorScheme.of(context).primary,
               ),
               child: Text(
@@ -65,7 +65,9 @@ class MedicationDatePickerWidget extends StatelessWidget {
                     : selectedDate.toString().split(" ")[0],
                 style: TextStyle(
                   color: isPreview
-                      ? ColorScheme.of(context).secondaryContainer
+                      ? ColorScheme.of(
+                          context,
+                        ).onSecondary.withValues(alpha: 0.5)
                       : Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

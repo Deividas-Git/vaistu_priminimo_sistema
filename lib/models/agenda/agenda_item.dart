@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 
 class AgendaItem {
@@ -8,8 +8,12 @@ class AgendaItem {
   final int amountToTake;
   final MedicationMealTiming medicationMealTiming;
   final MedicationType medicationType;
-  final TimeOfDay time;
+  final DateTime scheduledDate;
   final String scheduleName;
+  final MedicationRecordState state;
+  final String medicationRecordId;
+  final DateTime? lastTimeTaken;
+  final DateTime? delayedUntil;
 
   AgendaItem({
     required this.medicationId,
@@ -17,12 +21,16 @@ class AgendaItem {
     required this.amountToTake,
     required this.medicationMealTiming,
     required this.medicationType,
-    required this.time,
+    required this.scheduledDate,
     required this.scheduleName,
+    required this.state,
+    required this.medicationRecordId,
+    required this.lastTimeTaken,
+    required this.delayedUntil,
   });
 
   @override
   String toString() {
-    return "Med ID: $medicationId, vaistas: $medicationName, laikas: $time, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName";
+    return "Med ID: $medicationId, recordId: $medicationRecordId, vaistas: $medicationName, data: $scheduledDate, kiekis: $amountToTake, vartojama: $medicationMealTiming, tvarkarastis: $scheduleName, busena: $state, vartota $lastTimeTaken";
   }
 }
