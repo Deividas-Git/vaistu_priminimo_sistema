@@ -109,11 +109,6 @@ class AgendaService {
             timeId: timeWithAmount.id,
             date: agendaDate,
           );
-          // final MedicationRecordState? state =
-          //     recordsMap[recordId]?.delaydUntil != null &&
-          //         recordsMap[recordId]!.delaydUntil!.isBefore(DateTime.now())
-          //     ? null
-          //     : recordsMap[recordId]?.state;
           final MedicationRecordState? state = recordsMap[recordId]?.state;
           final AgendaItem item = AgendaItem(
             medicationId: medication.id!,

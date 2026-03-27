@@ -17,6 +17,7 @@ class DropdownMenuWidget<T> extends StatelessWidget {
     final colorScheme = ColorScheme.of(context);
 
     return DropdownMenu<T>(
+      hintText: initialSelection == null ? "Nepasirinkta" : null,
       initialSelection: initialSelection,
       leadingIcon: const Icon(Icons.menu),
       expandedInsets: EdgeInsets.all(
@@ -24,14 +25,18 @@ class DropdownMenuWidget<T> extends StatelessWidget {
       ), //sutvarko kad butu tokio pat ilgio kaip kiti widgetai screene
       dropdownMenuEntries: entries,
       onSelected: onEntrySelected,
-      trailingIcon: const Icon(Icons.expand_more, color: Colors.white),
-      selectedTrailingIcon: Icon(Icons.expand_less, color: Colors.white),
-      textStyle: TextStyle(color: Colors.white, fontSize: 16),
+      trailingIcon: Icon(Icons.expand_more, color: colorScheme.onPrimary),
+      selectedTrailingIcon: Icon(
+        Icons.expand_less,
+        color: colorScheme.onPrimary,
+      ),
+      textStyle: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colorScheme.primary,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-        prefixIconColor: Colors.white,
+        prefixIconColor: colorScheme.onPrimary,
+        hintStyle: TextStyle(color: colorScheme.onPrimary),
       ),
       menuStyle: MenuStyle(
         backgroundColor: WidgetStatePropertyAll(
