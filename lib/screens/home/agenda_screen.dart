@@ -139,7 +139,7 @@ class _AgendaTile extends StatelessWidget {
         medicationId: item.medicationId,
         scheduledDate: item.scheduledDate,
         takenDate: result.takenAt,
-        delaydUntil: result.delayedUntil,
+        delayedUntil: result.delayedUntil,
         state: result.state,
       );
       if (!context.mounted) return;

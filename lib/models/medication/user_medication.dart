@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 
 const _noChange = Object();
 
@@ -122,6 +125,53 @@ class UserMedication {
           : medicationSchedules as List<MedicationSchedule>?,
       addedAt: addedAt == _noChange ? this.addedAt : addedAt as DateTime,
     );
+  }
+
+  DateTime? getConsumptionStartDate() {
+    if (medicationSchedules == null || medicationSchedules!.isEmpty) {
+      return null;
+    }
+    return medicationSchedules!
+        .map((schedule) => schedule)
+        .reduce((a, b) => a.startDate.isBefore(b.startDate) ? a : b)
+        .startDate;
+  }
+
+  DateTime? getConsumptionEndDate() {
+    if (medicationSchedules == null || medicationSchedules!.isEmpty) {
+      return null;
+    }
+    DateTime? endDate;
+    for (MedicationSchedule schedule in medicationSchedules!) {
+      if (schedule.endDate == null) continue;
+      if ((endDate != null && schedule.endDate!.isAfter(endDate)) ||
+          endDate == null) {
+        endDate = schedule.endDate;
+      }
+    }
+    //jei null, vadinasi nera vartojimo pabaigos
+    return endDate;
+  }
+
+  bool isInculdedInSchedule(MedicationSchedule schedule, DateTime date) {
+    final DateTime startDate = DateHelper.normalizedDate(schedule.startDate)!;
+    final DateTime? endDate = DateHelper.normalizedDate(schedule.endDate);
+
+    if (endDate != null && endDate.isBefore(date)) return false;
+    if (startDate.isBefore(date) || startDate == date) {
+      if (schedule.medicationFrequencyType ==
+              MedicationFrequencyType.selectedDays &&
+          schedule.weekdays!.contains(
+            Weekday.getWeekdayFromNumber(date.weekday),
+          )) {
+        return true;
+      } else if (schedule.medicationFrequencyType ==
+              MedicationFrequencyType.constantIntervals &&
+          date.difference(startDate).inDays % schedule.intervalsDays! == 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override

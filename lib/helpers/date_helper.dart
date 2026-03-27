@@ -13,4 +13,9 @@ class DateHelper {
     label = "$label:${date.minute.toString().padLeft(2, '0')}";
     return label;
   }
+
+  static DateTime? normalizedDate(DateTime? date) {
+    if (date == null) return null;
+    return DateTime(date.year, date.month, date.day);
+  }
 }

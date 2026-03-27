@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
@@ -24,9 +26,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<UserMedication> medications = context
-        .watch<MedicationProvider>()
-        .uerMedications;
+    final MedicationProvider medicationProvider = context
+        .watch<MedicationProvider>();
+    final MedicationRecordsProvider medicationRecordsProvider = context
+        .watch<MedicationRecordsProvider>();
+    final List<UserMedication> medications = medicationProvider.uerMedications;
+    final MedicationProgress? medicationProgress = medicationRecordsProvider
+        .getMedicationProgress(_selectedMedication);
+
+    debugPrint("PROGRESS: $medicationProgress");
 
     return Scaffold(
       appBar: RootAppBar(title: "Vartojimo progresas"),

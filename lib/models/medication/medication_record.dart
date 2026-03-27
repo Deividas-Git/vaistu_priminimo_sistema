@@ -4,26 +4,23 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_record_sta
 class MedicationRecord {
   final String id;
   final String medicationId;
-  //final String timeId;
   final DateTime scheduledDate;
   final DateTime? takenDate;
-  final DateTime? delaydUntil;
+  final DateTime? delayedUntil;
   final MedicationRecordState state;
 
   MedicationRecord({
     required this.id,
     required this.medicationId,
-    //required this.timeId,
     required this.scheduledDate,
     required this.takenDate,
-    required this.delaydUntil,
+    required this.delayedUntil,
     required this.state,
   });
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = {
       "medicationId": medicationId,
-      //"timeId": timeId,
       "scheduledDate": Timestamp.fromDate(scheduledDate),
       "state": state.name,
     };
@@ -32,8 +29,8 @@ class MedicationRecord {
       map["takenDate"] = takenDate;
     }
 
-    if (delaydUntil != null) {
-      map["delayedUntil"] = delaydUntil;
+    if (delayedUntil != null) {
+      map["delayedUntil"] = delayedUntil;
     }
 
     return map;
@@ -43,12 +40,11 @@ class MedicationRecord {
     return MedicationRecord(
       id: id,
       medicationId: map["medicationId"],
-      //timeId: map["timeId"],
       scheduledDate: (map["scheduledDate"] as Timestamp).toDate(),
       takenDate: map["takenDate"] != null
           ? (map["takenDate"] as Timestamp).toDate()
           : null,
-      delaydUntil: map["delayedUntil"] != null
+      delayedUntil: map["delayedUntil"] != null
           ? (map["delayedUntil"] as Timestamp).toDate()
           : null,
       state: MedicationRecordState.values.byName(map["state"]),
