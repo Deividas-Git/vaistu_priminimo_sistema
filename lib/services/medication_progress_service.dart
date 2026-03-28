@@ -89,7 +89,8 @@ class MedicationProgressService {
       if (record.state != MedicationRecordState.taken) continue;
       final int difference = record.takenDate!
           .difference(record.scheduledDate)
-          .inMinutes;
+          .inMinutes
+          .abs();
       differencesCount += 1;
       sum += difference;
     }

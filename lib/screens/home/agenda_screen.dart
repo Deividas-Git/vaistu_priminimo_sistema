@@ -129,7 +129,7 @@ class _AgendaTile extends StatelessWidget {
               agendaService.getMedicationFromId(item.medicationId),
               DateTime.now(),
             ),
-        maxDelayUntil: agendaService.getNextIntakeAfterDate(item),
+        nextIntakeAt: agendaService.getNextIntakeAfterDate(item),
       ),
     );
 
