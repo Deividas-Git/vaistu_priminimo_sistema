@@ -101,7 +101,7 @@ class MedicationRecordsProvider extends ChangeNotifier {
     List<MedicationRecord> records = _getAllRecordsForMedication(
       medication.id!,
     );
-    if (records.isEmpty) return null;
+    //if (records.isEmpty) return null;
     return _medicationProgressService.getMedicationProgress(
       records: records,
       medication: medication,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
@@ -7,6 +8,7 @@ import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.d
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
+import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -40,7 +42,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       appBar: RootAppBar(title: "Vartojimo progresas"),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: _selectedMedication == null
+        child: _selectedMedication == null || medicationProgress == null
             ? Column(
                 children: [
                   _TopPart(
@@ -72,10 +74,46 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ],
               )
             : SingleChildScrollView(
-                child: _TopPart(
-                  selectedMedication: _selectedMedication,
-                  medications: medications,
-                  onSelectedMedication: _onMedicationSelected,
+                child: Column(
+                  children: [
+                    _TopPart(
+                      selectedMedication: _selectedMedication,
+                      medications: medications,
+                      onSelectedMedication: _onMedicationSelected,
+                    ),
+                    SizedBox(height: 5),
+                    Divider(thickness: 2),
+                    SizedBox(height: 5),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: ColorScheme.of(context).onSurfaceVariant,
+                        ),
+                        children: [
+                          TextSpan(text: "Laikotarpis:\n"),
+                          TextSpan(
+                            text: DateHelper.getFormattedDate(
+                              medicationProgress.startDate,
+                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(text: " iki "),
+                          TextSpan(
+                            text: DateHelper.getFormattedDate(
+                              medicationProgress.endDate.subtract(
+                                Duration(days: 1),
+                              ),
+                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _AdherenceBar(percentage: medicationProgress.adherenceRate),
+                  ],
                 ),
               ),
       ),
@@ -107,6 +145,80 @@ class _TopPart extends StatelessWidget {
           onEntrySelected: onSelectedMedication,
         ),
       ],
+    );
+  }
+}
+
+class _AdherenceBar extends StatelessWidget {
+  const _AdherenceBar({required this.percentage});
+  final double percentage;
+
+  Color _getColor() {
+    if (percentage >= 80) return const Color(0xFF4CAF50);
+    if (percentage >= 50) return const Color(0xFFFFC107);
+    return const Color(0xFFF44336);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: percentage),
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return ThemedContainerWidget(
+          doesHeightExpand: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: ColorScheme.of(context).onSurfaceVariant,
+                  ),
+                  children: [
+                    TextSpan(text: "Vartojimo procentas: "),
+                    TextSpan(
+                      text: "${value.toInt()}%",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 25,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ColorScheme.of(context).onSecondaryFixedVariant,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [BoxShadow(blurRadius: 2)],
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: value / 100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: _getColor(),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 5,
+                            color: _getColor().withValues(alpha: 0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
