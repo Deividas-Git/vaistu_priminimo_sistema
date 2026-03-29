@@ -51,6 +51,8 @@
 		<true/>
 	</dict>
 	<key>NSUserNotificationUsageDescription</key>
-	<string>This app needs notifications to remind you about medications.</string>
+	<string>Leiskite pranešimus siekiant gauti vartojimo priminimus</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Leiskite naudotis kamera norint skenuoti pakuotę</string>
 </dict>
 </plist>

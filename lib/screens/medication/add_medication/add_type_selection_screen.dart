@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_medication_info_screen.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/scan_medication_package_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
@@ -12,9 +13,9 @@ enum SelectedOptionToAddMedication {
   String get getLabel {
     switch (this) {
       case manual:
-        return "Pridėti pačiam";
+        return "Įvesti pačiam";
       case scan:
-        return "Skenuoti vaisto kodą";
+        return "Skenuoti pakuotės vaisto kodą";
       case import:
         return "Įtraukti iš e. sveikatos";
     }
@@ -26,7 +27,7 @@ enum SelectedOptionToAddMedication {
       case manual:
         return AddMedicationInfoScreen();
       case scan:
-        return AddMedicationInfoScreen();
+        return ScanMedicationPackageScreen();
       case import:
         return AddMedicationInfoScreen();
     }
