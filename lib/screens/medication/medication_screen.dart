@@ -97,12 +97,20 @@ class _NoMedicationsAddedNoticeWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.medication_outlined, size: 60, color: Colors.grey),
-          SizedBox(height: 16),
+          Icon(
+            Icons.medication_outlined,
+            size: 100,
+            color: ColorScheme.of(
+              context,
+            ).onSurfaceVariant.withValues(alpha: 0.9),
+          ),
           Text(
             textAlign: TextAlign.center,
             "Neturite pridėtų vaistų",
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(
+              fontSize: 20,
+              color: ColorScheme.of(context).onSurfaceVariant,
+            ),
           ),
         ],
       ),

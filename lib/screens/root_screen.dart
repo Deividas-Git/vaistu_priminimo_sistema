@@ -77,8 +77,8 @@ class _RootScreenState extends State<RootScreen> {
           ),
           BottomNavigationBarItem(
             icon: _selectedScreenIndex == 2
-                ? Icon(Icons.bar_chart)
-                : Icon(Icons.bar_chart_outlined),
+                ? Icon(Icons.insert_chart)
+                : Icon(Icons.insert_chart_outlined),
             label: "Progresas",
           ),
           BottomNavigationBarItem(

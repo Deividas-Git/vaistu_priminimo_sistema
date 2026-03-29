@@ -13,12 +13,12 @@ class MedicationStateDialog extends StatefulWidget {
     super.key,
     required this.agendaItem,
     required this.upcomingMedicationIntakeAt,
-    required this.maxDelayUntil,
+    required this.nextIntakeAt,
   });
 
   final AgendaItem agendaItem;
   final DateTime? upcomingMedicationIntakeAt;
-  final DateTime? maxDelayUntil;
+  final DateTime? nextIntakeAt;
 
   @override
   State<MedicationStateDialog> createState() => _MedicationStateDialogState();
@@ -45,7 +45,7 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
       context: context,
       builder: (context) => _TimeDelayDialog(
         agendaItem: widget.agendaItem,
-        maxDelayUntil: widget.maxDelayUntil,
+        nextIntakeAt: widget.nextIntakeAt,
       ),
     );
     if (!mounted) return;
@@ -102,8 +102,8 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
             Divider(thickness: 2),
             _MedicationDateTimeWidget(
               date: widget.agendaItem.lastTimeTaken,
-              topLabel: "Paskutinį kartą vartota\n",
-              bottomLabel: "Anksčiau vartota nebuvo",
+              label: "Paskutinį kartą vartota\n",
+              alternativeLabel: "Anksčiau vartota nebuvo",
             ),
             SizedBox(height: 10),
             ThemedContainerWidget(
@@ -174,8 +174,8 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
             SizedBox(height: 5),
             _MedicationDateTimeWidget(
               date: widget.upcomingMedicationIntakeAt,
-              topLabel: "Artimiausias vartojimas\n",
-              bottomLabel: "Nėra kito numatomo vartojimo",
+              label: "Artimiausias vartojimas\n",
+              alternativeLabel: "Nėra kito numatomo vartojimo",
             ),
           ],
         ),
@@ -186,13 +186,13 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
 
 class _MedicationDateTimeWidget extends StatelessWidget {
   const _MedicationDateTimeWidget({
-    required this.topLabel,
-    required this.bottomLabel,
+    required this.label,
+    required this.alternativeLabel,
     required this.date,
   });
 
-  final String topLabel;
-  final String bottomLabel;
+  final String label;
+  final String alternativeLabel;
   final DateTime? date;
 
   @override
@@ -206,7 +206,7 @@ class _MedicationDateTimeWidget extends StatelessWidget {
                 color: ColorScheme.of(context).onSurfaceVariant,
               ),
               children: [
-                TextSpan(text: topLabel),
+                TextSpan(text: label),
                 TextSpan(
                   text: DateHelper.getFormattedDateTime(date!),
                   style: TextStyle(
@@ -217,18 +217,18 @@ class _MedicationDateTimeWidget extends StatelessWidget {
               ],
             ),
           )
-        : Text(bottomLabel, style: TextStyle(fontSize: 16));
+        : Text(alternativeLabel, style: TextStyle(fontSize: 16));
   }
 }
 
 class _TimeDelayDialog extends StatefulWidget {
   const _TimeDelayDialog({
     required this.agendaItem,
-    required this.maxDelayUntil,
+    required this.nextIntakeAt,
   });
 
   final AgendaItem agendaItem;
-  final DateTime? maxDelayUntil;
+  final DateTime? nextIntakeAt;
 
   @override
   State<_TimeDelayDialog> createState() => _TimeDelayDialogState();
@@ -236,40 +236,42 @@ class _TimeDelayDialog extends StatefulWidget {
 
 class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   late final DateTime _scheduledDate;
-  late final DateTime? _maxDelayUntil;
+  late final DateTime _maxDelayUntil;
   final int _delayeMins = 15;
   int _delayTimes = 1;
+  late DateTime _selectedDelayUntil;
 
   int _maxDelayPresses() {
-    if (_maxDelayUntil == null) {
-      return (6 * 60) ~/ _delayeMins;
-    }
     final remainingMinutes = _maxDelayUntil
         .difference(_scheduledDate)
         .inMinutes;
-    final allowedMinutes = remainingMinutes - _delayeMins;
-    final steps = allowedMinutes ~/ _delayeMins;
+    final steps = remainingMinutes ~/ _delayeMins;
 
     return steps > 0 ? steps : 1;
+  }
+
+  void _updateSelectedDelayDate() {
+    _selectedDelayUntil = _maxDelayUntil == _selectedDelayUntil
+        ? _maxDelayUntil
+        : _scheduledDate.add(Duration(minutes: _delayTimes * _delayeMins));
   }
 
   void _onAmountDecline() {
     setState(() {
       _delayTimes -= 1;
+      _updateSelectedDelayDate();
     });
   }
 
   void _onAmountAdd() {
     setState(() {
       _delayTimes += 1;
+      _updateSelectedDelayDate();
     });
   }
 
   void _onConfirmTime(BuildContext context) {
-    Navigator.pop(
-      context,
-      _scheduledDate.add(Duration(minutes: _delayeMins * _delayTimes)),
-    );
+    Navigator.pop(context, _selectedDelayUntil);
   }
 
   void _onCancel(BuildContext context) {
@@ -280,7 +282,22 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   void initState() {
     super.initState();
     _scheduledDate = widget.agendaItem.scheduledDate;
-    _maxDelayUntil = widget.maxDelayUntil;
+    if (widget.nextIntakeAt != null &&
+        widget.nextIntakeAt!.day == _scheduledDate.day) {
+      _maxDelayUntil = widget.nextIntakeAt!;
+    } else {
+      _maxDelayUntil = DateTime(
+        _scheduledDate.year,
+        _scheduledDate.month,
+        _scheduledDate.day,
+        23,
+        59,
+      );
+    }
+    _selectedDelayUntil =
+        _scheduledDate.add(Duration(minutes: 15)).day != _scheduledDate.day
+        ? _maxDelayUntil
+        : _scheduledDate;
   }
 
   @override
@@ -323,9 +340,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                       TextSpan(text: "Atidėti iki: "),
                       TextSpan(
                         text: DateHelper.getFormattedDateTime(
-                          _scheduledDate.add(
-                            Duration(minutes: _delayeMins * _delayTimes),
-                          ),
+                          _selectedDelayUntil,
                         ),
                         style: TextStyle(
                           //fontSize: 18,
@@ -347,21 +362,16 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
                 ),
                 children: [
                   TextSpan(
-                    text: _maxDelayUntil != null
+                    text:
+                        widget.nextIntakeAt != null &&
+                            widget.nextIntakeAt!.day == _scheduledDate.day
                         ? "Atidėti galima iki kito vartojimo\n"
                         : "Atidėti galima iki\n",
                   ),
-                  _maxDelayUntil != null
-                      ? TextSpan(
-                          text: DateHelper.getFormattedDateTime(_maxDelayUntil),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      : TextSpan(
-                          text: DateHelper.getFormattedDateTime(
-                            _scheduledDate.add(Duration(hours: 6)),
-                          ),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                  TextSpan(
+                    text: DateHelper.getFormattedDateTime(_maxDelayUntil),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
             ),

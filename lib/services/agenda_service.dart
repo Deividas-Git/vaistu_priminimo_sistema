@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_group.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 
 class AgendaService {
   late final DateTime agendaDate;
@@ -20,43 +19,18 @@ class AgendaService {
     required this.medications,
     required this.recordsMap,
   }) {
-    agendaDate = _normalizedDate(date)!;
+    agendaDate = DateHelper.normalizedDate(date)!;
     agenda = _getAgenda();
-  }
-
-  DateTime? _normalizedDate(DateTime? date) {
-    if (date == null) return null;
-    return DateTime(date.year, date.month, date.day);
-  }
-
-  bool _isMedicationInculded(MedicationSchedule schedule, DateTime date) {
-    final DateTime startDate = _normalizedDate(schedule.startDate)!;
-    final DateTime? endDate = _normalizedDate(schedule.endDate);
-
-    if (endDate != null && endDate.isBefore(date)) return false;
-    if (startDate.isBefore(date) || startDate == date) {
-      if (schedule.medicationFrequencyType ==
-              MedicationFrequencyType.selectedDays &&
-          schedule.weekdays!.contains(
-            Weekday.getWeekdayFromNumber(date.weekday),
-          )) {
-        return true;
-      } else if (schedule.medicationFrequencyType ==
-              MedicationFrequencyType.constantIntervals &&
-          date.difference(startDate).inDays % schedule.intervalsDays! == 0) {
-        return true;
-      }
-    }
-    return false;
   }
 
   DateTime? _getUpcomingIntakeForSchedule(
     MedicationSchedule schedule,
+    UserMedication medication,
     DateTime now,
   ) {
     for (int i = 0; i <= 7; i++) {
       final DateTime checkedDate = now.add(Duration(days: i));
-      if (!_isMedicationInculded(schedule, checkedDate)) continue;
+      if (!medication.isInculdedInSchedule(schedule, checkedDate)) continue;
       schedule.consumptionTimesWithAmount!.sort(
         (a, b) => checkedDate
             .add(Duration(hours: a.time.hour, minutes: a.time.minute))
@@ -99,7 +73,7 @@ class AgendaService {
       if (medication.medicationSchedules == null) continue;
       for (final MedicationSchedule schedule
           in medication.medicationSchedules!) {
-        if (!_isMedicationInculded(schedule, agendaDate)) {
+        if (!medication.isInculdedInSchedule(schedule, agendaDate)) {
           continue;
         }
         for (MedicationConsumptionTimeWithAmount timeWithAmount
@@ -109,11 +83,6 @@ class AgendaService {
             timeId: timeWithAmount.id,
             date: agendaDate,
           );
-          // final MedicationRecordState? state =
-          //     recordsMap[recordId]?.delaydUntil != null &&
-          //         recordsMap[recordId]!.delaydUntil!.isBefore(DateTime.now())
-          //     ? null
-          //     : recordsMap[recordId]?.state;
           final MedicationRecordState? state = recordsMap[recordId]?.state;
           final AgendaItem item = AgendaItem(
             medicationId: medication.id!,
@@ -142,7 +111,7 @@ class AgendaService {
                         .isBefore(DateTime.now())
                     ? MedicationRecordState.missed
                     : MedicationRecordState.pending),
-            delayedUntil: recordsMap[recordId]?.delaydUntil,
+            delayedUntil: recordsMap[recordId]?.delayedUntil,
           );
 
           agenda.add(item);
@@ -168,6 +137,7 @@ class AgendaService {
     for (var schedule in medication.medicationSchedules!) {
       final DateTime? possibleNearestTime = _getUpcomingIntakeForSchedule(
         schedule,
+        medication,
         from,
       );
       if (possibleNearestTime != null) {

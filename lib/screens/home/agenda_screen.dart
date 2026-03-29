@@ -43,14 +43,19 @@ class AgendaScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.event_available, size: 60, color: Colors.grey),
-                SizedBox(height: 16),
+                Icon(
+                  Icons.event_available,
+                  size: 80,
+                  color: ColorScheme.of(
+                    context,
+                  ).onSurfaceVariant.withValues(alpha: 0.9),
+                ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Pasirinktai dienai neturite paskirtų vaistų",
+                  "Paskirtų vaistų nėra",
                   style: TextStyle(
-                    fontSize: 18,
-                    color: ColorScheme.of(context).onSurface,
+                    fontSize: 20,
+                    color: ColorScheme.of(context).onSurfaceVariant,
                   ),
                 ),
               ],
@@ -124,7 +129,7 @@ class _AgendaTile extends StatelessWidget {
               agendaService.getMedicationFromId(item.medicationId),
               DateTime.now(),
             ),
-        maxDelayUntil: agendaService.getNextIntakeAfterDate(item),
+        nextIntakeAt: agendaService.getNextIntakeAfterDate(item),
       ),
     );
 
@@ -134,7 +139,7 @@ class _AgendaTile extends StatelessWidget {
         medicationId: item.medicationId,
         scheduledDate: item.scheduledDate,
         takenDate: result.takenAt,
-        delaydUntil: result.delayedUntil,
+        delayedUntil: result.delayedUntil,
         state: result.state,
       );
       if (!context.mounted) return;
