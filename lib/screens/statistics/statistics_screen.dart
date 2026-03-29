@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
+import 'package:vaistu_priminimo_sistema/models/chart_data.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
+import 'package:vaistu_priminimo_sistema/widgets/adherence_bar.dart';
+import 'package:vaistu_priminimo_sistema/widgets/consumption_progress_pie_chart.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
@@ -35,6 +39,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final List<UserMedication> medications = medicationProvider.uerMedications;
     final MedicationProgress? medicationProgress = medicationRecordsProvider
         .getMedicationProgress(_selectedMedication);
+    final ColorScheme colorScheme = ColorScheme.of(context);
 
     debugPrint("PROGRESS: $medicationProgress");
 
@@ -112,7 +117,66 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    _AdherenceBar(percentage: medicationProgress.adherenceRate),
+                    ThemedContainerWidget(
+                      doesHeightExpand: true,
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            children: [
+                              TextSpan(
+                                text:
+                                    "Vidutiniškai nukrypstate nuo nustatytų tvarkaraščių vartojimo:",
+                              ),
+                              TextSpan(
+                                text: DateHelper.getConsumptioDeviationTime(
+                                  medicationProgress.deviation,
+                                ),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    AdherenceBar(percentage: medicationProgress.adherenceRate),
+                    SizedBox(height: 20),
+                    ConsumptionProgressPieChart(
+                      data: [
+                        if (medicationProgress.timesTaken > 0)
+                          ChartData(
+                            label: "Suvartota",
+                            value: medicationProgress.timesTaken,
+                            color: MedicationRecordState.getColorForStateLabel(
+                              colorScheme,
+                              MedicationRecordState.taken,
+                            ),
+                          ),
+                        if (medicationProgress.timesSkipped > 0)
+                          ChartData(
+                            label: "Praleista",
+                            value: medicationProgress.timesSkipped,
+                            color: MedicationRecordState.getColorForStateLabel(
+                              colorScheme,
+                              MedicationRecordState.skipped,
+                            ),
+                          ),
+                        if (medicationProgress.timesMissed > 0)
+                          ChartData(
+                            label: "Nevartota",
+                            value: medicationProgress.timesMissed,
+                            color: MedicationRecordState.getColorForStateLabel(
+                              colorScheme,
+                              MedicationRecordState.missed,
+                            ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -145,80 +209,6 @@ class _TopPart extends StatelessWidget {
           onEntrySelected: onSelectedMedication,
         ),
       ],
-    );
-  }
-}
-
-class _AdherenceBar extends StatelessWidget {
-  const _AdherenceBar({required this.percentage});
-  final double percentage;
-
-  Color _getColor() {
-    if (percentage >= 80) return const Color(0xFF4CAF50);
-    if (percentage >= 50) return const Color(0xFFFFC107);
-    return const Color(0xFFF44336);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: percentage),
-      duration: const Duration(seconds: 1),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return ThemedContainerWidget(
-          doesHeightExpand: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: ColorScheme.of(context).onSurfaceVariant,
-                  ),
-                  children: [
-                    TextSpan(text: "Vartojimo procentas: "),
-                    TextSpan(
-                      text: "${value.toInt()}%",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 25,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: ColorScheme.of(context).onSecondaryFixedVariant,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [BoxShadow(blurRadius: 2)],
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: value / 100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _getColor(),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 5,
-                            color: _getColor().withValues(alpha: 0.5),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

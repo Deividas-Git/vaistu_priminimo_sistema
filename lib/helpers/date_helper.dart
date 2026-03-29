@@ -22,4 +22,14 @@ class DateHelper {
     if (date == null) return null;
     return DateTime(date.year, date.month, date.day);
   }
+
+  static String getConsumptioDeviationTime(int minutes) {
+    final duration = Duration(minutes: minutes);
+    String label = "";
+    if (duration.inHours > 0) {
+      label = " ${duration.inHours} val.";
+    }
+    label = "$label ${minutes % 60} min.";
+    return label;
+  }
 }
