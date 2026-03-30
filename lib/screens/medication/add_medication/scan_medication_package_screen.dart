@@ -3,7 +3,11 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_medication_info_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/services/camera_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
@@ -19,6 +23,7 @@ class ScanMedicationPackageScreen extends StatefulWidget {
 class _ScanMedicationPackageScreenState
     extends State<ScanMedicationPackageScreen>
     with WidgetsBindingObserver {
+  late MedicationProvider _medicationProvider;
   late CameraService _cameraService;
   StreamSubscription? _streamSubscription;
   bool _isDetectedMedicationDialogShown = false;
@@ -54,34 +59,43 @@ class _ScanMedicationPackageScreenState
     }
   }
 
+  String _getMessageOnMedicationDetected(
+    String registrationNr,
+    UserMedication? medication,
+  ) {
+    String message = "Pagal kodą $registrationNr";
+    message = medication == null
+        ? "$message nerasta duomenų sistemoje, ar norite įvesti duomenis patys?"
+        : "$message rastas vaistas ${medication.name}, ar norite jį pridėti?";
+    return message;
+  }
+
   void _onMedicationDetected(String registrationNr) async {
     _cameraService.stopStream();
-    // final result = await FirebaseFirestore.instance
-    //     .collection('medications')
-    //     .where('normalized', isEqualTo: normalized)
-    //     .limit(1)
-    //     .get();
-
-    //is db pranesti ar pagal koda rastas vaistas ar ne ir pakeisti pranesima nuo to
-
-    //debugPrint("APTIKTAS KODAS: $registrationNr");
+    UserMedication? medication = await _medicationProvider
+        .getMedicationFromRegistrationCode(registrationNr);
 
     if (!mounted || _isDetectedMedicationDialogShown) return;
     _isDetectedMedicationDialogShown = true;
     bool? didConfirm = await showDialog(
       context: context,
       builder: (context) => ConfirmationDialog(
-        message:
-            "Pagal kodą $registrationNr aptiktas VAISTAS, ar norite jį pridėti?",
+        message: _getMessageOnMedicationDetected(registrationNr, medication),
         title: "Vaistas aptiktas",
-        rightOptionText: "Pridėti",
+        rightOptionText: "Tęsti",
         leftOptionText: "Atšaukti",
         rightSideHighlighted: true,
       ),
     );
     if (!mounted) return;
     if (didConfirm == true) {
-      //prefilled vaistas i kita screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              AddMedicationInfoScreen(prefilledMedication: medication),
+        ),
+      );
     } else {
       _cameraService.startStream();
     }
@@ -93,6 +107,7 @@ class _ScanMedicationPackageScreenState
     super.initState();
 
     _cameraService = CameraService();
+    _medicationProvider = context.read<MedicationProvider>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _cameraService.updateCameraAccessStatus();

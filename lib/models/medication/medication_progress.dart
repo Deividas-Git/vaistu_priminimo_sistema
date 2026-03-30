@@ -21,6 +21,6 @@ class MedicationProgress {
 
   @override
   String toString() {
-    return "Taken: $timesTaken; delayed: $timesDelayed; skipped: $timesSkipped; missed: $timesMissed; adherence $adherenceRate";
+    return "Taken: $timesTaken; delayed: $timesDelayed; skipped: $timesSkipped; missed: $timesMissed; adherence $adherenceRate; startDate: $startDate; endDate: $endDate";
   }
 }

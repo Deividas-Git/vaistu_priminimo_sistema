@@ -6,7 +6,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.d
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 
 class MedicationProgressService {
-  MedicationProgress getMedicationProgress({
+  MedicationProgress? getMedicationProgress({
     required List<MedicationRecord> records,
     required UserMedication medication,
   }) {
@@ -16,6 +16,9 @@ class MedicationProgressService {
     final DateTime progressStartDate = DateHelper.normalizedDate(
       medication.getConsumptionStartDate(),
     )!;
+    if (progressStartDate == DateHelper.normalizedDate(DateTime.now())) {
+      return null;
+    }
     final DateTime? consumptionEndDate = medication.getConsumptionEndDate();
 
     final DateTime progressEndDate =
