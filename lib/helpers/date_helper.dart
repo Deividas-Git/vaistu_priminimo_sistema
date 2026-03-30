@@ -23,6 +23,10 @@ class DateHelper {
     return DateTime(date.year, date.month, date.day);
   }
 
+  // static DateTime shiftDay(DateTime date, int offset) {
+  //   return DateTime(date.year, date.month, date.day + offset);
+  // }
+
   static String getConsumptioDeviationTime(int minutes) {
     final duration = Duration(minutes: minutes);
     String label = "";

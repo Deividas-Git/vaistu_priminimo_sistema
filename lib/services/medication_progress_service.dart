@@ -20,12 +20,11 @@ class MedicationProgressService {
       return null;
     }
     final DateTime? consumptionEndDate = medication.getConsumptionEndDate();
-
+    final DateTime now = DateHelper.normalizedDate(DateTime.now())!;
     final DateTime progressEndDate =
-        (consumptionEndDate != null &&
-                consumptionEndDate.isAfter(DateTime.now()) ||
+        (consumptionEndDate != null && consumptionEndDate.isAfter(now) ||
             consumptionEndDate == null)
-        ? DateHelper.normalizedDate(DateTime.now())!
+        ? now
         : DateHelper.normalizedDate(consumptionEndDate)!;
 
     final int consumptionPeriodInDays = progressEndDate

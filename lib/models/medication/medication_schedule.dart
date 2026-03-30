@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
@@ -74,9 +75,11 @@ class MedicationSchedule {
 
   factory MedicationSchedule.fromMap(Map<String, dynamic> map) {
     return MedicationSchedule(
-      startDate: (map["startDate"] as Timestamp).toDate(),
+      startDate: DateHelper.normalizedDate(
+        (map["startDate"] as Timestamp).toDate(),
+      )!,
       endDate: map["endDate"] != null
-          ? (map["endDate"] as Timestamp).toDate()
+          ? DateHelper.normalizedDate((map["endDate"] as Timestamp).toDate())!
           : null,
       medicationFrequencyType: MedicationFrequencyType.values.byName(
         map["medicationFrequencyType"],

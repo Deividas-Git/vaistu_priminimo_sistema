@@ -26,11 +26,11 @@ class MedicationRecord {
     };
 
     if (takenDate != null) {
-      map["takenDate"] = takenDate;
+      map["takenDate"] = Timestamp.fromDate(takenDate!);
     }
 
     if (delayedUntil != null) {
-      map["delayedUntil"] = delayedUntil;
+      map["delayedUntil"] = Timestamp.fromDate(delayedUntil!);
     }
 
     return map;

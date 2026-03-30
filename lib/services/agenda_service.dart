@@ -56,18 +56,7 @@ class AgendaService {
     return null;
   }
 
-  // Map<String, DateTime?> _getUpcomingIntakesForMedicationsMap() {
-  //   final Map<String, DateTime?> upcomingIntakesForMedication = {};
-  //   for (UserMedication medication in medications) {
-  //     upcomingIntakesForMedication[medication.id!] =
-  //         getUpcomingIntakeForMedication(medication, DateTime.now());
-  //   }
-  //   return upcomingIntakesForMedication;
-  // }
-
   List<AgendaItem> _getAgenda() {
-    // final Map<String, DateTime?> upcomingIntakesForMedication =
-    //     _getUpcomingIntakesForMedicationsMap();
     final List<AgendaItem> agenda = [];
     for (final UserMedication medication in medications) {
       if (medication.medicationSchedules == null) continue;
