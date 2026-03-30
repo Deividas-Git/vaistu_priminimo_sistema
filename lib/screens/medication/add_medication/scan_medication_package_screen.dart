@@ -5,6 +5,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
+import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class ScanMedicationPackageScreen extends StatefulWidget {
   const ScanMedicationPackageScreen({super.key});
@@ -106,6 +107,8 @@ class _ScanMedicationPackageScreenState
     //     .limit(1)
     //     .get();
 
+    //is db pranesti ar pagal koda rastas vaistas ar ne ir pakeisti pranesima nuo to
+
     if (!mounted) return;
     bool? didConfirm = await showDialog(
       context: context,
@@ -161,9 +164,6 @@ class _ScanMedicationPackageScreenState
     if (_cameraController == null ||
         !_cameraController!.value.isInitialized ||
         _isStreamingImages) {
-      debugPrint(
-        "NULLAI TAI NEPRAEJO: $_cameraController, ${_cameraController!.value.isInitialized}, $_isStreamingImages",
-      );
       return;
     }
     _isStreamingImages = true;
@@ -241,32 +241,106 @@ class _ScanMedicationPackageScreenState
     final ColorScheme colorScheme = ColorScheme.of(context);
 
     return Scaffold(
-      //backgroundColor: ColorScheme.of(context).primary,
       appBar: AddMedicationAppBar(title: "Vaisto kodo skenavimas"),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CameraPreview(_cameraController!),
-            IconButton(
-              onPressed: () {},
-              icon: TweenAnimationBuilder<double>(
-                curve: Curves.easeOutSine,
-                duration: const Duration(milliseconds: 150),
-                tween: Tween(begin: 0, end: 55),
-                builder: (BuildContext context, double value, Widget? child) {
-                  return Icon(
-                    Icons.camera_alt,
-                    size: value,
-                    color: colorScheme.onPrimary,
-                  );
-                },
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            color: colorScheme.secondary,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ThemedContainerWidget(
+                doesHeightExpand: true,
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: colorScheme.onSurfaceVariant,
+                      fontSize: 16,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Ieškokite vaisto kodo ant pakuotės formatu:\n",
+                      ),
+                      TextSpan(
+                        text: "LT/0/00/0000/000",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              style: IconButton.styleFrom(backgroundColor: colorScheme.primary),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: _cameraController!.value.previewSize!.height,
+                      height: _cameraController!.value.previewSize!.width,
+                      child: CameraPreview(_cameraController!),
+                    ),
+                  ),
+                ),
+
+                Positioned.fill(
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withValues(alpha: 0.5),
+                      BlendMode.srcOut,
+                    ),
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
+                            backgroundBlendMode: BlendMode.dstOut,
+                          ),
+                        ),
+                        Center(
+                          child: Container(
+                            width: 200,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                Center(
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            color: colorScheme.secondary,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                textAlign: TextAlign.center,
+                "Laikykite aptiktą vaisto kodą pažymėtame laukelyje",
+                style: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
