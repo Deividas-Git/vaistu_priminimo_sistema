@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
+import 'package:vaistu_priminimo_sistema/services/camera_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class ScanMedicationPackageScreen extends StatefulWidget {
@@ -18,50 +19,13 @@ class ScanMedicationPackageScreen extends StatefulWidget {
 class _ScanMedicationPackageScreenState
     extends State<ScanMedicationPackageScreen>
     with WidgetsBindingObserver {
-  CameraController? _cameraController;
-  bool _isCameraAccessGranted = false;
-  bool _isProcessingImage = false;
-  bool _isStreamingImages = false;
-  final TextRecognizer textRecognizer = TextRecognizer();
-
-  Future<void> _checkIsCameraAllowed() async {
-    final status = await Permission.camera.status;
-    _isCameraAccessGranted = status.isGranted;
-  }
-
-  Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
-    final camera = cameras.first;
-    _cameraController = CameraController(
-      camera,
-      ResolutionPreset.max,
-      enableAudio: false,
-    );
-    await _cameraController!
-        .initialize()
-        .then((_) {
-          if (!mounted) {
-            return;
-          }
-          setState(() {});
-        })
-        .catchError((Object e) {
-          if (e is CameraException) {
-            switch (e.code) {
-              case 'CameraAccessDenied':
-                //TODO pranesti kad nesuteikia kameros leidimo
-                break;
-              default:
-                break;
-            }
-          }
-        });
-  }
+  late CameraService _cameraService;
+  StreamSubscription? _streamSubscription;
+  bool _isDetectedMedicationDialogShown = false;
 
   Future<void> _requestCameraDialog() async {
-    await _checkIsCameraAllowed();
-    if (_isCameraAccessGranted) {
-      await _initializeCamera();
+    if (_cameraService.isCameraAccessGranted) {
+      await _cameraService.init();
       setState(() {});
     } else if (mounted) {
       final bool? didConfirm = await showDialog(
@@ -78,8 +42,8 @@ class _ScanMedicationPackageScreenState
       if (didConfirm == true) {
         final requestResult = await Permission.camera.request();
         if (requestResult.isGranted) {
-          _isCameraAccessGranted = true;
-          await _initializeCamera();
+          await _cameraService.updateCameraAccessStatus();
+          await _cameraService.init();
           setState(() {});
         } else if (mounted) {
           Navigator.pop(context);
@@ -90,17 +54,8 @@ class _ScanMedicationPackageScreenState
     }
   }
 
-  Future<void> _stopImageStream() async {
-    if (_cameraController != null &&
-        _cameraController!.value.isStreamingImages) {
-      await _cameraController!.stopImageStream();
-      _isStreamingImages = false;
-    }
-  }
-
   void _onMedicationDetected(String registrationNr) async {
-    await _stopImageStream();
-
+    _cameraService.stopStream();
     // final result = await FirebaseFirestore.instance
     //     .collection('medications')
     //     .where('normalized', isEqualTo: normalized)
@@ -109,7 +64,10 @@ class _ScanMedicationPackageScreenState
 
     //is db pranesti ar pagal koda rastas vaistas ar ne ir pakeisti pranesima nuo to
 
-    if (!mounted) return;
+    //debugPrint("APTIKTAS KODAS: $registrationNr");
+
+    if (!mounted || _isDetectedMedicationDialogShown) return;
+    _isDetectedMedicationDialogShown = true;
     bool? didConfirm = await showDialog(
       context: context,
       builder: (context) => ConfirmationDialog(
@@ -125,90 +83,35 @@ class _ScanMedicationPackageScreenState
     if (didConfirm == true) {
       //prefilled vaistas i kita screen
     } else {
-      _startImageStream();
+      _cameraService.startStream();
     }
+    _isDetectedMedicationDialogShown = false;
   }
-
-  InputImage? _convertCameraImage(CameraImage image) {
-    final WriteBuffer allBytes = WriteBuffer();
-    for (final plane in image.planes) {
-      allBytes.putUint8List(plane.bytes);
-    }
-    final bytes = allBytes.done().buffer.asUint8List();
-
-    final Size imageSize = Size(
-      image.width.toDouble(),
-      image.height.toDouble(),
-    );
-
-    final inputImage = InputImage.fromBytes(
-      bytes: bytes,
-      metadata: InputImageMetadata(
-        size: imageSize,
-        rotation: InputImageRotation.rotation0deg, // adjust if needed
-        format: InputImageFormat.nv21, // Android typically
-        bytesPerRow: image.planes[0].bytesPerRow,
-      ),
-    );
-
-    return inputImage;
-  }
-
-  String? extractRegNumber(String text) {
-    final regex = RegExp(r'LT\/\d+\/\d+\/\d+\/\d+');
-    final match = regex.firstMatch(text);
-    return match?.group(0);
-  }
-
-  void _startImageStream() {
-    if (_cameraController == null ||
-        !_cameraController!.value.isInitialized ||
-        _isStreamingImages) {
-      return;
-    }
-    _isStreamingImages = true;
-    _cameraController!.startImageStream((CameraImage image) async {
-      if (_isProcessingImage) return;
-      _isProcessingImage = true;
-      try {
-        final inputImage = _convertCameraImage(image);
-        if (inputImage == null) return;
-
-        final RecognizedText recognizedText = await textRecognizer.processImage(
-          inputImage,
-        );
-        final String text = recognizedText.text;
-        final String? registrationNr = extractRegNumber(text);
-
-        debugPrint("VAISTO KODAS: $registrationNr");
-
-        if (registrationNr != null) {
-          _onMedicationDetected(registrationNr);
-        }
-      } catch (e) {
-        debugPrint(e.toString());
-      } finally {
-        _isProcessingImage = false;
-      }
-    });
-  }
-
-  // Future<void> _onTakePhoto() async {
-  //   XFile photo = await _cameraController!.takePicture();
-  // }
 
   @override
   void initState() {
     super.initState();
+
+    _cameraService = CameraService();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _cameraService.updateCameraAccessStatus();
       await _requestCameraDialog();
-      _startImageStream();
+      if (_cameraService.isCameraAccessGranted) {
+        _cameraService.startStream();
+
+        _streamSubscription = _cameraService.onMedicationDetected.listen(
+          (registrationNr) => _onMedicationDetected(registrationNr),
+        );
+      }
+
+      setState(() {});
     });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController? cameraController = _cameraController;
+    final CameraController? cameraController = _cameraService.controller;
 
     if (cameraController == null || !cameraController.value.isInitialized) {
       return;
@@ -216,22 +119,23 @@ class _ScanMedicationPackageScreenState
     if (state == AppLifecycleState.inactive) {
       cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
-      _initializeCamera();
+      _cameraService.init();
     }
   }
 
   @override
   void dispose() {
-    if (_cameraController != null) {
-      _cameraController!.dispose();
-    }
+    _streamSubscription?.cancel();
+    _cameraService.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isCameraAccessGranted ||
-        _cameraController != null && !_cameraController!.value.isInitialized) {
+    final CameraController? cameraController = _cameraService.controller;
+
+    if (!_cameraService.isCameraAccessGranted ||
+        cameraController != null && !cameraController.value.isInitialized) {
       return const Scaffold(
         appBar: AddMedicationAppBar(title: "Vaisto kodo skenavimas"),
         body: Center(child: CircularProgressIndicator()),
@@ -272,6 +176,18 @@ class _ScanMedicationPackageScreenState
               ),
             ),
           ),
+          Container(
+            width: double.infinity,
+            color: colorScheme.secondary,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                textAlign: TextAlign.center,
+                "Laikykite aptiktą vaisto kodą pažymėtame laukelyje",
+                style: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
+              ),
+            ),
+          ),
           Expanded(
             child: Stack(
               children: [
@@ -279,9 +195,9 @@ class _ScanMedicationPackageScreenState
                   child: FittedBox(
                     fit: BoxFit.cover,
                     child: SizedBox(
-                      width: _cameraController!.value.previewSize!.height,
-                      height: _cameraController!.value.previewSize!.width,
-                      child: CameraPreview(_cameraController!),
+                      width: cameraController!.value.previewSize!.height,
+                      height: cameraController.value.previewSize!.width,
+                      child: CameraPreview(cameraController),
                     ),
                   ),
                 ),
@@ -326,18 +242,6 @@ class _ScanMedicationPackageScreenState
                   ),
                 ),
               ],
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: colorScheme.secondary,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                textAlign: TextAlign.center,
-                "Laikykite aptiktą vaisto kodą pažymėtame laukelyje",
-                style: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
-              ),
             ),
           ),
         ],
