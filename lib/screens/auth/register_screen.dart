@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_text_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -85,26 +87,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      if (mounted && authMessage == null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => RootScreen()),
+          (screen) => false,
+        );
+      }
     }
 
+    if (!mounted) return;
     if (authMessage != null) {
-      debugPrint("Klaida: $authMessage");
+      SnackbarService.showModernSnackBar(
+        context,
+        message: authMessage!,
+        isError: true,
+      );
+    } else {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Paskyra sukurta sėkmingai!",
+      );
     }
 
     setState(() => _loading = false);
-
-    // if (!mounted) return;
-
-    // if (authMessage == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text("Paskyra sėkmingai sukurta")),
-    //   );
-    //   Navigator.pop(context);
-    // } else {
-    //   ScaffoldMessenger.of(
-    //     context,
-    //   ).showSnackBar(SnackBar(content: Text(authMessage)));
-    // }
   }
 
   @override

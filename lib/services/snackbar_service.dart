@@ -16,7 +16,7 @@ class SnackbarService {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: (isError ? colorScheme.error : colorScheme.primary).withValues(
-            alpha: 0.85,
+            alpha: 0.95,
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [

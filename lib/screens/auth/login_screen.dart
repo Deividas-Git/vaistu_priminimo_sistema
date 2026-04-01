@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/register_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
+import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_text_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -37,10 +38,22 @@ class _LoginScreenState extends State<LoginScreen> {
       email: _emailController.text,
       password: _passwordController.text,
     );
-    //if (authMessage != null) authMessage = "$authMessage!";
-    debugPrint("KLAIDA: $authMessage");
 
-    if (mounted) setState(() => _loading = false);
+    if (!mounted) return;
+
+    if (authMessage != null) {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: authMessage!,
+        isError: true,
+      );
+    } else {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Sėkmingai prisijungta!",
+      );
+    }
+    setState(() => _loading = false);
   }
 
   Future<void> _onContinueAsGuestPressed() async {

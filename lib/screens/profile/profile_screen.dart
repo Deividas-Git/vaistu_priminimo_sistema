@@ -56,6 +56,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (linkedAccount == true) {
       setState(() {
         _currentUser = _authService.firebaseAuth.currentUser;
+        SnackbarService.showModernSnackBar(
+          context,
+          message: "Paskyra sėkmingai susieta!",
+        );
       });
     }
   }
@@ -74,11 +78,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
     if (mounted && didConfirm == true) {
       final String? message = await context.read<UserProvider>().clearUser();
+      if (!mounted) return;
       if (message != null) {
-        debugPrint("Klaida: $message");
+        SnackbarService.showModernSnackBar(
+          context,
+          message: message,
+          isError: true,
+        );
         return;
       }
       _onClear();
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Paskyra sėkmingai ištrinta!",
+      );
     }
   }
 
@@ -109,13 +122,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       message = await _authService.logout();
     }
+    if (!mounted) return;
     if (message != null) {
-      debugPrint("KLAIDA: $message");
+      SnackbarService.showModernSnackBar(
+        context,
+        message: message,
+        isError: true,
+      );
       return;
     }
-    if (mounted) {
-      _onClear();
-    }
+    SnackbarService.showModernSnackBar(
+      context,
+      message: "Atsijungta sėkmingai!",
+    );
+    _onClear();
   }
 
   @override
@@ -135,6 +155,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Icon(
+              Icons.person,
+              size: 100,
+              color: ColorScheme.of(
+                context,
+              ).onSurfaceVariant.withValues(alpha: 0.9),
+            ),
+            SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: SizedBox(

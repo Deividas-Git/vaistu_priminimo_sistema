@@ -62,7 +62,10 @@ class AuthService {
 
   Future<String?> deleteUserAccount() async {
     final User? userCredentials = firebaseAuth.currentUser;
-    if (userCredentials == null) return "Nera user credentials";
+    if (userCredentials == null) {
+      debugPrint("NERA CREDENTIALS DELETE USER ACCOUNT");
+      return "Nesėkmingas trynimas";
+    }
     try {
       await userCredentials.delete();
       return null;
@@ -72,8 +75,6 @@ class AuthService {
   }
 
   Future<String?> logout() async {
-    final User? userCredentials = firebaseAuth.currentUser;
-    if (userCredentials == null) return "Nera user credentials";
     try {
       await firebaseAuth.signOut();
       return null;

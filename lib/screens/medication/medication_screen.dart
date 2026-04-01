@@ -61,7 +61,6 @@ class _MedicationScreenState extends State<MedicationScreen> {
                           hintText: "Pridėto vaisto paieška",
                         ),
                       ),
-                      //SizedBox(height: 10),
                       ...List.generate(
                         medications.length,
                         (int index) => _MedicationTile(

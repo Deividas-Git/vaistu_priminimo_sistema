@@ -20,8 +20,6 @@ class UserProvider extends ChangeNotifier {
       uid: _appUser!.uid,
     );
 
-    _appUser = null;
-
     if (deleteUserDataMessage != null) {
       return deleteUserDataMessage;
     }
@@ -37,6 +35,8 @@ class UserProvider extends ChangeNotifier {
     if (logoutMessage != null) {
       return logoutMessage;
     }
+
+    _appUser = null;
 
     return null;
   }
