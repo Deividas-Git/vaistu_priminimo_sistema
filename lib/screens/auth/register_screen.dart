@@ -222,11 +222,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Divider(height: 20, thickness: 2),
-                  if (widget.isLinkingAccount != true)
-                    TextButton(
-                      onPressed: _loading ? null : () => Navigator.pop(context),
-                      child: const Text("Turite paskyrą? Prisijunkite"),
+                  TextButton(
+                    onPressed: _loading ? null : () => Navigator.pop(context),
+                    child: Text(
+                      widget.isLinkingAccount == true
+                          ? "Grįžti atgal"
+                          : "Turite paskyrą? Prisijunkite",
                     ),
+                  ),
                 ],
               ),
             ),

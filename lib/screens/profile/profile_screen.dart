@@ -99,6 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_currentUser == null) {
       return;
     }
+    bool loggedOut = false;
     String? message;
     if (_currentUser!.isAnonymous) {
       final bool? didConfirmToLink = await showDialog(
@@ -115,11 +116,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (!mounted) return;
       if (didConfirmToLink == true) {
         _onLinkAccount();
+        return;
       } else if (didConfirmToLink == false) {
         message = await context.read<UserProvider>().clearUser();
+        loggedOut = true;
       }
     } else {
       message = await _authService.logout();
+      loggedOut = true;
     }
     if (!mounted) return;
     if (message != null) {
@@ -130,10 +134,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       return;
     }
-    SnackbarService.showModernSnackBar(
-      context,
-      message: "Atsijungta sėkmingai!",
-    );
+    if (loggedOut) {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Atsijungta sėkmingai!",
+      );
+    }
     _onClear();
   }
 
