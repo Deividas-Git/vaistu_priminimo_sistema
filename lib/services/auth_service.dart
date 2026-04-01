@@ -97,4 +97,20 @@ class AuthService {
       return _returnedAuthMessage(e);
     }
   }
+
+  Future<String?> linkAnonymousAccountToPermanent({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final AuthCredential credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      await firebaseAuth.currentUser?.linkWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      return _returnedAuthMessage(e);
+    }
+    return null;
+  }
 }

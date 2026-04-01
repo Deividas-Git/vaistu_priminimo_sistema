@@ -3,7 +3,9 @@ import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_text_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, this.isLinkingAccount});
+
+  final bool? isLinkingAccount;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -69,10 +71,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => _loading = true);
 
-    authMessage = await _authService.createUserWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    if (widget.isLinkingAccount == true) {
+      authMessage = await _authService.linkAnonymousAccountToPermanent(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted && authMessage == null) {
+        Navigator.pop(context, true);
+        return;
+      }
+    } else {
+      authMessage = await _authService.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    }
+
+    if (authMessage != null) {
+      debugPrint("Klaida: $authMessage");
+    }
 
     setState(() => _loading = false);
 
@@ -199,10 +216,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Divider(height: 20, thickness: 2),
-                  TextButton(
-                    onPressed: _loading ? null : () => Navigator.pop(context),
-                    child: const Text("Turite paskyrą? Prisijunkite"),
-                  ),
+                  if (widget.isLinkingAccount != true)
+                    TextButton(
+                      onPressed: _loading ? null : () => Navigator.pop(context),
+                      child: const Text("Turite paskyrą? Prisijunkite"),
+                    ),
                 ],
               ),
             ),
