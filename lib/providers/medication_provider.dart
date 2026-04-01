@@ -60,4 +60,12 @@ class MedicationProvider extends ChangeNotifier {
   Future<void> removeMedication(String medicationid, String uid) async {
     await _medicationService.removeMedication(medicationid, uid);
   }
+
+  Future<UserMedication?> getMedicationFromRegistrationCode(
+    String registrationNr,
+  ) async {
+    return await _medicationService.getMedicationFromRegistrationCode(
+      registrationNr,
+    );
+  }
 }

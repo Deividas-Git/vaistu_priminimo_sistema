@@ -297,7 +297,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
     _selectedDelayUntil =
         _scheduledDate.add(Duration(minutes: 15)).day != _scheduledDate.day
         ? _maxDelayUntil
-        : _scheduledDate;
+        : _scheduledDate.add(Duration(minutes: 15));
   }
 
   @override

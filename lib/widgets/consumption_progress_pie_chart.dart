@@ -23,13 +23,13 @@ class _ConsumptionProgressPieChartState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          flex: 4,
+          flex: 5,
           child: SizedBox(
-            height: 200,
+            height: 175,
             child: PieChart(
               PieChartData(
                 sectionsSpace: 3,
-                centerSpaceRadius: 60,
+                centerSpaceRadius: 50,
                 pieTouchData: PieTouchData(
                   touchCallback: (event, response) {
                     setState(() {
@@ -51,10 +51,10 @@ class _ConsumptionProgressPieChartState
                   return PieChartSectionData(
                     value: item.value.toDouble(),
                     color: item.color.withValues(alpha: 0.75),
-                    radius: isTouched ? 50 : 35,
+                    radius: isTouched ? 40 : 30,
                     title: item.value.toString(),
                     titleStyle: TextStyle(
-                      fontSize: isTouched ? 24 : 16,
+                      fontSize: isTouched ? 20 : 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -67,7 +67,7 @@ class _ConsumptionProgressPieChartState
           ),
         ),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: ThemedContainerWidget(
             doesHeightExpand: true,
             child: Column(
@@ -101,7 +101,7 @@ class _ChartLegendTile extends StatelessWidget {
           Text(
             data.label,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               color: ColorScheme.of(context).onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),

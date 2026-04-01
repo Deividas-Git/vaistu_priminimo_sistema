@@ -97,7 +97,9 @@ class MedicationRecordsProvider extends ChangeNotifier {
   }
 
   MedicationProgress? getMedicationProgress(UserMedication? medication) {
-    if (medication == null) return null;
+    if (medication == null || medication.medicationSchedules == null) {
+      return null;
+    }
     List<MedicationRecord> records = _getAllRecordsForMedication(
       medication.id!,
     );

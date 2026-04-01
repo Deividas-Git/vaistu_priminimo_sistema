@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
@@ -19,11 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final NotificationService _notificationService = NotificationService();
-  final List<DateTime> _dates = [
-    DateTime.now().subtract(Duration(days: 1)),
-    DateTime.now(),
-    DateTime.now().add(Duration(days: 1)),
-  ];
+  final DateTime now = DateHelper.normalizedDate(DateTime.now())!;
+  late final List<DateTime> _dates;
 
   Future<void> _updateExpiredDelayedMedicationRecords() async {
     final String? uid = context.read<UserProvider>().appUser?.uid;
@@ -68,6 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    _dates = [now.subtract(Duration(days: 1)), now, now.add(Duration(days: 1))];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
@@ -138,12 +138,11 @@ class _DateTab extends StatelessWidget {
 
   String getDayLabel() {
     final DateTime now = DateTime.now();
-    final DateTime today = DateTime(now.year, now.month, now.day);
-    final DateTime target = DateTime(date.year, date.month, date.day);
+    final DateTime today = DateHelper.normalizedDate(now)!;
 
-    if (target == today) return "Šiandien";
-    if (target == today.subtract(const Duration(days: 1))) return "Vakar";
-    if (target == today.add(const Duration(days: 1))) return "Rytoj";
+    if (date == today) return "Šiandien";
+    if (date == today.subtract(Duration(days: 1))) return "Vakar";
+    if (date == today.add(Duration(days: 1))) return "Rytoj";
 
     return "";
   }

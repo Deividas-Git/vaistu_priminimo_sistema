@@ -69,7 +69,9 @@ class UserMedication {
         map["medicationMealTiming"],
       ),
       expirationDate: map["expirationDate"] != null
-          ? (map["expirationDate"] as Timestamp).toDate()
+          ? DateHelper.normalizedDate(
+              (map["expirationDate"] as Timestamp).toDate(),
+            )
           : null,
       medicationSchedules:
           (map["medicationSchedules"] as List<dynamic>?)?.isNotEmpty == true
