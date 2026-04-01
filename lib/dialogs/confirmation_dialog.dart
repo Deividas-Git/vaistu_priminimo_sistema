@@ -27,7 +27,7 @@ class ConfirmationDialog extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 16),
       ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: [
         OptionButton(
           isHighlighted: leftSideHighlighted,

@@ -8,7 +8,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 class CameraService {
   CameraController? _controller;
-  final TextRecognizer _textRecognizer = TextRecognizer();
+  final TextRecognizer _textRecognizer = TextRecognizer(
+    script: TextRecognitionScript.latin,
+  );
 
   final _detectedController = StreamController<String>.broadcast();
   Stream<String> get onMedicationDetected => _detectedController.stream;

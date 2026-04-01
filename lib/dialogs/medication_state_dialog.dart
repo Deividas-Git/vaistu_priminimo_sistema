@@ -303,7 +303,7 @@ class _TimeDelayDialogState extends State<_TimeDelayDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
       title: Center(child: Text("Vartojimo atidėjimas")),
       content: SizedBox(
         height: 140,

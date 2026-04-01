@@ -10,6 +10,7 @@ import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_informat
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/continue_button.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/schedule_tile_widget.dart';
+import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
 class AddMedicationSchedulesScreen extends StatefulWidget {
@@ -102,11 +103,18 @@ class _AddMedicationSchedulesScreenState
     final String uid = context.read<UserProvider>().appUser!.uid;
     if (medication.id == null) {
       context.read<MedicationProvider>().addMedication(medication, uid);
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Vaistas sėkmingai pridėtas!",
+      );
     } else {
       context.read<MedicationProvider>().updateMedication(medication, uid);
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Vaistas sėkmingai atnaujintas!",
+      );
     }
     debugPrint(medication.toString());
-    //TODO tikrinti cia ar editinamas ar naujas
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 

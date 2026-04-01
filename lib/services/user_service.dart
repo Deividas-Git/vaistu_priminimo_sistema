@@ -9,9 +9,34 @@ class UserService {
   }
 
   Future<String?> deleteUserData({required String? uid}) async {
-    if (uid == null) return "Nera uid";
+    if (uid == null) return "Nerasta naudotojo ID";
+    final userDoc = _firestore.collection("users").doc(uid);
+
+    //trinam vaistus
     try {
-      await _firestore.collection("users").doc(uid).delete();
+      final medications = await userDoc.collection("medications").get();
+      for (var medDoc in medications.docs) {
+        await medDoc.reference.delete();
+      }
+    } on FirebaseException catch (e) {
+      return e.message;
+    }
+
+    //trinam vaistu irasus
+    try {
+      final medicationRecords = await userDoc
+          .collection("medication_records")
+          .get();
+      for (var medRecordDoc in medicationRecords.docs) {
+        await medRecordDoc.reference.delete();
+      }
+    } on FirebaseException catch (e) {
+      return e.message;
+    }
+
+    //trinam pati user
+    try {
+      await userDoc.delete();
       return null;
     } on FirebaseException catch (e) {
       return e.message;
