@@ -101,7 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     String? message;
     if (_currentUser!.isAnonymous) {
-      //TODO jei zmogus su anoniminiu acc, ideti mygtuka susieti su paskyra su email ir password
       final bool? didConfirmToLink = await showDialog(
         context: context,
         builder: (context) => ConfirmationDialog(

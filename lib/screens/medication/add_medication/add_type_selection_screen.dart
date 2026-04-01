@@ -7,8 +7,8 @@ import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 
 enum SelectedOptionToAddMedication {
   manual,
-  scan,
-  import;
+  scan;
+  //import;
 
   String get getLabel {
     switch (this) {
@@ -16,8 +16,8 @@ enum SelectedOptionToAddMedication {
         return "Įvesti pačiam";
       case scan:
         return "Skenuoti pakuotės vaisto kodą";
-      case import:
-        return "Įtraukti iš e. sveikatos";
+      // case import:
+      //   return "Įtraukti iš e. sveikatos";
     }
   }
 
@@ -28,8 +28,8 @@ enum SelectedOptionToAddMedication {
         return AddMedicationInfoScreen();
       case scan:
         return ScanMedicationPackageScreen();
-      case import:
-        return AddMedicationInfoScreen();
+      // case import:
+      //   return AddMedicationInfoScreen();
     }
   }
 }
