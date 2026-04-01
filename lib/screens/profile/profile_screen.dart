@@ -2,12 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/review_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/review.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/register_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
+import 'package:vaistu_priminimo_sistema/services/review_service.dart';
+import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,6 +22,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final ReviewService _reviewService = ReviewService();
   final AuthService _authService = AuthService();
   User? _currentUser;
 
@@ -25,6 +30,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     context.read<MedicationProvider>().stopListening();
     context.read<MedicationRecordsProvider>().stopListening();
     NotificationService().cancelAllNotifications();
+  }
+
+  void _onLeaveReview() async {
+    final Review? review = await showDialog(
+      context: context,
+      builder: (context) => ReviewDialog(),
+    );
+    if (_currentUser == null || review == null) return;
+    await _reviewService.saveReview(uid: _currentUser!.uid, review: review);
+    if (!mounted) return;
+    SnackbarService.showModernSnackBar(
+      context,
+      message: "Atsiliepimas sėkmingai pateiktas!",
+    );
   }
 
   Future<void> _onLinkAccount() async {
@@ -114,54 +133,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                ),
-                onPressed: () {},
-                child: Text(
-                  "Palikti atsiliepimą",
-                  style: TextStyle(color: colorScheme.onPrimary),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                  ),
+                  onPressed: _onLeaveReview,
+                  child: Text(
+                    "Palikti atsiliepimą",
+                    style: TextStyle(color: colorScheme.onPrimary),
+                  ),
                 ),
               ),
             ),
             if (_currentUser != null && _currentUser!.isAnonymous)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.secondary,
-                  ),
-                  onPressed: _onLinkAccount,
-                  child: Text(
-                    "Susieti svečio paskyrą su asmenine",
-                    style: TextStyle(color: colorScheme.onSecondary),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.secondary,
+                    ),
+                    onPressed: _onLinkAccount,
+                    child: Text(
+                      "Susieti svečio paskyrą su asmenine",
+                      style: TextStyle(color: colorScheme.onSecondary),
+                    ),
                   ),
                 ),
               ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _onLogout,
-                child: Text("Atsijungti"),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _onLogout,
+                  child: Text("Atsijungti"),
+                ),
               ),
             ),
             SizedBox(height: 50),
             Divider(thickness: 2),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.error,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 75.0,
+                  left: 75,
+                  bottom: 50,
                 ),
-                onPressed: _onDeleteAccount,
-                child: Text(
-                  "Ištrinti paskyrą",
-                  style: TextStyle(color: colorScheme.onError),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.error,
+                  ),
+                  onPressed: _onDeleteAccount,
+                  child: Text(
+                    "Ištrinti paskyrą",
+                    style: TextStyle(color: colorScheme.onError),
+                  ),
                 ),
               ),
             ),

@@ -92,7 +92,7 @@ class _ConsumptionTimeWithAmountDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
       title: Text(textAlign: TextAlign.center, "Priskirti laiką ir kiekį"),
       content: SizedBox(
         height: 300,
