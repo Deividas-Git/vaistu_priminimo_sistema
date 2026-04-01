@@ -89,7 +89,7 @@ class _ScanMedicationPackageScreenState
     );
     if (!mounted) return;
     if (didConfirm == true) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) =>
