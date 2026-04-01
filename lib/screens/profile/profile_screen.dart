@@ -211,8 +211,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: double.infinity,
               child: Padding(
                 padding: const EdgeInsets.only(
-                  right: 75.0,
-                  left: 75,
+                  right: 50.0,
+                  left: 50,
                   bottom: 50,
                 ),
                 child: ElevatedButton(
