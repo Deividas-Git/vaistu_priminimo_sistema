@@ -160,106 +160,116 @@ class _ScanMedicationPackageScreenState
     final ColorScheme colorScheme = ColorScheme.of(context);
 
     return Scaffold(
+      backgroundColor: colorScheme.secondary,
       appBar: AddMedicationAppBar(title: "Vaisto kodo skenavimas"),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            color: colorScheme.secondary,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ThemedContainerWidget(
-                doesHeightExpand: true,
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(
-                      color: colorScheme.onSurfaceVariant,
-                      fontSize: 16,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Ieškokite vaisto kodo ant pakuotės formatu:\n",
+      body: GestureDetector(
+        onTapDown: (details) {
+          final box = context.findRenderObject() as RenderBox;
+          final offset = details.localPosition;
+          final dx = offset.dx / box.size.width;
+          final dy = offset.dy / box.size.height;
+          _cameraService.focusOnPoint(Offset(dx, dy));
+        },
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              color: colorScheme.secondary,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ThemedContainerWidget(
+                  doesHeightExpand: true,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: colorScheme.onSurfaceVariant,
+                        fontSize: 16,
                       ),
-                      TextSpan(
-                        text: "LT/0/00/0000/000",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: colorScheme.secondary,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                textAlign: TextAlign.center,
-                "Laikykite aptiktą vaisto kodą pažymėtame laukelyje",
-                style: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
-              ),
-            ),
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: SizedBox(
-                      width: cameraController!.value.previewSize!.height,
-                      height: cameraController.value.previewSize!.width,
-                      child: CameraPreview(cameraController),
-                    ),
-                  ),
-                ),
-
-                Positioned.fill(
-                  child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withValues(alpha: 0.5),
-                      BlendMode.srcOut,
-                    ),
-                    child: Stack(
                       children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            backgroundBlendMode: BlendMode.dstOut,
-                          ),
+                        TextSpan(
+                          text: "Ieškokite vaisto kodo ant pakuotės formatu:\n",
                         ),
-                        Center(
-                          child: Container(
-                            width: 200,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                        TextSpan(
+                          text: "LT/0/00/0000/000",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                 ),
-
-                Center(
-                  child: Container(
-                    width: 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 2),
-                      borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              color: colorScheme.secondary,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  "Laikykite aptiktą vaisto kodą pažymėtame laukelyje",
+                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 16),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio:
+                            cameraController!.value.previewSize!.height /
+                            cameraController.value.previewSize!.width,
+                        child: CameraPreview(cameraController),
+                      ),
                     ),
                   ),
-                ),
-              ],
+
+                  Positioned.fill(
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withValues(alpha: 0.5),
+                        BlendMode.srcOut,
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              backgroundBlendMode: BlendMode.dstOut,
+                            ),
+                          ),
+                          Center(
+                            child: Container(
+                              width: 200,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  Center(
+                    child: Container(
+                      width: 200,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

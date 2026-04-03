@@ -21,6 +21,8 @@ class CameraService {
   bool _isProcessing = false;
   bool _isStreaming = false;
 
+  int _frameCount = 0;
+
   CameraController? get controller => _controller;
 
   Future<void> updateCameraAccessStatus() async {
@@ -32,7 +34,7 @@ class CameraService {
     final cameras = await availableCameras();
     _controller = CameraController(
       cameras.first,
-      ResolutionPreset.max,
+      ResolutionPreset.high,
       enableAudio: false,
     );
 
@@ -49,7 +51,10 @@ class CameraService {
     _isStreaming = true;
 
     _controller!.startImageStream((image) async {
-      if (_isProcessing) return;
+      _frameCount++;
+      if (_isProcessing || _frameCount % 15 != 0) {
+        return;
+      }
       _isProcessing = true;
 
       try {
@@ -58,7 +63,7 @@ class CameraService {
 
         final text = await _textRecognizer.processImage(inputImage);
         final reg = _extractRegNumber(text.text);
-        debugPrint("APTIKTAS KODAS: $reg");
+        debugPrint("APTIKTAS KODAS: $reg, TEKSTAS: ${text.text}");
         if (reg != null) {
           _detectedController.add(reg);
         }
@@ -80,21 +85,57 @@ class CameraService {
     await _detectedController.close();
   }
 
+  InputImageRotation _rotationIntToImageRotation(int rotation) {
+    switch (rotation) {
+      case 0:
+        return InputImageRotation.rotation0deg;
+      case 90:
+        return InputImageRotation.rotation90deg;
+      case 180:
+        return InputImageRotation.rotation180deg;
+      case 270:
+        return InputImageRotation.rotation270deg;
+      default:
+        return InputImageRotation.rotation0deg;
+    }
+  }
+
+  Future<void> focusOnPoint(Offset offset) async {
+    if (_controller == null || !_controller!.value.isInitialized) return;
+    try {
+      await _controller!.setFocusPoint(offset);
+      await _controller!.setExposurePoint(offset);
+    } catch (e) {
+      debugPrint("Nepavyko sufokusuoti kameros: $e");
+    }
+  }
+
   InputImage? _convertCameraImage(CameraImage image) {
-    final WriteBuffer allBytes = WriteBuffer();
+    if (_controller == null || !_controller!.value.isInitialized) return null;
+
+    final allBytes = WriteBuffer();
     for (final plane in image.planes) {
       allBytes.putUint8List(plane.bytes);
     }
-
     final bytes = allBytes.done().buffer.asUint8List();
+    if (bytes.isEmpty) return null;
+
+    final rotation = _controller!.description.sensorOrientation;
+    final format = image.format.group == ImageFormatGroup.bgra8888
+        ? InputImageFormat
+              .bgra8888 //ios
+        : InputImageFormat.nv21; //android
+    final bytesPerRow = image.planes.isNotEmpty
+        ? image.planes[0].bytesPerRow
+        : image.width * 4;
 
     return InputImage.fromBytes(
       bytes: bytes,
       metadata: InputImageMetadata(
         size: Size(image.width.toDouble(), image.height.toDouble()),
-        rotation: InputImageRotation.rotation0deg,
-        format: InputImageFormat.nv21,
-        bytesPerRow: image.planes[0].bytesPerRow,
+        rotation: _rotationIntToImageRotation(rotation),
+        format: format,
+        bytesPerRow: bytesPerRow,
       ),
     );
   }
