@@ -141,33 +141,35 @@ class _MedicationTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    medication.name!,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: ColorScheme.of(context).onSurfaceVariant,
-                    ),
-                  ),
-                  Text(
-                    medication.medicationType!.getLabel,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: ColorScheme.of(context).onSurfaceVariant,
-                    ),
-                  ),
-                  if (medication.currentQuantity != null)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      "Likutis: ${medication.medicationType!.consumedAmoutIsInteger ? medication.currentQuantity!.toInt() : medication.currentQuantity} ${medication.medicationType!.getUnit}",
+                      medication.name!,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
+                    ),
+                    Text(
+                      medication.medicationType!.getLabel,
                       style: TextStyle(
                         fontSize: 20,
                         color: ColorScheme.of(context).onSurfaceVariant,
                       ),
                     ),
-                ],
+                    if (medication.currentQuantity != null)
+                      Text(
+                        "Likutis: ${medication.medicationType!.consumedAmoutIsInteger ? medication.currentQuantity!.toInt() : medication.currentQuantity} ${medication.medicationType!.getUnit}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: ColorScheme.of(context).onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
               ),
               ArrowButton(onButtonPressed: () => _onMedicationPreview(context)),
             ],

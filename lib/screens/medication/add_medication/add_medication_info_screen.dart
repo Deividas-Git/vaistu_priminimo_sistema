@@ -88,7 +88,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
     // });
 
     debugPrint("REDAGUOJAMAS VAISTAS: ${widget.prefilledMedication}");
-    debugPrint("galiojimas: $_expirationDate");
+    //debugPrint("galiojimas: $_expirationDate");
     final UserMedication medication =
         (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
           name: _medicationNameController.text.trim(),
@@ -102,7 +102,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
               : null,
         );
 
-    debugPrint("APIE VAISTA: ${medication.toString()}");
+    //debugPrint("APIE VAISTA: ${medication.toString()}");
 
     Navigator.push(
       context,
@@ -152,6 +152,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                const SizedBox(height: 10),
                 TextField(
                   controller: _medicationNameController,
                   decoration: InputDecoration(
@@ -187,7 +188,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                     medicationType: _medicationType!,
                     controller: _medicationQuantityInputController,
                   ),
-                Divider(thickness: 2),
+                const Divider(thickness: 2),
                 SectionTextWidget(
                   label: "Pasirinkite kada bus vartojamas vaistas",
                 ),
@@ -196,7 +197,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                   entries: _medicationMealtTimings,
                   onEntrySelected: _onMedicationMealTimingSelected,
                 ),
-                SizedBox(height: 100),
+                const SizedBox(height: 100),
               ],
             ),
           ),

@@ -160,7 +160,7 @@ class _ScanMedicationPackageScreenState
     final ColorScheme colorScheme = ColorScheme.of(context);
 
     return Scaffold(
-      backgroundColor: colorScheme.secondary,
+      backgroundColor: colorScheme.scrim,
       appBar: AddMedicationAppBar(title: "Vaisto kodo skenavimas"),
       body: GestureDetector(
         onTapDown: (details) {
@@ -225,7 +225,6 @@ class _ScanMedicationPackageScreenState
                       ),
                     ),
                   ),
-
                   Positioned.fill(
                     child: ColorFiltered(
                       colorFilter: ColorFilter.mode(
@@ -254,7 +253,6 @@ class _ScanMedicationPackageScreenState
                       ),
                     ),
                   ),
-
                   Center(
                     child: Container(
                       width: 200,

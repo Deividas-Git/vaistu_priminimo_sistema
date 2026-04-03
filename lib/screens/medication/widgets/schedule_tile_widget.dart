@@ -89,12 +89,15 @@ class ScheduleTileWidget extends StatelessWidget {
                       onPressed: _onEditSchedule,
                       icon: Icon(Icons.edit),
                     ),
-                  Text(
-                    schedule.name!,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: ColorScheme.of(context).secondary,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      schedule.name!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: ColorScheme.of(context).secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   if (!isPreview)
