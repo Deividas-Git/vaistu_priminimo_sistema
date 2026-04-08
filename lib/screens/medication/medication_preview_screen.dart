@@ -132,15 +132,18 @@ class _LabelValueTile extends StatelessWidget {
     return Column(
       children: [
         ThemedContainerWidget(
+          doesHeightExpand: true,
           child: Row(
             children: [
               Text("$label: ", style: TextStyle(fontSize: 16)),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: ColorScheme.of(context).onSurfaceVariant,
+              Expanded(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: ColorScheme.of(context).onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

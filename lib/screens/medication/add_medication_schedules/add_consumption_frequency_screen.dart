@@ -176,6 +176,7 @@ class _AddConsumptionFrequencyScreenState
           child: SingleChildScrollView(
             child: Column(
               children: [
+                const SizedBox(height: 10),
                 TextField(
                   controller: _scheduleNameController,
                   decoration: InputDecoration(

@@ -179,6 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: _onLeaveReview,
                   child: Text(
                     "Palikti atsiliepimą",
+                    textAlign: TextAlign.center,
                     style: TextStyle(color: colorScheme.onPrimary),
                   ),
                 ),
@@ -196,6 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: _onLinkAccount,
                     child: Text(
                       "Susieti svečio paskyrą su asmenine",
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: colorScheme.onSecondary),
                     ),
                   ),
@@ -207,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _onLogout,
-                  child: Text("Atsijungti"),
+                  child: Text("Atsijungti", textAlign: TextAlign.center),
                 ),
               ),
             ),
@@ -228,6 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: _onDeleteAccount,
                   child: Text(
                     "Ištrinti paskyrą",
+                    textAlign: TextAlign.center,
                     style: TextStyle(color: colorScheme.onError),
                   ),
                 ),

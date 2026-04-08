@@ -43,6 +43,7 @@ class MedicationQuantityWidget extends StatelessWidget {
             height: 36,
             width: 90,
             child: TextField(
+              textAlignVertical: TextAlignVertical.center,
               readOnly: isPreview,
               controller: controller,
               keyboardType: const TextInputType.numberWithOptions(

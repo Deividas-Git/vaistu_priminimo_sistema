@@ -21,11 +21,19 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   String? authMessage;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void _showLoginSnackbar() {
+    if (authMessage != null) {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: authMessage!,
+        isError: true,
+      );
+    } else {
+      SnackbarService.showModernSnackBar(
+        context,
+        message: "Sėkmingai prisijungta!",
+      );
+    }
   }
 
   Future<void> _onLoginPressed() async {
@@ -41,23 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!mounted) return;
 
-    if (authMessage != null) {
-      SnackbarService.showModernSnackBar(
-        context,
-        message: authMessage!,
-        isError: true,
-      );
-    } else {
-      SnackbarService.showModernSnackBar(
-        context,
-        message: "Sėkmingai prisijungta!",
-      );
-    }
+    _showLoginSnackbar();
     setState(() => _loading = false);
   }
 
   Future<void> _onContinueAsGuestPressed() async {
+    setState(() => _loading = true);
     authMessage = await authService.loginAnonymously();
+
+    if (!mounted) return;
+
+    _showLoginSnackbar();
+    setState(() => _loading = false);
   }
 
   void _onRegisterPressed() {
@@ -83,6 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     if (value.length < 6) return "Slaptažodis privalo būti bent iš 6 simbolių";
     return null;
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
