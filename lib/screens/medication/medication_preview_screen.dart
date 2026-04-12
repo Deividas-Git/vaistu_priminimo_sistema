@@ -9,6 +9,7 @@ import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_m
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_date_picker_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/medication_quantity_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/schedule_tile_widget.dart';
+import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
@@ -49,6 +50,11 @@ class MedicationPreviewScreen extends StatelessWidget {
 
     medicationRecordProvider.removeAllRecordsForMedication(uid, medication.id!);
     medicationProvider.removeMedication(medication.id!, uid);
+
+    SnackbarService.showModernSnackBar(
+      context,
+      message: "Vaistas sėkmingai pašalintas!",
+    );
   }
 
   @override

@@ -94,62 +94,60 @@ class _ConsumptionTimeWithAmountDialogState
     return AlertDialog(
       actionsAlignment: MainAxisAlignment.spaceEvenly,
       title: Text(textAlign: TextAlign.center, "Priskirti laiką ir kiekį"),
-      content: SizedBox(
-        height: 300,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Expanded(child: SectionTextWidget(label: "Kiekis:")),
-                AmountButton(
-                  icon: Icons.remove,
-                  onTap: _onAmountDecline,
-                  isDisabled: _amount == 1,
-                ),
-                SizedBox(width: 5),
-                AmountButton(icon: Icons.add, onTap: _onAmountAdd),
-              ],
-            ),
-            SizedBox(height: 10),
-            ThemedContainerWidget(
-              child: Center(
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: ColorScheme.of(context).secondary,
-                    ),
-                    children: [
-                      TextSpan(text: "${widget.medicationType.getDoseLabel} "),
-                      TextSpan(
-                        text: _amount.toString(),
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: ColorScheme.of(context).secondary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Expanded(child: SectionTextWidget(label: "Kiekis:")),
+              AmountButton(
+                icon: Icons.remove,
+                onTap: _onAmountDecline,
+                isDisabled: _amount == 1,
+              ),
+              SizedBox(width: 5),
+              AmountButton(icon: Icons.add, onTap: _onAmountAdd),
+            ],
+          ),
+          SizedBox(height: 10),
+          ThemedContainerWidget(
+            child: Center(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorScheme.of(context).secondary,
                   ),
+                  children: [
+                    TextSpan(text: "${widget.medicationType.getDoseLabel} "),
+                    TextSpan(
+                      text: _amount.toString(),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: ColorScheme.of(context).secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Divider(thickness: 2),
-            SectionTextWidget(label: "Laikas:"),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 100,
-              child: TimeSpinnerWidget(
-                initialHour: _hour,
-                initialMin: _minute,
-                onHourSelected: _onHourSelected,
-                onMinSelected: _onMinSelected,
-              ),
+          ),
+          Divider(thickness: 2),
+          SectionTextWidget(label: "Laikas:"),
+          SizedBox(height: 10),
+          SizedBox(
+            height: 100,
+            child: TimeSpinnerWidget(
+              initialHour: _hour,
+              initialMin: _minute,
+              onHourSelected: _onHourSelected,
+              onMinSelected: _onMinSelected,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       actions: [
         ElevatedButton(

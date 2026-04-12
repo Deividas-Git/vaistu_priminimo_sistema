@@ -117,16 +117,22 @@ class _NoMedicationsAddedNoticeWidget extends StatelessWidget {
   }
 }
 
-class _MedicationTile extends StatelessWidget {
+class _MedicationTile extends StatefulWidget {
   const _MedicationTile({required this.medication});
 
   final UserMedication medication;
 
+  @override
+  State<_MedicationTile> createState() => _MedicationTileState();
+}
+
+class _MedicationTileState extends State<_MedicationTile> {
   void _onMedicationPreview(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MedicationPreviewScreen(medication: medication),
+        builder: (context) =>
+            MedicationPreviewScreen(medication: widget.medication),
       ),
     );
   }
@@ -146,7 +152,7 @@ class _MedicationTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      medication.name!,
+                      widget.medication.name!,
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -154,15 +160,15 @@ class _MedicationTile extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      medication.medicationType!.getLabel,
+                      widget.medication.medicationType!.getLabel,
                       style: TextStyle(
                         fontSize: 20,
                         color: ColorScheme.of(context).onSurfaceVariant,
                       ),
                     ),
-                    if (medication.currentQuantity != null)
+                    if (widget.medication.currentQuantity != null)
                       Text(
-                        "Likutis: ${medication.medicationType!.consumedAmoutIsInteger ? medication.currentQuantity!.toInt() : medication.currentQuantity} ${medication.medicationType!.getUnit}",
+                        "Likutis: ${widget.medication.medicationType!.consumedAmoutIsInteger ? widget.medication.currentQuantity!.toInt() : widget.medication.currentQuantity} ${widget.medication.medicationType!.getUnit}",
                         style: TextStyle(
                           fontSize: 20,
                           color: ColorScheme.of(context).onSurfaceVariant,
