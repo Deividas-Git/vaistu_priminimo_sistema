@@ -60,6 +60,7 @@ class MedicationService {
       name: data["name"],
       currentQuantity: data["quantity"],
       medicationType: MedicationType.values.byName(data["medicationType"]),
+      registrationNr: data["registrationNr"],
     );
     return medication;
   }
