@@ -68,21 +68,23 @@ class MedicationService {
     return medication;
   }
 
-  Future<String?> getMedicationPhoto(UserMedication medication) async {
+  Future<String?> getMedicationPhoto(String? registrationNr) async {
     try {
-      String path;
+      String path = "";
 
-      if (medication.registrationNr == null) {
-        return null; //TODO cia laikina kol naudotojas pats negali prideti foto
+      if (registrationNr == null) {
+        return null; //TODO kol naudotojas pats negali prideti foto
       } else {
         path =
-            "medication_photos/prefilled_medication_photos/${medication.registrationNr!.replaceAll("/", "-")}";
+            "medication_photos/prefilled_medication_photos/${registrationNr.replaceAll("/", "-")}.png";
       }
       final Reference ref = _storage.ref().child(path);
       final String url = await ref.getDownloadURL();
+
       return url;
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 }

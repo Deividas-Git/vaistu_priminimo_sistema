@@ -123,6 +123,7 @@ class _AgendaTile extends StatelessWidget {
     final MedicationStateActionResult? result = await showDialog(
       context: context,
       builder: (context) => MedicationStateDialog(
+        photoUrl: item.photoUrl,
         agendaItem: item,
         upcomingMedicationIntakeAt: agendaService
             .getUpcomingIntakeForMedication(

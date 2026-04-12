@@ -19,6 +19,7 @@ class UserMedication {
   final List<MedicationSchedule>? medicationSchedules;
   final DateTime? addedAt;
   final String? registrationNr;
+  final String? photoUrl;
 
   UserMedication({
     this.id,
@@ -31,6 +32,7 @@ class UserMedication {
     this.medicationSchedules,
     this.addedAt,
     this.registrationNr,
+    this.photoUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -111,6 +113,7 @@ class UserMedication {
     Object? medicationSchedules = _noChange,
     Object? addedAt = _noChange,
     Object? registrationNr = _noChange,
+    Object? photoUrl = _noChange,
   }) {
     return UserMedication(
       id: id == _noChange ? this.id : id as String?,
@@ -137,6 +140,7 @@ class UserMedication {
       registrationNr: registrationNr == _noChange
           ? this.registrationNr
           : registrationNr as String?,
+      photoUrl: photoUrl == _noChange ? this.photoUrl : photoUrl as String?,
     );
   }
 

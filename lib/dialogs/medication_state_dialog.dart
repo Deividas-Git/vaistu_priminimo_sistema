@@ -14,11 +14,13 @@ class MedicationStateDialog extends StatefulWidget {
     required this.agendaItem,
     required this.upcomingMedicationIntakeAt,
     required this.nextIntakeAt,
+    required this.photoUrl,
   });
 
   final AgendaItem agendaItem;
   final DateTime? upcomingMedicationIntakeAt;
   final DateTime? nextIntakeAt;
+  final String? photoUrl;
 
   @override
   State<MedicationStateDialog> createState() => _MedicationStateDialogState();
@@ -95,90 +97,96 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
 
     return AlertDialog(
       title: Center(child: Text(widget.agendaItem.medicationName)),
-      content: SizedBox(
-        height: _isTakingMedication ? 270 : 210,
-        child: Column(
-          children: [
-            Divider(thickness: 2),
-            _MedicationDateTimeWidget(
-              date: widget.agendaItem.lastTimeTaken,
-              label: "Paskutinį kartą vartota\n",
-              alternativeLabel: "Anksčiau vartota nebuvo",
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.photoUrl != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                widget.photoUrl!,
+                width: 150,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             ),
-            SizedBox(height: 10),
+          Divider(thickness: 2),
+          _MedicationDateTimeWidget(
+            date: widget.agendaItem.lastTimeTaken,
+            label: "Paskutinį kartą vartota\n",
+            alternativeLabel: "Anksčiau vartota nebuvo",
+          ),
+          SizedBox(height: 10),
+          ThemedContainerWidget(
+            doesHeightExpand: true,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _StateButton(
+                  label: "Praleisti",
+                  icon: Icons.cancel_outlined,
+                  color: Colors.redAccent,
+                  onButtonPressed: _onSkipMedication,
+                ),
+                _StateButton(
+                  label: "Suvartoti",
+                  icon: Icons.check_circle,
+                  color: Colors.green,
+                  onButtonPressed: _onTakeMedication,
+                ),
+                _StateButton(
+                  label: "Atidėti",
+                  icon: Icons.schedule,
+                  onButtonPressed: _onDelayMedication,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 5),
+          if (_isTakingMedication)
             ThemedContainerWidget(
-              doesHeightExpand: true,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _StateButton(
-                    label: "Praleisti",
-                    icon: Icons.cancel_outlined,
-                    color: Colors.redAccent,
-                    onButtonPressed: _onSkipMedication,
+                  TextButton(
+                    onPressed: _onMedicationTakenOnTime,
+                    style: TextButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: Text(
+                      "Laiku (${widget.agendaItem.scheduledDate.hour.toString().padLeft(2, '0')}:${widget.agendaItem.scheduledDate.minute.toString().padLeft(2, '0')})",
+                      style: TextStyle(color: colorScheme.onPrimary),
+                    ),
                   ),
-                  _StateButton(
-                    label: "Suvartoti",
-                    icon: Icons.check_circle,
-                    color: Colors.green,
-                    onButtonPressed: _onTakeMedication,
-                  ),
-                  _StateButton(
-                    label: "Atidėti",
-                    icon: Icons.schedule,
-                    onButtonPressed: _onDelayMedication,
+                  SizedBox(width: 2),
+                  TextButton(
+                    onPressed: _onMedicationTakenOnCustomTime,
+                    style: TextButton.styleFrom(
+                      backgroundColor: colorScheme.secondary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: Text(
+                      "Rinktis laiką",
+                      style: TextStyle(
+                        color: colorScheme.onSecondary.withValues(alpha: 0.85),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 5),
-            if (_isTakingMedication)
-              ThemedContainerWidget(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: _onMedicationTakenOnTime,
-                      style: TextButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      child: Text(
-                        "Laiku (${widget.agendaItem.scheduledDate.hour.toString().padLeft(2, '0')}:${widget.agendaItem.scheduledDate.minute.toString().padLeft(2, '0')})",
-                        style: TextStyle(color: colorScheme.onPrimary),
-                      ),
-                    ),
-                    SizedBox(width: 2),
-                    TextButton(
-                      onPressed: _onMedicationTakenOnCustomTime,
-                      style: TextButton.styleFrom(
-                        backgroundColor: colorScheme.secondary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      child: Text(
-                        "Rinktis laiką",
-                        style: TextStyle(
-                          color: colorScheme.onSecondary.withValues(
-                            alpha: 0.85,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            SizedBox(height: 5),
-            _MedicationDateTimeWidget(
-              date: widget.upcomingMedicationIntakeAt,
-              label: "Artimiausias vartojimas\n",
-              alternativeLabel: "Nėra kito numatomo vartojimo",
-            ),
-          ],
-        ),
+          SizedBox(height: 5),
+          _MedicationDateTimeWidget(
+            date: widget.upcomingMedicationIntakeAt,
+            label: "Artimiausias vartojimas\n",
+            alternativeLabel: "Nėra kito numatomo vartojimo",
+          ),
+        ],
       ),
     );
   }

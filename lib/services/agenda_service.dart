@@ -101,6 +101,7 @@ class AgendaService {
                     ? MedicationRecordState.missed
                     : MedicationRecordState.pending),
             delayedUntil: recordsMap[recordId]?.delayedUntil,
+            photoUrl: medication.photoUrl,
           );
 
           agenda.add(item);

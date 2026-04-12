@@ -14,6 +14,7 @@ class AgendaItem {
   final String medicationRecordId;
   final DateTime? lastTimeTaken;
   final DateTime? delayedUntil;
+  final String? photoUrl;
 
   AgendaItem({
     required this.medicationId,
@@ -27,6 +28,7 @@ class AgendaItem {
     required this.medicationRecordId,
     required this.lastTimeTaken,
     required this.delayedUntil,
+    required this.photoUrl,
   });
 
   @override
