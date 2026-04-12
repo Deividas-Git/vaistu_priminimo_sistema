@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/agenda/agenda_item.dart';
@@ -94,7 +95,6 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
-
     return AlertDialog(
       title: Center(child: Text(widget.agendaItem.medicationName)),
       content: Column(
@@ -103,11 +103,15 @@ class _MedicationStateDialogState extends State<MedicationStateDialog> {
           if (widget.photoUrl != null)
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                widget.photoUrl!,
+              child: CachedNetworkImage(
+                imageUrl: widget.photoUrl!,
                 width: 150,
                 height: 100,
                 fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    Icon(Icons.image_not_supported, size: 50),
               ),
             ),
           Divider(thickness: 2),

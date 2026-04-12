@@ -18,14 +18,16 @@ class MedicationProvider extends ChangeNotifier {
     _streamSubscription = _medicationService.medicationsStream(uid).listen((
       medications,
     ) async {
+      _userMedications = medications;
+      notifyListeners();
+
       for (int i = 0; i < medications.length; i++) {
-        final String? url = await _medicationService.getMedicationPhoto(
+        final String? url = await _medicationService.getPhotoUrlFromDocument(
           medications[i].registrationNr,
         );
+        //debugPrint("URL: $url");
         medications[i] = medications[i].copyWith(photoUrl: url);
       }
-      _userMedications = medications;
-      //debugPrint("VAISTAI: $medications");
       notifyListeners();
     });
   }

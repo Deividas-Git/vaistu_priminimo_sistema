@@ -68,7 +68,27 @@ class MedicationService {
     return medication;
   }
 
-  Future<String?> getMedicationPhoto(String? registrationNr) async {
+  Future<String?> getPhotoUrlFromDocument(String? registrationNr) async {
+    try {
+      if (registrationNr == null) {
+        return null;
+      }
+      var snapshot = await _firestore
+          .collection("medications")
+          .where("registrationNr", isEqualTo: registrationNr)
+          .limit(1)
+          .get();
+      var doc = snapshot.docs.firstOrNull;
+      if (doc == null) return null;
+      final Map<String, dynamic> data = doc.data();
+      return data["photoUrl"];
+    } catch (e) {
+      debugPrint("KLAIDA gaunant foto: $e");
+      return null;
+    }
+  }
+
+  Future<String?> getPhotoUrlFromStorage(String? registrationNr) async {
     try {
       String path = "";
 
@@ -79,11 +99,13 @@ class MedicationService {
             "medication_photos/prefilled_medication_photos/${registrationNr.replaceAll("/", "-")}.png";
       }
       final Reference ref = _storage.ref().child(path);
-      final String url = await ref.getDownloadURL();
-
+      final String url = await ref.getDownloadURL().timeout(
+        Duration(seconds: 5),
+      );
+      debugPrint("URL: $url");
       return url;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("KLAIDA gaunant foto: $e");
       return null;
     }
   }
