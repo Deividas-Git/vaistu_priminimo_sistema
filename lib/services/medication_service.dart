@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 
 class MedicationService {
   final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
 
   Stream<List<UserMedication>> medicationsStream(String uid) {
     return _firestore
@@ -63,5 +66,23 @@ class MedicationService {
       registrationNr: data["registrationNr"],
     );
     return medication;
+  }
+
+  Future<String?> getMedicationPhoto(UserMedication medication) async {
+    try {
+      String path;
+
+      if (medication.registrationNr == null) {
+        return null; //TODO cia laikina kol naudotojas pats negali prideti foto
+      } else {
+        path =
+            "medication_photos/prefilled_medication_photos/${medication.registrationNr!.replaceAll("/", "-")}";
+      }
+      final Reference ref = _storage.ref().child(path);
+      final String url = await ref.getDownloadURL();
+      return url;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
