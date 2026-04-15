@@ -67,4 +67,13 @@ enum MedicationType {
         return false;
     }
   }
+
+  double get getQuantitySubtract => switch (this) {
+    pills => 1.0,
+    capsules => 1.0,
+    drops => 0.05,
+    spray => 0.1,
+    ointment => 0.5,
+    other => 1.0,
+  };
 }

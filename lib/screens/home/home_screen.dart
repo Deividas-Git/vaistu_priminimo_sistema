@@ -63,6 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void updateLastTimeTaken(List<MedicationRecord> medicationRecords) {
+    setState(() {
+      context.read<MedicationProvider>().updateLastTimeTaken(medicationRecords);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,7 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final Map<String, MedicationRecord> recordsMap = context
         .read<MedicationRecordsProvider>()
         .getRecordsMap();
-    context.read<MedicationProvider>().updateLastTimeTaken(medicationRecords);
+
+    updateLastTimeTaken(medicationRecords);
 
     return DefaultTabController(
       length: 3,

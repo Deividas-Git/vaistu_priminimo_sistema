@@ -57,6 +57,10 @@ class MedicationProvider extends ChangeNotifier {
     }
   }
 
+  UserMedication getMedicationFromId(String id) {
+    return _userMedications.where((medication) => medication.id == id).first;
+  }
+
   Future<void> addMedication(UserMedication medication, String uid) async {
     await _medicationService.addMedication(medication, uid);
   }
