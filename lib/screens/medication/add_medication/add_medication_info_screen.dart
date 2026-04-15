@@ -83,12 +83,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
       });
       return;
     }
-    // setState(() { //nuemiau nes atrodo kad palagina atnaujinimas pries perjungima
-    //   _medicationNameError = null;
-    // });
 
-    debugPrint("REDAGUOJAMAS VAISTAS: ${widget.prefilledMedication}");
-    //debugPrint("galiojimas: $_expirationDate");
     final UserMedication medication =
         (widget.prefilledMedication ?? UserMedication.empty()).copyWith(
           name: _medicationNameController.text.trim(),
@@ -101,8 +96,6 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                 )
               : null,
         );
-
-    //debugPrint("APIE VAISTA: ${medication.toString()}");
 
     Navigator.push(
       context,

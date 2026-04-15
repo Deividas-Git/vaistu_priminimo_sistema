@@ -17,12 +17,25 @@ class MedicationScreen extends StatefulWidget {
 
 class _MedicationScreenState extends State<MedicationScreen> {
   final TextEditingController _searchController = TextEditingController();
+  List<UserMedication> _filteredMedication = [];
 
   void _onAddMedication() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddTypeSelectionScreen()),
     );
+  }
+
+  void _onSearchMedication(String search, List<UserMedication> medications) {
+    _filteredMedication = List.from(
+      medications
+          .where(
+            (medication) =>
+                medication.name!.toLowerCase().contains(search.toLowerCase()),
+          )
+          .toList(),
+    );
+    setState(() {});
   }
 
   @override
@@ -36,6 +49,10 @@ class _MedicationScreenState extends State<MedicationScreen> {
     final List<UserMedication> medications = context
         .watch<MedicationProvider>()
         .uerMedications;
+
+    if (_searchController.text.isEmpty) {
+      _filteredMedication = List.from(medications);
+    }
 
     return Scaffold(
       appBar: RootAppBar(title: "Mano vaistai"),
@@ -60,11 +77,13 @@ class _MedicationScreenState extends State<MedicationScreen> {
                           border: OutlineInputBorder(),
                           hintText: "Pridėto vaisto paieška",
                         ),
+                        onChanged: (value) =>
+                            _onSearchMedication(value, medications),
                       ),
                       ...List.generate(
-                        medications.length,
+                        _filteredMedication.length,
                         (int index) => _MedicationTile(
-                          medication: medications.elementAt(index),
+                          medication: _filteredMedication.elementAt(index),
                         ),
                       ),
                       SizedBox(height: 55),
