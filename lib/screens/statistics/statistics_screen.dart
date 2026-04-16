@@ -139,6 +139,32 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           style: TextStyle(color: colorScheme.onPrimary),
                         ),
                       ),
+                    if (_selectedMedication!.activeIngredient ==
+                            ActiveIngredient.statin &&
+                        selectedMedicationHealthMetrics.isNotEmpty)
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Cholesterolio MTL pokytis mmol/l",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          CholesterolLineChart(
+                            metrics: selectedMedicationHealthMetrics,
+                          ),
+                          Divider(thickness: 2),
+                        ],
+                      ),
                     SizedBox(height: 5),
                     RichText(
                       textAlign: TextAlign.center,
@@ -148,7 +174,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                         children: [
-                          TextSpan(text: "Laikotarpis:\n"),
+                          TextSpan(text: "Vartojimo laikotarpis:\n"),
                           TextSpan(
                             text: DateHelper.getFormattedDate(
                               medicationProgress.startDate,
@@ -228,32 +254,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           ),
                       ],
                     ),
-                    if (_selectedMedication!.activeIngredient ==
-                            ActiveIngredient.statin &&
-                        selectedMedicationHealthMetrics.isNotEmpty)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Divider(thickness: 2),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Cholesterolio MTL pokytis mmol/l",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          CholesterolLineChart(
-                            metrics: selectedMedicationHealthMetrics,
-                          ),
-                        ],
-                      ),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
