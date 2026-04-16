@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vaistu_priminimo_sistema/models/log_level.dart';
 
 class LogService {
   final String uid;
@@ -24,13 +25,13 @@ class LogService {
   }
 
   Future<void> log({
-    required String level,
+    required LogLevel level,
     required String action,
     required String details,
   }) async {
     await _firestore.collection("users").doc(uid).collection("logs").add({
       "timestamp": FieldValue.serverTimestamp(),
-      "level": level,
+      "level": level.getLabel,
       "action": action,
       "details": details,
     });
