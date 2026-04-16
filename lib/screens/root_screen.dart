@@ -55,9 +55,8 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _notificationManager.dispose();
-    context.read<HealthMetricsProvider>().dispose();
+    super.dispose();
   }
 
   @override
