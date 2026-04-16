@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/active_ingredient.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
@@ -13,6 +14,7 @@ class UserMedication {
   final String? name;
   final double? currentQuantity;
   final MedicationForm? medicationForm;
+  final ActiveIngredient? activeIngredient;
   final MedicationMealTiming? medicationMealTiming;
   final DateTime? expirationDate;
   final DateTime? lastTimeTaken;
@@ -26,6 +28,7 @@ class UserMedication {
     this.name,
     this.currentQuantity,
     this.medicationForm,
+    this.activeIngredient,
     this.medicationMealTiming,
     this.expirationDate,
     this.lastTimeTaken,
@@ -39,6 +42,7 @@ class UserMedication {
     final Map<String, dynamic> map = {
       "name": name,
       "medicationForm": medicationForm?.name,
+      "activeIngredient": activeIngredient?.name,
       "medicationMealTiming": medicationMealTiming?.name,
     };
 
@@ -73,6 +77,7 @@ class UserMedication {
       name: map["name"],
       currentQuantity: map["currentQuantity"],
       medicationForm: MedicationForm.values.byName(map["medicationForm"]),
+      activeIngredient: ActiveIngredient.values.byName(map["activeIngredient"]),
       medicationMealTiming: MedicationMealTiming.values.byName(
         map["medicationMealTiming"],
       ),
@@ -107,6 +112,7 @@ class UserMedication {
     Object? name = _noChange,
     Object? currentQuantity = _noChange,
     Object? medicationForm = _noChange,
+    Object? activeIngredient = _noChange,
     Object? medicationMealTiming = _noChange,
     Object? expirationDate = _noChange,
     Object? lastTimeTaken = _noChange,
@@ -124,6 +130,9 @@ class UserMedication {
       medicationForm: medicationForm == _noChange
           ? this.medicationForm
           : medicationForm as MedicationForm?,
+      activeIngredient: activeIngredient == _noChange
+          ? this.activeIngredient
+          : activeIngredient as ActiveIngredient?,
       medicationMealTiming: medicationMealTiming == _noChange
           ? this.medicationMealTiming
           : medicationMealTiming as MedicationMealTiming?,
