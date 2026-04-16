@@ -40,6 +40,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       builder: (context) => CholesterolDialog(),
     );
     final HealthMetric healthMetric = HealthMetric(
+      id: "${_selectedMedication!.id!}_${DateHelper.getFormattedDate(result["date"])}_${HealthMetricType.cholesterolMTL.name}",
       medicationId: _selectedMedication!.id!,
       healthMetricType: HealthMetricType.cholesterolMTL,
       value: result["value"],
