@@ -11,6 +11,7 @@ import 'package:vaistu_priminimo_sistema/screens/auth/login_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/root_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/services/health_metrics_service.dart';
+import 'package:vaistu_priminimo_sistema/services/log_service.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_progress_service.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_record_service.dart';
 import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
@@ -100,7 +101,8 @@ class MainApp extends StatelessWidget {
                       userCredentials.uid,
                     );
                 context.read<UserProvider>().setUser(user);
-                //debugPrint("NAUDOTOJAS: $user");
+
+                LogService.init(uid: user.uid);
 
                 return RootScreen();
               },
