@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_medication_schedules_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
@@ -25,8 +25,8 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
       TextEditingController();
   final TextEditingController _medicationQuantityInputController =
       TextEditingController();
-  final List<DropdownMenuEntry<MedicationType>> _medicationTypes =
-      MedicationType.values
+  final List<DropdownMenuEntry<MedicationForm>> _medicationTypes =
+      MedicationForm.values
           .map((type) => DropdownMenuEntry(value: type, label: type.getLabel))
           .toList();
   final List<DropdownMenuEntry<MedicationMealTiming>> _medicationMealtTimings =
@@ -39,7 +39,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           )
           .toList();
   DateTime? _expirationDate;
-  MedicationType? _medicationType;
+  MedicationForm? _medicationType;
   MedicationMealTiming? _medicationMealTiming;
   String? _medicationNameError;
   late bool isQuantityAdded;
@@ -50,9 +50,9 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
     });
   }
 
-  void _onMedicationTypeSelected(MedicationType? medicationType) {
+  void _onMedicationTypeSelected(MedicationForm? medicationForm) {
     setState(() {
-      _medicationType = medicationType;
+      _medicationType = medicationForm;
       final String temp = _medicationQuantityInputController.text.replaceAll(
         ",",
         ".",
@@ -89,7 +89,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
           name: _medicationNameController.text.trim(),
           expirationDate: _expirationDate,
           medicationMealTiming: _medicationMealTiming,
-          medicationType: _medicationType,
+          medicationForm: _medicationType,
           currentQuantity: isQuantityAdded
               ? double.tryParse(
                   _medicationQuantityInputController.text.replaceAll(",", "."),
@@ -110,7 +110,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
   void initState() {
     super.initState();
     _medicationType =
-        widget.prefilledMedication?.medicationType ?? MedicationType.other;
+        widget.prefilledMedication?.medicationForm ?? MedicationForm.other;
     _medicationMealTiming =
         widget.prefilledMedication?.medicationMealTiming ??
         MedicationMealTiming.unspecified;
@@ -119,7 +119,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
         ? true
         : false;
     _medicationQuantityInputController.text = isQuantityAdded
-        ? widget.prefilledMedication!.medicationType!.consumedAmoutIsInteger
+        ? widget.prefilledMedication!.medicationForm!.consumedAmoutIsInteger
               ? widget.prefilledMedication!.currentQuantity.toString().split(
                   ".",
                 )[0]
@@ -164,8 +164,8 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                   onDatePicked: _onExpirationDatePicked,
                 ),
                 const SizedBox(height: 10),
-                SectionTextWidget(label: "Pasirinkite vaisto tipą"),
-                DropdownMenuWidget<MedicationType>(
+                SectionTextWidget(label: "Pasirinkite vaisto formą"),
+                DropdownMenuWidget<MedicationForm>(
                   initialSelection: _medicationType,
                   entries: _medicationTypes,
                   onEntrySelected: _onMedicationTypeSelected,
@@ -178,7 +178,7 @@ class _AddMedicationInfoScreenState extends State<AddMedicationInfoScreen> {
                 ),
                 if (isQuantityAdded)
                   MedicationQuantityWidget(
-                    medicationType: _medicationType!,
+                    medicationForm: _medicationType!,
                     controller: _medicationQuantityInputController,
                   ),
                 const Divider(thickness: 2),

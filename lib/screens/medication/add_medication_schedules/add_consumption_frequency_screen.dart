@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication_schedules/add_consumption_times_with_amount_screen.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
@@ -18,11 +18,11 @@ class AddConsumptionFrequencyScreen extends StatefulWidget {
   const AddConsumptionFrequencyScreen({
     super.key,
     this.prefilledMedicationSchedule,
-    required this.medicationType,
+    required this.medicationForm,
     required this.onScheduleAdded,
   });
   final MedicationSchedule? prefilledMedicationSchedule;
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final Function(MedicationSchedule) onScheduleAdded;
 
   @override
@@ -131,7 +131,7 @@ class _AddConsumptionFrequencyScreenState
       context,
       MaterialPageRoute(
         builder: (context) => AddConsumptionTimesWithAmountScreen(
-          medicationType: widget.medicationType,
+          medicationForm: widget.medicationForm,
           prefilledMedicationSchedule: medicationSchedule,
           onScheduleAdded: widget.onScheduleAdded,
         ),

@@ -3,7 +3,7 @@ import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 
 const _noChange = Object();
@@ -12,7 +12,7 @@ class UserMedication {
   final String? id;
   final String? name;
   final double? currentQuantity;
-  final MedicationType? medicationType;
+  final MedicationForm? medicationForm;
   final MedicationMealTiming? medicationMealTiming;
   final DateTime? expirationDate;
   final DateTime? lastTimeTaken;
@@ -25,7 +25,7 @@ class UserMedication {
     this.id,
     this.name,
     this.currentQuantity,
-    this.medicationType,
+    this.medicationForm,
     this.medicationMealTiming,
     this.expirationDate,
     this.lastTimeTaken,
@@ -38,7 +38,7 @@ class UserMedication {
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = {
       "name": name,
-      "medicationType": medicationType?.name,
+      "medicationForm": medicationForm?.name,
       "medicationMealTiming": medicationMealTiming?.name,
     };
 
@@ -72,7 +72,7 @@ class UserMedication {
       id: id,
       name: map["name"],
       currentQuantity: map["currentQuantity"],
-      medicationType: MedicationType.values.byName(map["medicationType"]),
+      medicationForm: MedicationForm.values.byName(map["medicationForm"]),
       medicationMealTiming: MedicationMealTiming.values.byName(
         map["medicationMealTiming"],
       ),
@@ -106,7 +106,7 @@ class UserMedication {
     Object? id = _noChange,
     Object? name = _noChange,
     Object? currentQuantity = _noChange,
-    Object? medicationType = _noChange,
+    Object? medicationForm = _noChange,
     Object? medicationMealTiming = _noChange,
     Object? expirationDate = _noChange,
     Object? lastTimeTaken = _noChange,
@@ -121,9 +121,9 @@ class UserMedication {
       currentQuantity: currentQuantity == _noChange
           ? this.currentQuantity
           : currentQuantity as double?,
-      medicationType: medicationType == _noChange
-          ? this.medicationType
-          : medicationType as MedicationType?,
+      medicationForm: medicationForm == _noChange
+          ? this.medicationForm
+          : medicationForm as MedicationForm?,
       medicationMealTiming: medicationMealTiming == _noChange
           ? this.medicationMealTiming
           : medicationMealTiming as MedicationMealTiming?,
@@ -193,6 +193,6 @@ class UserMedication {
 
   @override
   String toString() {
-    return "Vaistas: $name; Kiekis: ${currentQuantity.toString()}; Tipas: $medicationType; Vartojama: ${medicationMealTiming.toString()}; Galioja iki: ${expirationDate.toString().split(" ")[0]}; Vartota: ${lastTimeTaken.toString()}, tvarkarasciai: ${medicationSchedules.toString()}";
+    return "Vaistas: $name; Kiekis: ${currentQuantity.toString()}; Tipas: $medicationForm; Vartojama: ${medicationMealTiming.toString()}; Galioja iki: ${expirationDate.toString().split(" ")[0]}; Vartota: ${lastTimeTaken.toString()}, tvarkarasciai: ${medicationSchedules.toString()}";
   }
 }

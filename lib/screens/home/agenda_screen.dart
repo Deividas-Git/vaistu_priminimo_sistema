@@ -155,7 +155,7 @@ class _AgendaTile extends StatelessWidget {
       //     .read<MedicationProvider>()
       //     .getMedicationFromId(item.medicationId);
       // final double amountChange =
-      //     medication.medicationType!.getQuantitySubtract * item.amountToTake;
+      //     medication.medicationForm!.getQuantitySubtract * item.amountToTake;
       // final oldRecord = context
       //     .read<MedicationRecordsProvider>()
       //     .getRecordsMap()[item.medicationRecordId];
@@ -231,7 +231,7 @@ class _AgendaTile extends StatelessWidget {
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                         children: [
-                          TextSpan(text: item.medicationType.getDoseLabel),
+                          TextSpan(text: item.medicationForm.getDoseLabel),
                           TextSpan(
                             text: " ${item.amountToTake.toString()}",
                             style: TextStyle(

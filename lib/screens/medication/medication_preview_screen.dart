@@ -93,7 +93,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               _LabelValueTile(label: "Pavadinimas", value: medication.name!),
               _LabelValueTile(
                 label: "Vaisto tipas",
-                value: medication.medicationType!.getLabel,
+                value: medication.medicationForm!.getLabel,
               ),
               _LabelValueTile(
                 label: "Vartojama",
@@ -106,7 +106,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               ),
               SizedBox(height: 5),
               MedicationQuantityWidget(
-                medicationType: medication.medicationType!,
+                medicationForm: medication.medicationForm!,
                 previewAmount: medication.currentQuantity,
               ),
               Divider(thickness: 2, color: ColorScheme.of(context).primary),
@@ -115,7 +115,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               if (medication.medicationSchedules != null)
                 ...medication.medicationSchedules!.map(
                   (schedule) => ScheduleTileWidget(
-                    medicationType: medication.medicationType!,
+                    medicationForm: medication.medicationForm!,
                     schedule: schedule,
                   ),
                 ),

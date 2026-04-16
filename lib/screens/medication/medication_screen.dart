@@ -179,7 +179,7 @@ class _MedicationTileState extends State<_MedicationTile> {
                       ),
                     ),
                     Text(
-                      widget.medication.medicationType!.getLabel,
+                      widget.medication.medicationForm!.getLabel,
                       style: TextStyle(
                         fontSize: 20,
                         color: ColorScheme.of(context).onSurfaceVariant,
@@ -187,7 +187,7 @@ class _MedicationTileState extends State<_MedicationTile> {
                     ),
                     if (widget.medication.currentQuantity != null)
                       Text(
-                        "Likutis: ${widget.medication.medicationType!.consumedAmoutIsInteger ? widget.medication.currentQuantity!.toInt() : widget.medication.currentQuantity} ${widget.medication.medicationType!.getUnit}",
+                        "Likutis: ${widget.medication.medicationForm!.consumedAmoutIsInteger ? widget.medication.currentQuantity!.toInt() : widget.medication.currentQuantity} ${widget.medication.medicationForm!.getUnit}",
                         style: TextStyle(
                           fontSize: 20,
                           color: ColorScheme.of(context).onSurfaceVariant,

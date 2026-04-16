@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 
 class MedicationService {
@@ -62,7 +62,7 @@ class MedicationService {
     final UserMedication medication = UserMedication(
       name: data["name"],
       currentQuantity: data["quantity"],
-      medicationType: MedicationType.values.byName(data["medicationType"]),
+      medicationForm: MedicationForm.values.byName(data["medicationForm"]),
       registrationNr: data["registrationNr"],
     );
     return medication;

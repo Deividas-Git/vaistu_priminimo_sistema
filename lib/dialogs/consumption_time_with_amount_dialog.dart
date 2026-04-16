@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/widgets/amount_button.dart';
 import 'package:vaistu_priminimo_sistema/widgets/section_text_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
@@ -11,12 +11,12 @@ class ConsumptionTimeWithAmountDialog extends StatefulWidget {
   const ConsumptionTimeWithAmountDialog({
     super.key,
     this.prefilledMedicationConsumptionTimeWithAmount,
-    required this.medicationType,
+    required this.medicationForm,
     required this.onDialogConfirmed,
   });
   final MedicationConsumptionTimeWithAmount?
   prefilledMedicationConsumptionTimeWithAmount;
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final Function(
     MedicationConsumptionTimeWithAmount,
     MedicationConsumptionTimeWithAmount?,
@@ -121,7 +121,7 @@ class _ConsumptionTimeWithAmountDialogState
                     color: ColorScheme.of(context).secondary,
                   ),
                   children: [
-                    TextSpan(text: "${widget.medicationType.getDoseLabel} "),
+                    TextSpan(text: "${widget.medicationForm.getDoseLabel} "),
                     TextSpan(
                       text: _amount.toString(),
                       style: TextStyle(

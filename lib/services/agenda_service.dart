@@ -78,7 +78,7 @@ class AgendaService {
             medicationName: medication.name!,
             amountToTake: timeWithAmount.consumptionAmount,
             medicationMealTiming: medication.medicationMealTiming!,
-            medicationType: medication.medicationType!,
+            medicationForm: medication.medicationForm!,
             scheduledDate: agendaDate.add(
               Duration(
                 hours: timeWithAmount.time.hour,
