@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/cholesterol_dialog.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/chart_data.dart';
+import 'package:vaistu_priminimo_sistema/models/health_metric/health_metric.dart';
+import 'package:vaistu_priminimo_sistema/models/health_metric/health_metric_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/active_ingredient.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
@@ -33,9 +35,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   void _onAddCholesterolInfo() async {
-    await showDialog(
+    final Map<String, dynamic> result = await showDialog(
       context: context,
       builder: (context) => CholesterolDialog(),
+    );
+    final HealthMetric healthMetric = HealthMetric(
+      medicationId: _selectedMedication!.id!,
+      healthMetricType: HealthMetricType.cholesterolMTL,
+      value: result["value"],
+      dateMeasured: DateHelper.normalizedDate(result["date"])!,
     );
   }
 

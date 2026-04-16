@@ -14,9 +14,18 @@ class _CholesterolDialogState extends State<CholesterolDialog> {
   late final TextEditingController _textEditingController;
   DateTime? _selectedDate = DateTime.now();
 
-  void _onDialogCanceled() {}
+  void _onDialogCanceled() {
+    Navigator.pop(context);
+  }
 
-  void _onDialogConfirmed() {}
+  void _onDialogConfirmed() {
+    Navigator.pop(context, {
+      "date": _selectedDate,
+      "value": double.tryParse(
+        _textEditingController.text.replaceAll(",", "."),
+      ),
+    });
+  }
 
   void _onDatePicked(DateTime? date) {
     setState(() {
