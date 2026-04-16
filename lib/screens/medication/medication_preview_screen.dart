@@ -92,8 +92,12 @@ class MedicationPreviewScreen extends StatelessWidget {
               SectionTextWidget(label: "Bendra informacija"),
               _LabelValueTile(label: "Pavadinimas", value: medication.name!),
               _LabelValueTile(
-                label: "Vaisto tipas",
+                label: "Vaisto formą",
                 value: medication.medicationForm!.getLabel,
+              ),
+              _LabelValueTile(
+                label: "Vaisto veiklioji medžiaga",
+                value: medication.activeIngredient!.getLabel,
               ),
               _LabelValueTile(
                 label: "Vartojama",

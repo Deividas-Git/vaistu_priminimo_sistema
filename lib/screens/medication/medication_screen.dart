@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/active_ingredient.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/add_medication/add_type_selection_screen.dart';
@@ -178,6 +179,15 @@ class _MedicationTileState extends State<_MedicationTile> {
                         color: ColorScheme.of(context).onSurfaceVariant,
                       ),
                     ),
+                    if (widget.medication.activeIngredient !=
+                        ActiveIngredient.unspecifeid)
+                      Text(
+                        widget.medication.activeIngredient!.getLabel,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: ColorScheme.of(context).onSurfaceVariant,
+                        ),
+                      ),
                     Text(
                       widget.medication.medicationForm!.getLabel,
                       style: TextStyle(
