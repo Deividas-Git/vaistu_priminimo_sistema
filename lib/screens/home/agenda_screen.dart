@@ -9,7 +9,7 @@ import 'package:vaistu_priminimo_sistema/models/medication/medication_record.dar
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_state_action_result.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
-//import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/services/agenda_service.dart';
@@ -151,37 +151,37 @@ class _AgendaTile extends StatelessWidget {
         record,
       );
 
-      // final UserMedication medication = context
-      //     .read<MedicationProvider>()
-      //     .getMedicationFromId(item.medicationId);
-      // final double amountChange =
-      //     medication.medicationForm!.getQuantitySubtract * item.amountToTake;
-      // final oldRecord = context
-      //     .read<MedicationRecordsProvider>()
-      //     .getRecordsMap()[item.medicationRecordId];
+      final UserMedication medication = context
+          .read<MedicationProvider>()
+          .getMedicationFromId(item.medicationId);
+      final double amountChange =
+          medication.medicationForm!.getQuantitySubtract * item.amountToTake;
+      final oldRecord = context
+          .read<MedicationRecordsProvider>()
+          .getRecordsMap()[item.medicationRecordId];
 
-      // final wasTaken = oldRecord?.state == MedicationRecordState.taken;
-      // final isTaken = result.state == MedicationRecordState.taken;
+      final wasTaken = oldRecord?.state == MedicationRecordState.taken;
+      final isTaken = result.state == MedicationRecordState.taken;
 
-      // if (oldRecord == null) return;
-      // if (oldRecord.state == result.state) return;
-      // if (medication.currentQuantity == null) return;
+      if (oldRecord == null) return;
+      if (oldRecord.state == result.state) return;
+      if (medication.currentQuantity == null) return;
 
-      // if (isTaken && !wasTaken) {
-      //   context.read<MedicationProvider>().updateMedication(
-      //     medication.copyWith(
-      //       currentQuantity: medication.currentQuantity! - amountChange,
-      //     ),
-      //     uid,
-      //   );
-      // } else if (!isTaken && wasTaken) {
-      //   context.read<MedicationProvider>().updateMedication(
-      //     medication.copyWith(
-      //       currentQuantity: medication.currentQuantity! + amountChange,
-      //     ),
-      //     uid,
-      //   );
-      // }
+      if (isTaken && !wasTaken) {
+        context.read<MedicationProvider>().updateMedication(
+          medication.copyWith(
+            currentQuantity: medication.currentQuantity! - amountChange,
+          ),
+          uid,
+        );
+      } else if (!isTaken && wasTaken) {
+        context.read<MedicationProvider>().updateMedication(
+          medication.copyWith(
+            currentQuantity: medication.currentQuantity! + amountChange,
+          ),
+          uid,
+        );
+      }
     }
   }
 
