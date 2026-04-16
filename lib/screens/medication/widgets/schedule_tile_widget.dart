@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_frequency_type.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/models/weekday.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class ScheduleTileWidget extends StatelessWidget {
   const ScheduleTileWidget({
     super.key,
-    required this.medicationType,
+    required this.medicationForm,
     required this.schedule,
     this.onEditPressed,
     this.onDeletePressed,
   });
 
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final MedicationSchedule schedule;
   final Function(MedicationSchedule)? onEditPressed;
   final Function(MedicationSchedule)? onDeletePressed;
@@ -64,7 +64,7 @@ class ScheduleTileWidget extends StatelessWidget {
     final String hour = e.time.hour.toString().padLeft(2, "0");
     final String min = e.time.minute.toString().padLeft(2, "0");
     final String text =
-        "Laikas: $hour:$min, ${medicationType.getDoseLabel.toLowerCase()} ${e.consumptionAmount}";
+        "Laikas: $hour:$min, ${medicationForm.getDoseLabel.toLowerCase()} ${e.consumptionAmount}";
     return text;
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_consumption_time_with_amount.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_schedule.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/consumption_time_with_amount_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_information_widget.dart';
 import 'package:vaistu_priminimo_sistema/screens/medication/widgets/add_medication_app_bar.dart';
@@ -13,11 +13,11 @@ import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 class AddConsumptionTimesWithAmountScreen extends StatefulWidget {
   const AddConsumptionTimesWithAmountScreen({
     super.key,
-    required this.medicationType,
+    required this.medicationForm,
     required this.prefilledMedicationSchedule,
     required this.onScheduleAdded,
   });
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final MedicationSchedule prefilledMedicationSchedule;
   final Function(MedicationSchedule) onScheduleAdded;
 
@@ -57,7 +57,7 @@ class _AddConsumptionTimesWithAmountState
       builder: (context) => ConsumptionTimeWithAmountDialog(
         prefilledMedicationConsumptionTimeWithAmount:
             medicationConsumptionTimeWithAmount,
-        medicationType: widget.medicationType,
+        medicationForm: widget.medicationForm,
         onDialogConfirmed: _onDialogConfirmed,
       ),
     );
@@ -121,7 +121,7 @@ class _AddConsumptionTimesWithAmountState
               ..._consumptionTimesWithAmount.map(
                 (e) => _ScheduledMedicationTimeAndAmountTileWidget(
                   medicationConsumptionTimeWithAmount: e,
-                  medicationType: widget.medicationType,
+                  medicationForm: widget.medicationForm,
                   onEditPressed: _onAddEditConsumptionTimeAndAmount,
                   onDeletePressed: _onDeleteConsumptionTimeAndAmount,
                 ),
@@ -148,13 +148,13 @@ class _AddConsumptionTimesWithAmountState
 class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
   const _ScheduledMedicationTimeAndAmountTileWidget({
     required this.medicationConsumptionTimeWithAmount,
-    required this.medicationType,
+    required this.medicationForm,
     required this.onEditPressed,
     required this.onDeletePressed,
   });
 
   final MedicationConsumptionTimeWithAmount medicationConsumptionTimeWithAmount;
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final Function(MedicationConsumptionTimeWithAmount) onEditPressed;
   final Function(MedicationConsumptionTimeWithAmount) onDeletePressed;
 
@@ -217,7 +217,7 @@ class _ScheduledMedicationTimeAndAmountTileWidget extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: "${medicationType.getDoseLabel} ",
+                      text: "${medicationForm.getDoseLabel} ",
                       style: TextStyle(
                         fontSize: 16,
                         color: ColorScheme.of(context).secondary,

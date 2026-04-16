@@ -1,4 +1,4 @@
-enum MedicationType {
+enum MedicationForm {
   pills,
   capsules,
   drops,
@@ -8,15 +8,15 @@ enum MedicationType {
 
   String get getLabel {
     switch (this) {
-      case MedicationType.pills:
+      case MedicationForm.pills:
         return "Tabletės";
-      case MedicationType.capsules:
+      case MedicationForm.capsules:
         return "Kapsulės";
-      case MedicationType.drops:
+      case MedicationForm.drops:
         return "Lašai";
-      case MedicationType.spray:
+      case MedicationForm.spray:
         return "Purškalas";
-      case MedicationType.ointment:
+      case MedicationForm.ointment:
         return "Tepalas";
       default:
         return "Kita";
@@ -25,15 +25,15 @@ enum MedicationType {
 
   String get getDoseLabel {
     switch (this) {
-      case MedicationType.pills:
+      case MedicationForm.pills:
         return "Tablečių skaičius:";
-      case MedicationType.capsules:
+      case MedicationForm.capsules:
         return "Kapsulių skaičius:";
-      case MedicationType.drops:
+      case MedicationForm.drops:
         return "Lašų skaičius:";
-      case MedicationType.spray:
+      case MedicationForm.spray:
         return "Purškimo kartai:";
-      case MedicationType.ointment:
+      case MedicationForm.ointment:
         return "Tepimo kartai:";
       default:
         return "Naudojimo skaičius:";
@@ -42,15 +42,15 @@ enum MedicationType {
 
   String get getUnit {
     switch (this) {
-      case MedicationType.pills:
+      case MedicationForm.pills:
         return "vnt.";
-      case MedicationType.capsules:
+      case MedicationForm.capsules:
         return "vnt.";
-      case MedicationType.drops:
+      case MedicationForm.drops:
         return "ml";
-      case MedicationType.spray:
+      case MedicationForm.spray:
         return "ml";
-      case MedicationType.ointment:
+      case MedicationForm.ointment:
         return "g";
       default:
         return "";
@@ -59,9 +59,9 @@ enum MedicationType {
 
   bool get consumedAmoutIsInteger {
     switch (this) {
-      case MedicationType.pills:
+      case MedicationForm.pills:
         return true;
-      case MedicationType.capsules:
+      case MedicationForm.capsules:
         return true;
       default:
         return false;

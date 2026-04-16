@@ -42,7 +42,7 @@ class _AddMedicationSchedulesScreenState
       MaterialPageRoute(
         builder: (context) => AddConsumptionFrequencyScreen(
           prefilledMedicationSchedule: scheduleToEdit,
-          medicationType: widget.prefilledMedication.medicationType!,
+          medicationForm: widget.prefilledMedication.medicationForm!,
           onScheduleAdded: _onScheduleAdded,
         ),
       ),
@@ -140,8 +140,8 @@ class _AddMedicationSchedulesScreenState
                   ),
                   ..._medicationSchedules.map(
                     (schedule) => ScheduleTileWidget(
-                      medicationType:
-                          widget.prefilledMedication.medicationType!,
+                      medicationForm:
+                          widget.prefilledMedication.medicationForm!,
                       schedule: schedule,
                       onEditPressed: _onAddEditSchedule,
                       onDeletePressed: _onDeleteSchedule,

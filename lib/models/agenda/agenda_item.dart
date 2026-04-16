@@ -1,13 +1,13 @@
 import 'package:vaistu_priminimo_sistema/models/medication/medication_meal_timing.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 
 class AgendaItem {
   final String medicationId;
   final String medicationName;
   final int amountToTake;
   final MedicationMealTiming medicationMealTiming;
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final DateTime scheduledDate;
   final String scheduleName;
   final MedicationRecordState state;
@@ -21,7 +21,7 @@ class AgendaItem {
     required this.medicationName,
     required this.amountToTake,
     required this.medicationMealTiming,
-    required this.medicationType,
+    required this.medicationForm,
     required this.scheduledDate,
     required this.scheduleName,
     required this.state,

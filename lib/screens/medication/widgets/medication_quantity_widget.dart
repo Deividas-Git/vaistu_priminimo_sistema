@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vaistu_priminimo_sistema/models/medication/medication_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
 import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
 
 class MedicationQuantityWidget extends StatelessWidget {
   const MedicationQuantityWidget({
     super.key,
-    required this.medicationType,
+    required this.medicationForm,
     this.controller,
     this.previewAmount,
+    this.isNotUsedForQuantity,
+    this.label,
   });
 
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
   final TextEditingController? controller;
   final double? previewAmount;
+  final bool? isNotUsedForQuantity;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,14 @@ class MedicationQuantityWidget extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                const Icon(Icons.medication_outlined),
+                Icon(
+                  isNotUsedForQuantity == true
+                      ? Icons.bloodtype
+                      : Icons.medication_outlined,
+                ),
                 const SizedBox(width: 10),
                 Text(
-                  "Vaisto likutis:",
+                  label ?? "Vaisto likutis:",
                   style: TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).scrim,
@@ -51,7 +59,7 @@ class MedicationQuantityWidget extends StatelessWidget {
                 signed: false,
               ),
               inputFormatters: [
-                _QuantityInputFormatter(medicationType: medicationType),
+                _QuantityInputFormatter(medicationForm: medicationForm),
               ],
               textAlign: TextAlign.center,
               style: const TextStyle(
@@ -70,7 +78,7 @@ class MedicationQuantityWidget extends StatelessWidget {
                   fontSize: 16,
                 ),
                 hintText: previewAmount != null
-                    ? medicationType.consumedAmoutIsInteger
+                    ? medicationForm.consumedAmoutIsInteger
                           ? previewAmount.toString().split(".")[0]
                           : previewAmount.toString()
                     : isPreview
@@ -95,7 +103,7 @@ class MedicationQuantityWidget extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            medicationType.getUnit,
+            medicationForm.getUnit,
             style: TextStyle(
               fontSize: 16,
               //fontWeight: FontWeight.bold,
@@ -110,9 +118,9 @@ class MedicationQuantityWidget extends StatelessWidget {
 }
 
 class _QuantityInputFormatter extends TextInputFormatter {
-  _QuantityInputFormatter({required this.medicationType});
+  _QuantityInputFormatter({required this.medicationForm});
 
-  final MedicationType medicationType;
+  final MedicationForm medicationForm;
 
   @override
   TextEditingValue formatEditUpdate(
@@ -133,7 +141,7 @@ class _QuantityInputFormatter extends TextInputFormatter {
 
     // Enforce max 2 decimal places
     if (text.contains('.')) {
-      if (medicationType.consumedAmoutIsInteger) return oldValue;
+      if (medicationForm.consumedAmoutIsInteger) return oldValue;
       final parts = text.split('.');
       if (parts.length > 2 || parts[1].length > 2 || parts[0].length > 5) {
         return oldValue;

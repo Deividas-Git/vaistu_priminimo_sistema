@@ -92,8 +92,12 @@ class MedicationPreviewScreen extends StatelessWidget {
               SectionTextWidget(label: "Bendra informacija"),
               _LabelValueTile(label: "Pavadinimas", value: medication.name!),
               _LabelValueTile(
-                label: "Vaisto tipas",
-                value: medication.medicationType!.getLabel,
+                label: "Vaisto formą",
+                value: medication.medicationForm!.getLabel,
+              ),
+              _LabelValueTile(
+                label: "Vaisto veiklioji medžiaga",
+                value: medication.activeIngredient!.getLabel,
               ),
               _LabelValueTile(
                 label: "Vartojama",
@@ -106,7 +110,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               ),
               SizedBox(height: 5),
               MedicationQuantityWidget(
-                medicationType: medication.medicationType!,
+                medicationForm: medication.medicationForm!,
                 previewAmount: medication.currentQuantity,
               ),
               Divider(thickness: 2, color: ColorScheme.of(context).primary),
@@ -115,7 +119,7 @@ class MedicationPreviewScreen extends StatelessWidget {
               if (medication.medicationSchedules != null)
                 ...medication.medicationSchedules!.map(
                   (schedule) => ScheduleTileWidget(
-                    medicationType: medication.medicationType!,
+                    medicationForm: medication.medicationForm!,
                     schedule: schedule,
                   ),
                 ),

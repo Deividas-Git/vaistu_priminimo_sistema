@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/cholesterol_dialog.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/chart_data.dart';
+import 'package:vaistu_priminimo_sistema/models/health_metric/health_metric.dart';
+import 'package:vaistu_priminimo_sistema/models/health_metric/health_metric_type.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/active_ingredient.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
+import 'package:vaistu_priminimo_sistema/providers/health_metrics_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_records_provider.dart';
+import 'package:vaistu_priminimo_sistema/providers/user_provider.dart';
 import 'package:vaistu_priminimo_sistema/widgets/adherence_bar.dart';
+import 'package:vaistu_priminimo_sistema/widgets/cholesterol_line_chart.dart';
 import 'package:vaistu_priminimo_sistema/widgets/consumption_progress_pie_chart.dart';
 import 'package:vaistu_priminimo_sistema/widgets/dropdown_menu_widget.dart';
 import 'package:vaistu_priminimo_sistema/widgets/root_app_bar.dart';
@@ -30,8 +37,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
+  void _onAddCholesterolInfo() async {
+    final Map<String, dynamic>? result = await showDialog(
+      context: context,
+      builder: (context) => CholesterolDialog(),
+    );
+    if (result == null) return;
+    final HealthMetric healthMetric = HealthMetric(
+      id: "${_selectedMedication!.id!}_${DateHelper.getFormattedDate(result["date"])}_${HealthMetricType.cholesterolMTL.name}",
+      medicationId: _selectedMedication!.id!,
+      healthMetricType: HealthMetricType.cholesterolMTL,
+      value: result["value"],
+      dateMeasured: DateHelper.normalizedDate(result["date"])!,
+    );
+    if (!mounted) return;
+    final String uid = context.read<UserProvider>().appUser!.uid;
+    context.read<HealthMetricsProvider>().saveHealthMetric(uid, healthMetric);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<HealthMetric> healthMetrics = context
+        .watch<HealthMetricsProvider>()
+        .healthMetrics;
     final MedicationProvider medicationProvider = context
         .watch<MedicationProvider>();
     final MedicationRecordsProvider medicationRecordsProvider = context
@@ -41,7 +69,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         .getMedicationProgress(_selectedMedication);
     final ColorScheme colorScheme = ColorScheme.of(context);
 
-    debugPrint("PROGRESS: $medicationProgress");
+    List<HealthMetric> selectedMedicationHealthMetrics = [];
+    if (_selectedMedication != null) {
+      selectedMedicationHealthMetrics = healthMetrics
+          .where(
+            (healthMetric) =>
+                healthMetric.healthMetricType ==
+                    HealthMetricType.cholesterolMTL &&
+                healthMetric.medicationId == _selectedMedication!.id,
+          )
+          .toList();
+    }
 
     return Scaffold(
       appBar: RootAppBar(title: "Vartojimo progresas"),
@@ -89,6 +127,45 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     SizedBox(height: 5),
                     Divider(thickness: 2),
                     SizedBox(height: 5),
+                    if (_selectedMedication!.activeIngredient ==
+                        ActiveIngredient.statin)
+                      ElevatedButton(
+                        onPressed: _onAddCholesterolInfo,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                        ),
+                        child: Text(
+                          "Pridėti cholesterolio kiekį",
+                          style: TextStyle(color: colorScheme.onPrimary),
+                        ),
+                      ),
+                    if (_selectedMedication!.activeIngredient ==
+                            ActiveIngredient.statin &&
+                        selectedMedicationHealthMetrics.isNotEmpty)
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Cholesterolio MTL pokytis mmol/l",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          CholesterolLineChart(
+                            metrics: selectedMedicationHealthMetrics,
+                          ),
+                          Divider(thickness: 2),
+                        ],
+                      ),
+                    SizedBox(height: 5),
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
@@ -97,7 +174,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                         children: [
-                          TextSpan(text: "Laikotarpis:\n"),
+                          TextSpan(text: "Vartojimo laikotarpis:\n"),
                           TextSpan(
                             text: DateHelper.getFormattedDate(
                               medicationProgress.startDate,
@@ -177,6 +254,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           ),
                       ],
                     ),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
