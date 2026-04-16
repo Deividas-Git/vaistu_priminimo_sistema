@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/review_dialog.dart';
+import 'package:vaistu_priminimo_sistema/models/log_level.dart';
 import 'package:vaistu_priminimo_sistema/models/review.dart';
 import 'package:vaistu_priminimo_sistema/providers/health_metrics_provider.dart';
 import 'package:vaistu_priminimo_sistema/providers/medication_provider.dart';
@@ -33,7 +34,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     context.read<MedicationRecordsProvider>().stopListening();
     context.read<HealthMetricsProvider>().stopListening();
     NotificationService().cancelAllNotifications();
-    LogService.dispose();
   }
 
   void _onLeaveReview() async {
@@ -126,6 +126,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         loggedOut = true;
       }
     } else {
+      await LogService.instance.log(
+        level: LogLevel.info,
+        action: "user logged out",
+        details: "credentials: $_currentUser",
+      );
+      LogService.dispose();
       message = await _authService.logout();
       loggedOut = true;
     }
