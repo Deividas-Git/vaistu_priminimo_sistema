@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/cholesterol_dialog.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/chart_data.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/active_ingredient.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_progress.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/medication_record_state.dart';
 import 'package:vaistu_priminimo_sistema/models/medication/user_medication.dart';
@@ -28,6 +30,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     setState(() {
       _selectedMedication = medication;
     });
+  }
+
+  void _onAddCholesterolInfo() async {
+    await showDialog(
+      context: context,
+      builder: (context) => CholesterolDialog(),
+    );
   }
 
   @override
@@ -88,6 +97,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                     SizedBox(height: 5),
                     Divider(thickness: 2),
+                    SizedBox(height: 5),
+                    if (_selectedMedication!.activeIngredient ==
+                        ActiveIngredient.statin)
+                      ElevatedButton(
+                        onPressed: _onAddCholesterolInfo,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                        ),
+                        child: Text(
+                          "Pridėti cholesterolio kiekį",
+                          style: TextStyle(color: colorScheme.onPrimary),
+                        ),
+                      ),
                     SizedBox(height: 5),
                     RichText(
                       textAlign: TextAlign.center,

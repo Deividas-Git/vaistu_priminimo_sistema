@@ -9,11 +9,15 @@ class MedicationQuantityWidget extends StatelessWidget {
     required this.medicationForm,
     this.controller,
     this.previewAmount,
+    this.isNotUsedForQuantity,
+    this.label,
   });
 
   final MedicationForm medicationForm;
   final TextEditingController? controller;
   final double? previewAmount;
+  final bool? isNotUsedForQuantity;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,14 @@ class MedicationQuantityWidget extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                const Icon(Icons.medication_outlined),
+                Icon(
+                  isNotUsedForQuantity == true
+                      ? Icons.bloodtype
+                      : Icons.medication_outlined,
+                ),
                 const SizedBox(width: 10),
                 Text(
-                  "Vaisto likutis:",
+                  label ?? "Vaisto likutis:",
                   style: TextStyle(
                     fontSize: 16,
                     color: ColorScheme.of(context).scrim,
