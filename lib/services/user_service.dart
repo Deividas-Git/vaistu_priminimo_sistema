@@ -34,6 +34,26 @@ class UserService {
       return e.message;
     }
 
+    //trinam health metrics
+    try {
+      final healthMetrics = await userDoc.collection("health_metrics").get();
+      for (var healthMetric in healthMetrics.docs) {
+        await healthMetric.reference.delete();
+      }
+    } on FirebaseException catch (e) {
+      return e.message;
+    }
+
+    //trinam logus
+    try {
+      final logs = await userDoc.collection("logs").get();
+      for (var log in logs.docs) {
+        await log.reference.delete();
+      }
+    } on FirebaseException catch (e) {
+      return e.message;
+    }
+
     //trinam pati user
     try {
       await userDoc.delete();
