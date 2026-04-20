@@ -163,8 +163,7 @@ class _AgendaTile extends StatelessWidget {
       final wasTaken = oldRecord?.state == MedicationRecordState.taken;
       final isTaken = result.state == MedicationRecordState.taken;
 
-      if (oldRecord == null) return;
-      if (oldRecord.state == result.state) return;
+      if (oldRecord?.state == result.state) return;
       if (medication.currentQuantity == null) return;
 
       if (isTaken && !wasTaken) {
