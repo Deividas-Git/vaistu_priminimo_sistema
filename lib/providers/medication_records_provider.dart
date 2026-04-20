@@ -39,20 +39,12 @@ class MedicationRecordsProvider extends ChangeNotifier {
     return {for (var record in medicationRecords) record.id: record};
   }
 
-  MedicationRecord _checkRecordIfWasDelayedAndExpired(MedicationRecord record) {
+  bool _checkRecordIfWasDelayedAndExpired(MedicationRecord record) {
     if (record.state == MedicationRecordState.delayed &&
         record.delayedUntil!.isBefore(DateTime.now())) {
-      final MedicationRecord updatedRecord = MedicationRecord(
-        id: record.id,
-        medicationId: record.medicationId,
-        scheduledDate: record.scheduledDate,
-        takenDate: null,
-        delayedUntil: record.delayedUntil,
-        state: MedicationRecordState.missed,
-      );
-      return updatedRecord;
+      return true;
     }
-    return record;
+    return false;
   }
 
   List<MedicationRecord> _getAllRecordsForMedication(String medId) {
@@ -63,17 +55,33 @@ class MedicationRecordsProvider extends ChangeNotifier {
 
   Future<void> updateExpiredDelayedRecords(String uid) async {
     for (MedicationRecord record in _medicationRecords) {
-      await _medicationRecordService.saveRecord(
-        uid,
-        _checkRecordIfWasDelayedAndExpired(record),
-      );
+      if (_checkRecordIfWasDelayedAndExpired(record)) {
+        final MedicationRecord updatedRecord = MedicationRecord(
+          id: record.id,
+          medicationId: record.medicationId,
+          scheduledDate: record.scheduledDate,
+          takenDate: null,
+          delayedUntil: record.delayedUntil,
+          state: MedicationRecordState.missed,
+        );
+        await _medicationRecordService.saveRecord(uid, updatedRecord);
+      }
     }
   }
 
   Future<void> saveMedicationRecord(String uid, MedicationRecord record) async {
     await _medicationRecordService.saveRecord(
       uid,
-      _checkRecordIfWasDelayedAndExpired(record),
+      _checkRecordIfWasDelayedAndExpired(record) == true
+          ? MedicationRecord(
+              id: record.id,
+              medicationId: record.medicationId,
+              scheduledDate: record.scheduledDate,
+              takenDate: null,
+              delayedUntil: record.delayedUntil,
+              state: MedicationRecordState.missed,
+            )
+          : record,
     );
   }
 

@@ -16,6 +16,7 @@ class CholesterolLineChart extends StatefulWidget {
 
 class _CholesterolLineChartState extends State<CholesterolLineChart> {
   List<FlSpot> spots = [];
+  bool _firstLoad = true;
 
   void _buildSpots() {
     setState(() {
@@ -28,15 +29,19 @@ class _CholesterolLineChartState extends State<CholesterolLineChart> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _buildSpots();
+      _firstLoad = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     widget.metrics.sort((a, b) => a.dateMeasured.compareTo(b.dateMeasured));
+
+    if (_firstLoad == false) {
+      _buildSpots();
+    }
 
     final ColorScheme colorScheme = ColorScheme.of(context);
 
