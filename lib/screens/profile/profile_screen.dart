@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) => ConfirmationDialog(
         message:
             "Ar tikrai norite pašalinti savo paskyrą ir visus jos duomenis visam laikui?",
-        title: "Paksyros panaikinimas",
+        title: "Paskyros panaikinimas",
         rightOptionText: "Ištrinti",
         leftOptionText: "Atšaukti",
         leftSideHighlighted: true,

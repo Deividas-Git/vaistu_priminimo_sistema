@@ -44,11 +44,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
     if (result == null) return;
     final HealthMetric healthMetric = HealthMetric(
-      id: "${_selectedMedication!.id!}_${DateHelper.getFormattedDate(result["date"])}_${HealthMetricType.cholesterolMTL.name}",
+      id: "${_selectedMedication!.id!}_${DateHelper.getFormattedDate(result["date"] ?? DateTime.now())}_${HealthMetricType.cholesterolMTL.name}",
       medicationId: _selectedMedication!.id!,
       healthMetricType: HealthMetricType.cholesterolMTL,
       value: result["value"],
-      dateMeasured: DateHelper.normalizedDate(result["date"])!,
+      dateMeasured: DateHelper.normalizedDate(
+        result["date"] ?? DateTime.now(),
+      )!,
     );
     if (!mounted) return;
     final String uid = context.read<UserProvider>().appUser!.uid;

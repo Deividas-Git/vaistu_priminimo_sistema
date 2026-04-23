@@ -11,6 +11,7 @@ class MedicationQuantityWidget extends StatelessWidget {
     this.previewAmount,
     this.isNotUsedForQuantity,
     this.label,
+    this.linesDevided,
   });
 
   final MedicationForm medicationForm;
@@ -18,35 +19,36 @@ class MedicationQuantityWidget extends StatelessWidget {
   final double? previewAmount;
   final bool? isNotUsedForQuantity;
   final String? label;
+  final bool? linesDevided;
 
   @override
   Widget build(BuildContext context) {
     final bool isPreview = controller == null;
-
-    return ThemedContainerWidget(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final List<Widget> children = [
+      Row(
+        mainAxisAlignment: linesDevided == true
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                Icon(
-                  isNotUsedForQuantity == true
-                      ? Icons.bloodtype
-                      : Icons.medication_outlined,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  label ?? "Vaisto likutis:",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: ColorScheme.of(context).scrim,
-                  ),
-                ),
-              ],
+          Icon(
+            isNotUsedForQuantity == true
+                ? Icons.bloodtype
+                : Icons.medication_outlined,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            label ?? "Vaisto likutis:",
+            style: TextStyle(
+              fontSize: 16,
+              color: ColorScheme.of(context).scrim,
             ),
           ),
+        ],
+      ),
 
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
           SizedBox(
             height: 36,
             width: 90,
@@ -101,18 +103,35 @@ class MedicationQuantityWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            medicationForm.getUnit,
-            style: TextStyle(
-              fontSize: 16,
-              //fontWeight: FontWeight.bold,
-              color: ColorScheme.of(context).onSurface,
+          if (isNotUsedForQuantity != true) const SizedBox(width: 10),
+          if (isNotUsedForQuantity != true)
+            Text(
+              medicationForm.getUnit,
+              style: TextStyle(
+                fontSize: 16,
+                //fontWeight: FontWeight.bold,
+                color: ColorScheme.of(context).onSurface,
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
+          if (isNotUsedForQuantity != true &&
+              medicationForm != MedicationForm.other)
+            const SizedBox(width: 10),
         ],
       ),
+    ];
+
+    return ThemedContainerWidget(
+      doesHeightExpand: linesDevided == true,
+      child: linesDevided != true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: children,
+            )
+          : Column(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            ),
     );
   }
 }
