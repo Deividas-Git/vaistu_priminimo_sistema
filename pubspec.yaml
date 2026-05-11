@@ -24,6 +24,7 @@ dependencies:
   firebase_storage: ^13.2.0
   cached_network_image: ^3.4.1
   lottie: ^3.3.3
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,16 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/app_icon.png" 
+
+flutter_native_splash:
+  android: true
+  ios: true
+  image: "assets/icon/icon_820px.png" 
+  color: "#E7FEF7"
+
+  android_12:
+    image: "assets/icon/icon_820px.png" 
+    color: "#E7FEF7"
 
 flutter:
   uses-material-design: true
