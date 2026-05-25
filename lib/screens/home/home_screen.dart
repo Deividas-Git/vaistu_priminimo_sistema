@@ -119,7 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
               fontSize: 16,
               //fontWeight: FontWeight.bold,
             ),
-            tabs: _dates.map((date) => _DateTab(date: date)).toList(),
+            tabs: _dates
+                .map((date) => _DateTab(today: now, date: date))
+                .toList(),
           ),
         ),
         body: TabBarView(
@@ -139,14 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _DateTab extends StatelessWidget {
-  const _DateTab({required this.date});
+  const _DateTab({required this.today, required this.date});
 
+  final DateTime today;
   final DateTime date;
 
   String getDayLabel() {
-    final DateTime now = DateTime.now();
-    final DateTime today = DateHelper.normalizedDate(now)!;
-
     if (date == today) return "Šiandien";
     if (date == today.subtract(Duration(days: 1))) return "Vakar";
     if (date == today.add(Duration(days: 1))) return "Rytoj";
