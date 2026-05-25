@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/forgot_password_dialog.dart';
 import 'package:vaistu_priminimo_sistema/screens/auth/register_screen.dart';
 import 'package:vaistu_priminimo_sistema/services/auth_service.dart';
 import 'package:vaistu_priminimo_sistema/services/snackbar_service.dart';
@@ -16,6 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _forgotPasswordController =
+      TextEditingController();
   final AuthService authService = AuthService();
   bool hidePassword = true;
   bool _loading = false;
@@ -34,6 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
         message: "Sėkmingai prisijungta!",
       );
     }
+  }
+
+  Future<void> _onForgotPassword() async {
+    bool? confirmed = await showDialog(
+      context: context,
+      builder: (context) =>
+          ForgotPasswordDialog(controller: _forgotPasswordController),
+    );
+    if (confirmed != true) return;
+    String? message = await authService.passwordReset(
+      email: _forgotPasswordController.text.trim(),
+    );
+    if (!mounted) return;
+    SnackbarService.showModernSnackBar(
+      context,
+      isError: message != null,
+      message: message ?? "Slaptažodžio atstatymo laiškas sėkmingas išsiųstas!",
+    );
   }
 
   Future<void> _onLoginPressed() async {
@@ -184,12 +205,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                     ),
                   ),
+                  TextButton(
+                    onPressed: _loading ? null : _onForgotPassword,
+                    child: Text(
+                      "Pamiršai slaptažodį?",
+                      style: TextStyle(
+                        color: _loading
+                            ? null
+                            : ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 10, width: double.infinity),
                   TextButton(
                     onPressed: _loading ? null : _onRegisterPressed,
                     child: const Text("Susikurti paskyrą"),
                   ),
-                  const Divider(height: 20, thickness: 2),
+                  const Divider(height: 5, thickness: 2),
                   TextButton(
                     onPressed: _loading ? null : _onContinueAsGuestPressed,
                     child: const Text("Išbandyti kaip svečiui"),

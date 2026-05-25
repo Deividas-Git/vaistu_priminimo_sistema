@@ -60,6 +60,15 @@ class AuthService {
     }
   }
 
+  Future<String?> passwordReset({required String email}) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      return _returnedAuthMessage(e);
+    }
+    return null;
+  }
+
   Future<String?> deleteUserAccount() async {
     final User? userCredentials = firebaseAuth.currentUser;
     if (userCredentials == null) {
