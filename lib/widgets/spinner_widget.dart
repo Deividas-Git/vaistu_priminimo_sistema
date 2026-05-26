@@ -81,7 +81,7 @@ class _SpinnerTileWidget extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        fontSize: 30,
+        fontSize: 24,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.w100,
         color: ColorScheme.of(context).primary.withValues(alpha: 1),
         shadows: [
