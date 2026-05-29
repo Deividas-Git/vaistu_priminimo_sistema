@@ -2,8 +2,8 @@
 
 Tai „Vilnius TECH“ universiteto bakalauro temos 
 „Mobiliosios vaistų priminimo sistemos sukūrimas“ /
-„Development of a Mobile Medication Reminder System“,
-projektas naudojant „Flutter“ ir „Firebase“ technologijas.
+„Development of a Mobile Medication Reminder System“
+projektas, sukurtas naudojant „Flutter“ ir „Firebase“ technologijas.
 
 Programėlės įdiegimui reikia sukurti atitinkamai operacinei sistemai failą. 
 Tai galima padaryti atsidarius terminalą ir nuėjus į projekto direktoriją, 
