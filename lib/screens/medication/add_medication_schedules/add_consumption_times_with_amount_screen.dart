@@ -34,7 +34,6 @@ class _AddConsumptionTimesWithAmountState
     MedicationConsumptionTimeWithAmount newConsumptionTimeWithAmount,
     MedicationConsumptionTimeWithAmount? oldConsumptionTimeWithAmount,
   ) {
-    //TODO tikrinti ar nera jau sukurta tam paciam laikui, jei yra iskviesti dialogo langa paklausti ar pakeisti ir istrinti sena
     setState(() {
       if (oldConsumptionTimeWithAmount == null) {
         _consumptionTimesWithAmount.add(newConsumptionTimeWithAmount);

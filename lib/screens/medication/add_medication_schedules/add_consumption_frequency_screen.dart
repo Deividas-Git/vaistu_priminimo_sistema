@@ -64,7 +64,6 @@ class _AddConsumptionFrequencyScreenState
     setState(() {
       if (date.isBefore(_startDate!)) {
         _endDate = _startDate;
-        //TODO snackbar pranesimas kad pabaigos data negali but anksciau uz pradzia
       } else {
         _endDate = date;
       }
@@ -110,8 +109,6 @@ class _AddConsumptionFrequencyScreenState
   }
 
   void _onContinuePressed() {
-    //TODO patikrinti ar jei pasirinktomis dienomis daznumas kad ar parinkta bent viena diena
-
     MedicationSchedule medicationSchedule =
         MedicationSchedule(
           startDate: _startDate!,

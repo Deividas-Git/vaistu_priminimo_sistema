@@ -21,7 +21,6 @@ enum SelectedOptionToAddMedication {
     }
   }
 
-  //TODO atnaujinti su kitais langais
   Widget get getScreen {
     switch (this) {
       case manual:

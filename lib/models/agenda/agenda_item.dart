@@ -14,6 +14,7 @@ class AgendaItem {
   final String medicationRecordId;
   final DateTime? lastTimeTaken;
   final DateTime? delayedUntil;
+  final DateTime? takenAt;
   final String? photoUrl;
 
   AgendaItem({
@@ -28,6 +29,7 @@ class AgendaItem {
     required this.medicationRecordId,
     required this.lastTimeTaken,
     required this.delayedUntil,
+    required this.takenAt,
     required this.photoUrl,
   });
 

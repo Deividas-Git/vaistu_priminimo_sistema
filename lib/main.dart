@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
 import 'package:vaistu_priminimo_sistema/models/log_level.dart';
@@ -75,10 +76,7 @@ class MainApp extends StatelessWidget {
         stream: _authService.firebaseAuth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            debugPrint("KRAUNA");
-            return Center(
-              child: CircularProgressIndicator(),
-            ); //CIA GAL DET SPLASH ANIMACIJA?
+            return Scaffold(body: Center(child: CircularProgressIndicator()));
           }
           if (snapshot.hasData) {
             User? userCredentials = snapshot.data;
@@ -101,7 +99,14 @@ class MainApp extends StatelessWidget {
               builder: (context, userSnapshot) {
                 if (userSnapshot.connectionState == ConnectionState.waiting) {
                   return Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
+                    body: Center(
+                      child: Lottie.asset(
+                        "assets/lottie_animations/loading.json",
+                        fit: BoxFit.contain,
+                        width: 300,
+                        height: 300,
+                      ),
+                    ),
                   );
                 }
 

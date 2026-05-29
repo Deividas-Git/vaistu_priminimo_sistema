@@ -265,15 +265,17 @@ class _AgendaTile extends StatelessWidget {
                                   ),
                             ),
                             children: [
-                              TextSpan(
-                                text: item.delayedUntil == null
-                                    ? item.state.getLabel
-                                    : "${item.state.getLabel} ",
-                              ),
+                              TextSpan(text: item.state.getLabel),
                               if (item.delayedUntil != null)
                                 TextSpan(
                                   text:
-                                      "(${DateHelper.getFormattedTime(item.delayedUntil!)})",
+                                      " (${DateHelper.getFormattedTime(item.delayedUntil!)})",
+                                ),
+                              if (item.state == MedicationRecordState.taken &&
+                                  item.takenAt != item.scheduledDate)
+                                TextSpan(
+                                  text:
+                                      " (${DateHelper.getFormattedTime(item.takenAt!)})",
                                 ),
                             ],
                           ),
