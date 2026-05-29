@@ -1,0 +1,174 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:vaistu_priminimo_sistema/models/medication/medication_form.dart';
+import 'package:vaistu_priminimo_sistema/widgets/themed_container_widget.dart';
+
+class MedicationQuantityWidget extends StatelessWidget {
+  const MedicationQuantityWidget({
+    super.key,
+    required this.medicationForm,
+    this.controller,
+    this.previewAmount,
+    this.isNotUsedForQuantity,
+    this.label,
+    this.linesDevided,
+  });
+
+  final MedicationForm medicationForm;
+  final TextEditingController? controller;
+  final double? previewAmount;
+  final bool? isNotUsedForQuantity;
+  final String? label;
+  final bool? linesDevided;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isPreview = controller == null;
+    final List<Widget> children = [
+      Row(
+        mainAxisAlignment: linesDevided == true
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
+        children: [
+          Icon(
+            isNotUsedForQuantity == true
+                ? Icons.bloodtype
+                : Icons.medication_outlined,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            label ?? "Vaisto likutis:",
+            style: TextStyle(
+              fontSize: 16,
+              color: ColorScheme.of(context).scrim,
+            ),
+          ),
+        ],
+      ),
+
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(
+            height: 36,
+            width: 90,
+            child: TextField(
+              textAlignVertical: TextAlignVertical.center,
+              readOnly: isPreview,
+              controller: controller,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+                signed: false,
+              ),
+              inputFormatters: [
+                _QuantityInputFormatter(medicationForm: medicationForm),
+              ],
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              cursorColor: ColorScheme.of(context).inversePrimary,
+              decoration: InputDecoration(
+                hintStyle: TextStyle(
+                  color: isPreview
+                      ? ColorScheme.of(
+                          context,
+                        ).onSecondary.withValues(alpha: 0.5)
+                      : Colors.white,
+                  fontSize: 16,
+                ),
+                hintText: previewAmount != null
+                    ? medicationForm.consumedAmoutIsInteger
+                          ? previewAmount.toString().split(".")[0]
+                          : previewAmount.toString()
+                    : isPreview
+                    ? "Nežinoma"
+                    : null,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                filled: true,
+                fillColor: isPreview
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.primary,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+          if (isNotUsedForQuantity != true) const SizedBox(width: 10),
+          if (isNotUsedForQuantity != true)
+            Text(
+              medicationForm.getUnit,
+              style: TextStyle(
+                fontSize: 16,
+                //fontWeight: FontWeight.bold,
+                color: ColorScheme.of(context).onSurface,
+              ),
+            ),
+          if (isNotUsedForQuantity != true &&
+              medicationForm != MedicationForm.other)
+            const SizedBox(width: 10),
+        ],
+      ),
+    ];
+
+    return ThemedContainerWidget(
+      doesHeightExpand: linesDevided == true,
+      child: linesDevided != true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: children,
+            )
+          : Column(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            ),
+    );
+  }
+}
+
+class _QuantityInputFormatter extends TextInputFormatter {
+  _QuantityInputFormatter({required this.medicationForm});
+
+  final MedicationForm medicationForm;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(',', '.');
+
+    // Allow empty input
+    if (text.isEmpty) {
+      return newValue;
+    }
+
+    // Allow only numbers and decimal separator
+    if (!RegExp(r'^(0|[1-9]\d*)(\.\d*)?$').hasMatch(text)) {
+      return oldValue;
+    }
+
+    // Enforce max 2 decimal places
+    if (text.contains('.')) {
+      if (medicationForm.consumedAmoutIsInteger) return oldValue;
+      final parts = text.split('.');
+      if (parts.length > 2 || parts[1].length > 2 || parts[0].length > 5) {
+        return oldValue;
+      }
+    } else if (text.length > 5) {
+      return oldValue;
+    }
+
+    return newValue;
+  }
+}
