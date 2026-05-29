@@ -138,7 +138,7 @@ class MedicationService {
       String path = "";
 
       if (registrationNr == null) {
-        return null; //TODO kol naudotojas pats negali prideti foto
+        return null;
       } else {
         path =
             "medication_photos/prefilled_medication_photos/${registrationNr.replaceAll("/", "-")}.png";

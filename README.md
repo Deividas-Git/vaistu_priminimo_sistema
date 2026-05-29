@@ -1,15 +1,16 @@
 # mobilioji_vaistu_priminimo_sistema 
 
-Tai bakalauro temos MOBILIOSIOS VAISTŲ PRIMINIMO SISTEMOS SUKŪRIMAS /
-DEVELOPMENT OF A MOBILE MEDICATION REMINDER SYSTEM realizacijos projektas,
-sukurtas naudojantis Flutter ir Firebase technologijomis.
+Tai „Vilnius TECH“ universiteto bakalauro temos 
+„Mobiliosios vaistų priminimo sistemos sukūrimas“ /
+„Development of a Mobile Medication Reminder System“,
+projektas naudojant „Flutter“ ir „Firebase“ technologijas.
 
-Įdiegimui reikalinga sukurti atitinkamai operacinei sistemai failą. 
+Programėlės įdiegimui reikia sukurti atitinkamai operacinei sistemai failą. 
 Tai galima padaryti atsidarius terminalą ir nuėjus į projekto direktoriją, 
-suvedant komandą "flutter build apk --release". Pateikta komanda sukurs 
-programėlės įdiegimui reikalingą failą skirtą Android OS. 
-Šį failą galima įsikelti į savo Android įrenginį, įsidiegti ir tada pasileisti.
+suvedant komandą „flutter build apk --release“, kad būtų sukurtas failas
+skirtas „Android“ OS, arba „flutter build ipa --release“, kad būtų sukurtas failas
+skirtas „iOS“ OS, tačiau „iOS“ operacinės sistemos failo sukūrimui yra reikalinga 
+„macOS“ OS ir mokama Apple kūrėjo paskyra.
+Sugeneruotą failą galima įsikelti į savo atitinkamą įrenginį, įsidiegti ir tada pasileisti.
 
-Copyright © 2026 Deividas Girdvilis.
-Ši repozitorija skirta akademinei peržiūrai VilniusTech universitetui.
-Perpanaudojimas, dalinimasis, ar kitoks panaudojimas komerciniams tikslams yra draudžiamas.
+Darbo autorius: Deividas Girdvilis
