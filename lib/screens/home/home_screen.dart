@@ -19,10 +19,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final NotificationService _notificationService = NotificationService();
-  final DateTime now = DateHelper.normalizedDate(DateTime.now())!;
-  late final List<DateTime> _dates;
+  DateTime now = DateHelper.normalizedDate(DateTime.now())!;
+  late List<DateTime> _dates;
+  late final TabController _tabController = TabController(
+    length: 3,
+    vsync: this,
+  );
 
   Future<void> _updateExpiredDelayedMedicationRecords() async {
     final String? uid = context.read<UserProvider>().appUser?.uid;
@@ -70,11 +75,36 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void updateDates() {
+    _dates = [now.subtract(Duration(days: 1)), now, now.add(Duration(days: 1))];
+  }
+
+  Future<void> showAdherenceDialog(
+    List<UserMedication> medications,
+    Map<String, MedicationRecord> recordsMap,
+  ) async {
+    DateTime? selectedDay = await showDialog(
+      context: context,
+      builder: (context) => AdherenceCalendarDialog(
+        now: now,
+        medications: medications,
+        recordsMap: recordsMap,
+      ),
+    );
+    if (selectedDay == null || !mounted) return;
+    setState(() {
+      now = DateHelper.normalizedDate(selectedDay)!;
+      updateDates();
+      _tabController.index = 1;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _dates = [now.subtract(Duration(days: 1)), now, now.add(Duration(days: 1))];
+    _tabController.index = 1;
+    updateDates();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermission();
@@ -97,63 +127,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
     updateLastTimeTaken(medicationRecords);
 
-    return DefaultTabController(
-      length: 3,
-      initialIndex: 1,
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Center(
-            child: Text("Dienotvarkė", style: TextStyle(color: Colors.white)),
-          ),
-          backgroundColor: ColorScheme.of(
-            context,
-          ).primary.withValues(alpha: 0.7),
-          bottom: TabBar(
-            dividerColor: Colors.white,
-            labelStyle: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-            unselectedLabelStyle: TextStyle(
-              color: ColorScheme.of(context).onSurfaceVariant,
-              fontSize: 16,
-              //fontWeight: FontWeight.bold,
-            ),
-            tabs: _dates
-                .map((date) => _DateTab(today: now, date: date))
-                .toList(),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Center(
+          child: Text("Dienotvarkė", style: TextStyle(color: Colors.white)),
         ),
-        body: TabBarView(
-          children: _dates
-              .map(
-                (date) => AgendaScreen(
-                  date: date,
-                  medications: medications,
-                  medicationRecords: recordsMap,
-                ),
-              )
-              .toList(),
+        backgroundColor: ColorScheme.of(context).primary.withValues(alpha: 0.7),
+        bottom: TabBar(
+          controller: _tabController,
+          dividerColor: Colors.white,
+          labelStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+          unselectedLabelStyle: TextStyle(
+            color: ColorScheme.of(context).onSurfaceVariant,
+            fontSize: 16,
+            //fontWeight: FontWeight.bold,
+          ),
+          tabs: _dates.map((date) => _DateTab(today: now, date: date)).toList(),
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: IconButton(
-            style: IconButton.styleFrom(backgroundColor: colorScheme.primary),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => AdherenceCalendarDialog(
-                now: now,
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: _dates
+            .map(
+              (date) => AgendaScreen(
+                date: date,
                 medications: medications,
-                recordsMap: recordsMap,
+                medicationRecords: recordsMap,
               ),
-            ),
-            icon: Icon(
-              Icons.calendar_month_outlined,
-              color: colorScheme.onPrimary,
-              size: 35,
-            ),
+            )
+            .toList(),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: IconButton(
+          style: IconButton.styleFrom(backgroundColor: colorScheme.primary),
+          onPressed: () => showAdherenceDialog(medications, recordsMap),
+          icon: Icon(
+            Icons.calendar_month_outlined,
+            color: colorScheme.onPrimary,
+            size: 35,
           ),
         ),
       ),
@@ -168,9 +185,9 @@ class _DateTab extends StatelessWidget {
   final DateTime date;
 
   String getDayLabel() {
-    if (date == today) return "Šiandien";
-    if (date == today.subtract(Duration(days: 1))) return "Vakar";
-    if (date == today.add(Duration(days: 1))) return "Rytoj";
+    if (date == today) return "Pasirinkta";
+    if (date == today.subtract(Duration(days: 1))) return "Praeita";
+    if (date == today.add(Duration(days: 1))) return "Sekanti";
 
     return "";
   }

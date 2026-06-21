@@ -43,4 +43,13 @@ enum DayAdherenceStatus {
       empty => Colors.transparent,
     };
   }
+
+  String get getLabel {
+    return switch (this) {
+      completed => "Suvartota",
+      missed => "Nevartota",
+      unfinished => "Dalinai vartota",
+      empty => "Tuščia/laukiama",
+    };
+  }
 }
