@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vaistu_priminimo_sistema/dialogs/adherence_calendar_dialog.dart';
 import 'package:vaistu_priminimo_sistema/dialogs/confirmation_dialog.dart';
 import 'package:vaistu_priminimo_sistema/helpers/date_helper.dart';
 import 'package:vaistu_priminimo_sistema/models/app_user.dart';
@@ -92,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final Map<String, MedicationRecord> recordsMap = context
         .read<MedicationRecordsProvider>()
         .getRecordsMap();
+    final ColorScheme colorScheme = ColorScheme.of(context);
 
     updateLastTimeTaken(medicationRecords);
 
@@ -134,6 +136,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )
               .toList(),
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: IconButton(
+            style: IconButton.styleFrom(backgroundColor: colorScheme.primary),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => AdherenceCalendarDialog(
+                now: now,
+                medications: medications,
+                recordsMap: recordsMap,
+              ),
+            ),
+            icon: Icon(
+              Icons.calendar_month_outlined,
+              color: colorScheme.onPrimary,
+              size: 35,
+            ),
+          ),
         ),
       ),
     );

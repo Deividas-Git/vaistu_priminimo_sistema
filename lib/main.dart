@@ -20,11 +20,13 @@ import 'package:vaistu_priminimo_sistema/services/medication_service.dart';
 import 'package:vaistu_priminimo_sistema/services/notification_service.dart';
 import 'package:vaistu_priminimo_sistema/services/user_service.dart';
 import 'firebase_options.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService().initializeNotificationService();
+  await initializeDateFormatting();
   runApp(
     MultiProvider(
       providers: [
