@@ -203,6 +203,7 @@ class _DateTab extends StatelessWidget {
       child: Text(
         "${getDayLabel()}\n${getMonthDayLabel()}",
         textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16),
       ),
     );
   }

@@ -27,14 +27,21 @@ class AdherenceCalendarDialog extends StatelessWidget {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: TableCalendar(
               locale: "lt_LT",
-              headerStyle: HeaderStyle(titleCentered: true),
+              headerStyle: HeaderStyle(
+                titleCentered: true,
+                titleTextStyle: TextStyle(fontSize: 14),
+              ),
               startingDayOfWeek: StartingDayOfWeek.monday,
               availableCalendarFormats: const {CalendarFormat.month: "Month"},
               calendarFormat: CalendarFormat.month,
               calendarStyle: CalendarStyle(isTodayHighlighted: false),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(fontSize: 10),
+                weekendStyle: TextStyle(fontSize: 10),
+              ),
               focusedDay: now,
               firstDay: now.subtract(Duration(days: 365 * 5)),
               lastDay: now.add(Duration(days: 365 * 5)),
@@ -79,7 +86,7 @@ class AdherenceCalendarDialog extends StatelessWidget {
                                   fontSize:
                                       DateHelper.normalizedDate(day) == now
                                       ? 16
-                                      : 14,
+                                      : 12,
                                   color: Colors.white,
                                   fontWeight:
                                       DateHelper.normalizedDate(day) == now
@@ -95,17 +102,14 @@ class AdherenceCalendarDialog extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 150.0),
-            child: ThemedContainerWidget(
-              doesHeightExpand: true,
-              child: Column(
-                children: [
-                  ...DayAdherenceStatus.values.map(
-                    (status) => _DayAdherenceStatusLegend(status: status),
-                  ),
-                ],
-              ),
+          ThemedContainerWidget(
+            doesHeightExpand: true,
+            child: Column(
+              children: [
+                ...DayAdherenceStatus.values.map(
+                  (status) => _DayAdherenceStatusLegend(status: status),
+                ),
+              ],
             ),
           ),
         ],
@@ -122,14 +126,9 @@ class _DayAdherenceStatusLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      textDirection: TextDirection.rtl,
+      //textDirection: TextDirection.rtl,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          height: 15,
-          width: 15,
-          color: status.getColorForStateLabel.withValues(alpha: 0.7),
-        ),
         Text(
           status.getLabel,
           textAlign: TextAlign.right,
@@ -137,6 +136,14 @@ class _DayAdherenceStatusLegend extends StatelessWidget {
             fontSize: 14,
             color: ColorScheme.of(context).onSurfaceVariant,
             fontWeight: FontWeight.normal,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 12.0),
+          child: Container(
+            height: 15,
+            width: 15,
+            color: status.getColorForStateLabel.withValues(alpha: 0.7),
           ),
         ),
       ],
